@@ -494,7 +494,7 @@ function getCartActual(){
 }
 
 // STORAGE
-function saveState(){try{window.storage.set('finance_state',JSON.stringify(state));}catch(e){}}
+function saveStateLocal(){try{window.storage.set('finance_state',JSON.stringify(state));}catch(e){}}
 async function load(){
   try{
     var r=await window.storage.get('finance_state');
