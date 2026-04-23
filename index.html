@@ -528,7 +528,7 @@ async function load(){
   if(!state.transactions||state.transactions.length===0){
     state.transactions=[];
     for(var ti=0;ti<RAW.length;ti++){var raw=RAW[ti];if(raw.cr>0||raw.db>0)state.transactions.push({id:ti+1,type:raw.cr>0?'ingreso':'gasto',amount:raw.cr>0?raw.cr:raw.db,date:raw.f,desc:raw.d,cat:CAT_MAP[raw.d]||(raw.cr>0?'Ingresos':'Otro')});}
-    saveState();
+    saveStateLocal();
   }
 
   document.getElementById('txn-date').value=todayStr();
