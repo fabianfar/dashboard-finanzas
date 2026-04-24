@@ -225,18 +225,6 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   </div>
   <div id="tc-cards-grid" class="tc-grid"></div>
 
-  <!-- Estadísticas siempre visibles -->
-  <div class="card" id="tc-stats-card">
-    <h3>Estadisticas de tarjetas</h3>
-    <div class="tc-stats-tabs" id="tc-stats-tabs">
-      <button class="tc-stats-tab active" data-stab="futuros">Compromisos futuros</button>
-      <button class="tc-stats-tab" data-stab="total">Total historico</button>
-      <button class="tc-stats-tab" data-stab="portarjeta">Por tarjeta</button>
-      <button class="tc-stats-tab" data-stab="categoria">Por categoria</button>
-    </div>
-    <div id="tc-stats-content"></div>
-  </div>
-
   <div id="tc-consumos-section" style="display:none">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
@@ -953,6 +941,8 @@ function renderTCStats(){
     charts['tccp']=new Chart(document.getElementById('tc-cat-pie'),{type:'doughnut',data:{labels:cats,datasets:[{data:cats.map(function(c){return Math.round(catT[c]);}),backgroundColor:cols,borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
     var cds=[];for(var cdi=0;cdi<cats.length;cdi++){var catName=cats[cdi];var catData=[];for(var cmi=0;cmi<months.length;cmi++){var s2=0;for(var ci2=0;ci2<state.consumos.length;ci2++){var c2=state.consumos[ci2];if(c2.cat===catName&&c2.fecha&&c2.fecha.startsWith(months[cmi]))s2+=c2.monto/c2.cuotas;}catData.push(Math.round(s2));}cds.push({label:catName,data:catData,backgroundColor:cols[cdi],borderRadius:4,stack:'s'});}
     charts['tccb']=new Chart(document.getElementById('tc-cat-bar'),{type:'bar',data:{labels:months.map(monthLbl),datasets:cds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#aaa'}},y:{stacked:true,ticks:{color:'#aaa',callback:function(v){return fmtS(v);}},grid:{color:'rgba(255,255,255,0.05)'}}}}});
+  } else if(tcStatsTab==='futuros'){
+    renderCompromisosFuturos();
   } else {
     var l3=months.slice(-3);var avgT=0;for(var ai=0;ai<l3.length;ai++)for(var aj=0;aj<state.tarjetas.length;aj++)avgT+=getTCMonthData(state.tarjetas[aj].id,l3[ai]);avgT=Math.round(avgT/3);
     var nx=next3(months[months.length-1]);var allL=[];for(var pli=0;pli<months.length;pli++)allL.push(monthLbl(months[pli]));for(var pni=0;pni<nx.length;pni++)allL.push(monthLbl(nx[pni])+' *');
