@@ -268,17 +268,17 @@ db.ref('finanzas/state').once('value').then(function(snap) {
         <tbody></tbody>
       </table>
     </div>
-    <div class="card">
-      <h3>Estadisticas de tarjetas</h3>
-      <div class="tc-stats-tabs" id="tc-stats-tabs">
-        <button class="tc-stats-tab active" data-stab="total">Total general</button>
-        <button class="tc-stats-tab" data-stab="portarjeta">Por tarjeta</button>
-        <button class="tc-stats-tab" data-stab="categoria">Por categoria</button>
-        <button class="tc-stats-tab" data-stab="futuros">Compromisos futuros</button>
-        <button class="tc-stats-tab" data-stab="proyeccion">Proyeccion</button>
-      </div>
-      <div id="tc-stats-content"></div>
+  </div>
+  <div class="card">
+    <h3>Estadisticas de tarjetas</h3>
+    <div class="tc-stats-tabs" id="tc-stats-tabs">
+      <button class="tc-stats-tab active" data-stab="total">Total general</button>
+      <button class="tc-stats-tab" data-stab="portarjeta">Por tarjeta</button>
+      <button class="tc-stats-tab" data-stab="categoria">Por categoria</button>
+      <button class="tc-stats-tab" data-stab="futuros">Compromisos futuros</button>
+      <button class="tc-stats-tab" data-stab="proyeccion">Proyeccion</button>
     </div>
+    <div id="tc-stats-content"></div>
   </div>
 </div>
 
@@ -577,7 +577,7 @@ function showTab(t){
   var secs=document.querySelectorAll('.section');for(var j=0;j<secs.length;j++)secs[j].classList.toggle('active',secs[j].id==='tab-'+t);
   if(t==='resumen')renderSummary();
   if(t==='estadisticas')renderStats();
-  if(t==='tarjetas')renderTarjetas();
+  if(t==='tarjetas'){renderTarjetas();renderTCStats();}
   if(t==='inversiones')renderInversiones();
   if(t==='presupuesto')renderBudgetProgress();
 }
@@ -1279,7 +1279,7 @@ function renderDebts(){
   var bInp=el.querySelectorAll('[data-debtid]');for(var di=0;di<bInp.length;di++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.debts.length;i++)if(state.debts[i].id===+inp.dataset.debtid){state.debts[i].paid=parseFloat(inp.value)||0;break;}saveState();renderDebts();});})(bInp[di]);}
 }
 
-function renderAll(){renderSummary();renderTransactions();renderBudgetProgress();renderGoals();renderDebts();renderTarjetas();}
+function renderAll(){renderSummary();renderTransactions();renderBudgetProgress();renderGoals();renderDebts();renderTarjetas();renderTCStats();}
 //load();
 </script>
 </body>
