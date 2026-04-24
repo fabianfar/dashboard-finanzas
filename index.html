@@ -79,6 +79,51 @@ tr:last-child td{border-bottom:none}
 .rec-meta{font-size:12px;color:#aaa}
 </style>
 </head>
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAwKXUOYl7rQ3y8LrZAlbrz9PwsLv7Px0M",
+    authDomain: "dashboard-finanzas-1aaef.firebaseapp.com",
+    databaseURL: "https://dashboard-finanzas-1aaef-default-rtdb.firebaseio.com",
+    projectId: "dashboard-finanzas-1aaef"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Sobreescribir la función de guardado
+  function saveState() {
+    db.ref('finanzas/state').set(state)
+      .catch(function(e){ console.warn('Error guardando:', e); });
+  }
+
+  // Cargar desde Firebase al iniciar
+  db.ref('finanzas/state').once('value').then(function(snap) {
+    if (snap.exists()) {
+      var saved = snap.val();
+      if (saved.tarjetas) state.tarjetas = saved.tarjetas;
+      if (saved.consumos) state.consumos = saved.consumos;
+      if (saved.recurrentes) state.recurrentes = saved.recurrentes || [];
+      if (saved.budget) state.budget = saved.budget;
+      if (saved.goals) state.goals = saved.goals;
+      if (saved.debts) state.debts = saved.debts;
+      if (saved.instrumentos) state.instrumentos = saved.instrumentos;
+      if (saved.movimientos) state.movimientos = saved.movimientos;
+      if (saved.transactions && saved.transactions.length > 0)
+        state.transactions = saved.transactions;
+      initBudgetForm();
+      populateMonthFilter();
+      renderAll();
+      if (activeTab === 'inversiones') renderInversiones();
+      checkCierresAuto();
+    }
+  }).catch(function(e){ console.warn('Error cargando:', e); });
+</script>
+
+
 <body>
 <div class="tabs" id="tabs-container"></div>
 
