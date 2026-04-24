@@ -496,42 +496,43 @@ function getCartActual(){
 }
 
 // STORAGE
-function saveStateLocal(){try{window.storage.set('finance_state',JSON.stringify(state));}catch(e){}}
-async function load(){
-  try{
-    var r=await window.storage.get('finance_state');
-    if(r&&r.value){
-      var saved=JSON.parse(r.value);
-      // Restaurar TODOS los campos del storage
-      if(saved.tarjetas) state.tarjetas=saved.tarjetas;
-      if(saved.consumos) state.consumos=saved.consumos;
-      if(saved.budget) state.budget=saved.budget;
-      if(saved.goals) state.goals=saved.goals;
-      if(saved.debts) state.debts=saved.debts;
-      if(saved.instrumentos) state.instrumentos=saved.instrumentos;
-      if(saved.movimientos) state.movimientos=saved.movimientos;
-      // Transacciones: usar las del storage si tiene mas datos
-      if(saved.transactions&&saved.transactions.length>0) state.transactions=saved.transactions;
-      // Recurrentes: sanitizar
-      if(Array.isArray(saved.recurrentes)){
-        var recLimpios=[];
-        for(var ri=0;ri<saved.recurrentes.length;ri++){
-          var rOrig=saved.recurrentes[ri];if(!rOrig||!rOrig.id||!rOrig.tcId)continue;
-          var rL={id:rOrig.id,tcId:rOrig.tcId,desc:rOrig.desc||'Sin nombre',cat:rOrig.cat||'Otro',montoBase:parseFloat(rOrig.montoBase)||0,historial:[]};
-          if(Array.isArray(rOrig.historial)){for(var hi=0;hi<rOrig.historial.length;hi++){var hO=rOrig.historial[hi];if(hO&&hO.fecha&&parseFloat(hO.monto)>0)rL.historial.push({fecha:String(hO.fecha),monto:parseFloat(hO.monto)});}}
-          recLimpios.push(rL);
-        }
-        state.recurrentes=recLimpios;
-      }
-    }
-  }catch(e){console.warn('Error cargando storage:',e);}
+//function saveStateLocal(){try{window.storage.set('finance_state',JSON.stringify(state));}catch(e){}}
+//async function load(){
+//  try{
+//    var r=await window.storage.get('finance_state');
+//    if(r&&r.value){
+//      var saved=JSON.parse(r.value);
+//      // Restaurar TODOS los campos del storage
+//      if(saved.tarjetas) state.tarjetas=saved.tarjetas;
+//      if(saved.consumos) state.consumos=saved.consumos;
+//      if(saved.budget) state.budget=saved.budget;
+//      if(saved.goals) state.goals=saved.goals;
+//      if(saved.debts) state.debts=saved.debts;
+//      if(saved.instrumentos) state.instrumentos=saved.instrumentos;
+//      if(saved.movimientos) state.movimientos=saved.movimientos;
+//      // Transacciones: usar las del storage si tiene mas datos
+//      if(saved.transactions&&saved.transactions.length>0) state.transactions=saved.transactions;
+//      // Recurrentes: sanitizar
+//      if(Array.isArray(saved.recurrentes)){
+//        var recLimpios=[];
+//        for(var ri=0;ri<saved.recurrentes.length;ri++){
+//          var rOrig=saved.recurrentes[ri];if(!rOrig||!rOrig.id||!rOrig.tcId)continue;
+//          var rL={id:rOrig.id,tcId:rOrig.tcId,desc:rOrig.desc||'Sin nombre',cat:rOrig.cat||'Otro',montoBase:parseFloat(rOrig.montoBase)||0,historial:[]};
+//          if(Array.isArray(rOrig.historial)){for(var hi=0;hi<rOrig.historial.length;hi++){var hO=rOrig.historial[hi];if(hO&&hO.fecha&&parseFloat(hO.monto)>0)rL.historial.push({fecha:String(hO.fecha),monto:parseFloat(hO.monto)});}}
+//          recLimpios.push(rL);
+//        }
+//        state.recurrentes=recLimpios;
+//      }
+//    }
+//  }catch(e){console.warn('Error cargando storage:',e);}
 
   // Si no hay transacciones del storage, cargar RAW
-  if(!state.transactions||state.transactions.length===0){
-    state.transactions=[];
-    for(var ti=0;ti<RAW.length;ti++){var raw=RAW[ti];if(raw.cr>0||raw.db>0)state.transactions.push({id:ti+1,type:raw.cr>0?'ingreso':'gasto',amount:raw.cr>0?raw.cr:raw.db,date:raw.f,desc:raw.d,cat:CAT_MAP[raw.d]||(raw.cr>0?'Ingresos':'Otro')});}
-    saveStatelocal();
-  }
+//  if(!state.transactions||state.transactions.length===0){
+//    state.transactions=[];
+//    for(var ti=0;ti<RAW.length;ti++){var raw=RAW[ti];if(raw.cr>0||raw.db>0)state.transactions.push({id:ti+1,type:raw.cr>0?'ingreso':'gasto',amount:raw.cr>0?
+//raw.cr:raw.db,date:raw.f,desc:raw.d,cat:CAT_MAP[raw.d]||(raw.cr>0?'Ingresos':'Otro')});}
+//    saveStatelocal();
+//  }
 
   document.getElementById('txn-date').value=todayStr();
   document.getElementById('co-fecha').value=todayStr();
