@@ -81,47 +81,67 @@ tr:last-child td{border-bottom:none}
 </head>
 
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAwKXUOYl7rQ3y8LrZAlbrz9PwsLv7Px0M",
-    authDomain: "dashboard-finanzas-1aaef.firebaseapp.com",
-    databaseURL: "https://dashboard-finanzas-1aaef-default-rtdb.firebaseio.com",
-    projectId: "dashboard-finanzas-1aaef"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+// Firebase (ya tenés los <script> de firebase arriba)
+const firebaseConfig = {
+  apiKey: "AIzaSyAwKXUOYl7rQ3y8LrZAlbrz9PwsLv7Px0M",
+  authDomain: "dashboard-finanzas-1aaef.firebaseapp.com",
+  databaseURL: "https://dashboard-finanzas-1aaef-default-rtdb.firebaseio.com",
+  projectId: "dashboard-finanzas-1aaef"
+};
 
-  // Sobreescribir la función de guardado
-  function saveState() {
-    db.ref('finanzas/state').set(state)
-      .catch(function(e){ console.warn('Error guardando:', e); });
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Guardar todo el state en Firebase
+function saveState() {
+  db.ref('finanzas/state').set(state)
+    .catch(function(e){ console.warn('Error guardando:', e); });
+}
+
+// Cargar desde Firebase al iniciar
+db.ref('finanzas/state').once('value').then(function(snap) {
+  if (snap.exists()) {
+    var saved = snap.val();
+
+    if (saved.tarjetas)      state.tarjetas      = saved.tarjetas;
+    if (saved.consumos)      state.consumos      = saved.consumos;
+    if (saved.recurrentes)   state.recurrentes   = saved.recurrentes || [];
+    if (saved.budget)        state.budget        = saved.budget;
+    if (saved.goals)         state.goals         = saved.goals;
+    if (saved.debts)         state.debts         = saved.debts;
+    if (saved.instrumentos)  state.instrumentos  = saved.instrumentos;
+    if (saved.movimientos)   state.movimientos   = saved.movimientos;
+    if (saved.transactions && saved.transactions.length > 0) {
+      state.transactions = saved.transactions;
+    }
+  } else {
+    // Si no hay nada en Firebase, inicializar desde RAW
+    if (!state.transactions || state.transactions.length === 0) {
+      state.transactions = [];
+      for (var ti = 0; ti < RAW.length; ti++) {
+        var raw = RAW[ti];
+        if (raw.cr > 0 || raw.db > 0) {
+          state.transactions.push({
+            id: ti + 1,
+            type: raw.cr > 0 ? 'ingreso' : 'gasto',
+            amount: raw.cr > 0 ? raw.cr : raw.db,
+            date: raw.f,
+            desc: raw.d,
+            cat: CATMAP[raw.d] || (raw.cr > 0 ? 'Ingresos' : 'Otro')
+          });
+        }
+      }
+      saveState(); // subimos el estado inicial a Firebase
+    }
   }
 
-  // Cargar desde Firebase al iniciar
-  db.ref('finanzas/state').once('value').then(function(snap) {
-    if (snap.exists()) {
-      var saved = snap.val();
-      if (saved.tarjetas) state.tarjetas = saved.tarjetas;
-      if (saved.consumos) state.consumos = saved.consumos;
-      if (saved.recurrentes) state.recurrentes = saved.recurrentes || [];
-      if (saved.budget) state.budget = saved.budget;
-      if (saved.goals) state.goals = saved.goals;
-      if (saved.debts) state.debts = saved.debts;
-      if (saved.instrumentos) state.instrumentos = saved.instrumentos;
-      if (saved.movimientos) state.movimientos = saved.movimientos;
-      if (saved.transactions && saved.transactions.length > 0)
-        state.transactions = saved.transactions;
-      initBudgetForm();
-      populateMonthFilter();
-      renderAll();
-      if (activeTab === 'inversiones') renderInversiones();
-      checkCierresAuto();
-    }
-  }).catch(function(e){ console.warn('Error cargando:', e); });
-</script>
+  // Cuando 'state' esté listo, armamos toda la UI
+  bootstrapApp();
+
+}).catch(function(e){
+  console.warn('Error cargando:', e);
+  // Fallback: si querés, podés inicializar con RAW y llamar bootstrapApp() igual
+});
 
 
 <body>
@@ -496,50 +516,23 @@ function getCartActual(){
 }
 
 // STORAGE
-//function saveStateLocal(){try{window.storage.set('finance_state',JSON.stringify(state));}catch(e){}}
-//async function load(){
-//  try{
-//    var r=await window.storage.get('finance_state');
-//    if(r&&r.value){
-//      var saved=JSON.parse(r.value);
-//      // Restaurar TODOS los campos del storage
-//      if(saved.tarjetas) state.tarjetas=saved.tarjetas;
-//      if(saved.consumos) state.consumos=saved.consumos;
-//      if(saved.budget) state.budget=saved.budget;
-//      if(saved.goals) state.goals=saved.goals;
-//      if(saved.debts) state.debts=saved.debts;
-//      if(saved.instrumentos) state.instrumentos=saved.instrumentos;
-//      if(saved.movimientos) state.movimientos=saved.movimientos;
-//      // Transacciones: usar las del storage si tiene mas datos
-//      if(saved.transactions&&saved.transactions.length>0) state.transactions=saved.transactions;
-//      // Recurrentes: sanitizar
-//      if(Array.isArray(saved.recurrentes)){
-//        var recLimpios=[];
-//        for(var ri=0;ri<saved.recurrentes.length;ri++){
-//          var rOrig=saved.recurrentes[ri];if(!rOrig||!rOrig.id||!rOrig.tcId)continue;
-//          var rL={id:rOrig.id,tcId:rOrig.tcId,desc:rOrig.desc||'Sin nombre',cat:rOrig.cat||'Otro',montoBase:parseFloat(rOrig.montoBase)||0,historial:[]};
-//          if(Array.isArray(rOrig.historial)){for(var hi=0;hi<rOrig.historial.length;hi++){var hO=rOrig.historial[hi];if(hO&&hO.fecha&&parseFloat(hO.monto)>0)rL.historial.push({fecha:String(hO.fecha),monto:parseFloat(hO.monto)});}}
-//          recLimpios.push(rL);
-//        }
-//        state.recurrentes=recLimpios;
-//      }
-//    }
-//  }catch(e){console.warn('Error cargando storage:',e);}
+// Función que inicializa la UI una vez que 'state' ya está listo
+function bootstrapApp() {
+  document.getElementById('txn-date').value = todayStr();
+  document.getElementById('co-fecha').value = todayStr();
+  document.getElementById('mov-fecha').value = todayStr();
 
-  // Si no hay transacciones del storage, cargar RAW
-//  if(!state.transactions||state.transactions.length===0){
-//    state.transactions=[];
-//    for(var ti=0;ti<RAW.length;ti++){var raw=RAW[ti];if(raw.cr>0||raw.db>0)state.transactions.push({id:ti+1,type:raw.cr>0?'ingreso':'gasto',amount:raw.cr>0?
-//raw.cr:raw.db,date:raw.f,desc:raw.d,cat:CAT_MAP[raw.d]||(raw.cr>0?'Ingresos':'Otro')});}
-//    saveStateLocal();
-//  }
+  fillSel('txn-cat', ALLCATS);
+  fillSel('co-cat', ALLCATS);
 
-//  document.getElementById('txn-date').value=todayStr();
-//  document.getElementById('co-fecha').value=todayStr();
-//  document.getElementById('mov-fecha').value=todayStr();
-//  fillSel('txn-cat',ALL_CATS);fillSel('co-cat',ALL_CATS);
-//  initBudgetForm();populateMonthFilter();buildTabs();renderAll();bindEvents();checkCierresAuto();
-//}
+  initBudgetForm();
+  populateMonthFilter();
+  buildTabs();
+  renderAll();
+  bindEvents();
+  checkCierresAuto();
+}
+
 
 // TABS
 var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'tarjetas',label:'Tarjetas'},{id:'inversiones',label:'Inversiones'},{id:'transacciones',label:'Transacciones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'}];
