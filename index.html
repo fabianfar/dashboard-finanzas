@@ -224,6 +224,19 @@ db.ref('finanzas/state').once('value').then(function(snap) {
     </div>
   </div>
   <div id="tc-cards-grid" class="tc-grid"></div>
+
+  <!-- Estadísticas siempre visibles -->
+  <div class="card" id="tc-stats-card">
+    <h3>Estadisticas de tarjetas</h3>
+    <div class="tc-stats-tabs" id="tc-stats-tabs">
+      <button class="tc-stats-tab active" data-stab="futuros">Compromisos futuros</button>
+      <button class="tc-stats-tab" data-stab="total">Total historico</button>
+      <button class="tc-stats-tab" data-stab="portarjeta">Por tarjeta</button>
+      <button class="tc-stats-tab" data-stab="categoria">Por categoria</button>
+    </div>
+    <div id="tc-stats-content"></div>
+  </div>
+
   <div id="tc-consumos-section" style="display:none">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
