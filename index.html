@@ -79,50 +79,6 @@ tr:last-child td{border-bottom:none}
 .rec-meta{font-size:12px;color:#aaa}
 </style>
 </head>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAwKXUOYl7rQ3y8LrZAlbrz9PwsLv7Px0M",
-    authDomain: "dashboard-finanzas-1aaef.firebaseapp.com",
-    databaseURL: "https://dashboard-finanzas-1aaef-default-rtdb.firebaseio.com",
-    projectId: "dashboard-finanzas-1aaef"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  // Sobreescribir la función de guardado
-  function saveState() {
-    db.ref('finanzas/state').set(state)
-      .catch(function(e){ console.warn('Error guardando:', e); });
-  }
-
-  // Cargar desde Firebase al iniciar
-  db.ref('finanzas/state').once('value').then(function(snap) {
-    if (snap.exists()) {
-      var saved = snap.val();
-      if (saved.tarjetas) state.tarjetas = saved.tarjetas;
-      if (saved.consumos) state.consumos = saved.consumos;
-      if (saved.recurrentes) state.recurrentes = saved.recurrentes || [];
-      if (saved.budget) state.budget = saved.budget;
-      if (saved.goals) state.goals = saved.goals;
-      if (saved.debts) state.debts = saved.debts;
-      if (saved.instrumentos) state.instrumentos = saved.instrumentos;
-      if (saved.movimientos) state.movimientos = saved.movimientos;
-      if (saved.transactions && saved.transactions.length > 0)
-        state.transactions = saved.transactions;
-      initBudgetForm();
-      populateMonthFilter();
-      renderAll();
-      if (activeTab === 'inversiones') renderInversiones();
-      checkCierresAuto();
-    }
-  }).catch(function(e){ console.warn('Error cargando:', e); });
-</script>
-
-
 <body>
 <div class="tabs" id="tabs-container"></div>
 
@@ -225,6 +181,7 @@ tr:last-child td{border-bottom:none}
         <button class="tc-stats-tab active" data-stab="total">Total general</button>
         <button class="tc-stats-tab" data-stab="portarjeta">Por tarjeta</button>
         <button class="tc-stats-tab" data-stab="categoria">Por categoria</button>
+        <button class="tc-stats-tab" data-stab="futuros">Compromisos futuros</button>
         <button class="tc-stats-tab" data-stab="proyeccion">Proyeccion</button>
       </div>
       <div id="tc-stats-content"></div>
@@ -528,7 +485,7 @@ async function load(){
   if(!state.transactions||state.transactions.length===0){
     state.transactions=[];
     for(var ti=0;ti<RAW.length;ti++){var raw=RAW[ti];if(raw.cr>0||raw.db>0)state.transactions.push({id:ti+1,type:raw.cr>0?'ingreso':'gasto',amount:raw.cr>0?raw.cr:raw.db,date:raw.f,desc:raw.d,cat:CAT_MAP[raw.d]||(raw.cr>0?'Ingresos':'Otro')});}
-    saveStateLocal();
+    saveStatelocal();
   }
 
   document.getElementById('txn-date').value=todayStr();
@@ -756,6 +713,146 @@ function getTCMonthData(tcId,m){
   for(var j=0;j<state.recurrentes.length;j++){var rObj=state.recurrentes[j];if(rObj.tcId!==tcId)continue;var hist=Array.isArray(rObj.historial)?rObj.historial:[];for(var k=0;k<hist.length;k++)if(hist[k]&&hist[k].fecha&&hist[k].fecha.startsWith(m))tot+=hist[k].monto;}
   return Math.round(tot);
 }
+// Calcula los compromisos futuros por mes para cada tarjeta
+// Un consumo "cae" en un mes de vencimiento según la fecha de cierre de la tarjeta
+function getCompromisosMes(meses){
+  // meses: array de strings 'YYYY-MM' para los próximos N meses
+  // Para cada tarjeta, determinar en qué mes de vencimiento cae cada consumo
+  var resultado = {}; // {mes: {tcId: monto}}
+  for(var mi=0;mi<meses.length;mi++) resultado[meses[mi]]={};
+
+  for(var ti=0;ti<state.tarjetas.length;ti++){
+    var tc=state.tarjetas[ti];
+    if(!tc.fechaCierre||!tc.fechaVenc) continue;
+
+    // Para cada mes futuro, calcular qué consumos vencen en ese vencimiento
+    for(var mi2=0;mi2<meses.length;mi2++){
+      var mes=meses[mi2];
+      var p=mes.split('-').map(Number);
+      // Fecha de cierre de ese mes (usando el día de cierre original pero en ese mes)
+      var diaOriginalCierre=new Date(tc.fechaCierre+'T00:00:00').getDate();
+      var diaOriginalVenc=new Date(tc.fechaVenc+'T00:00:00').getDate();
+      // Cierre del periodo que vence en este mes
+      // Si vencimiento es el mes M, el cierre es aproximadamente el mes M-1
+      var fechaVencMes=new Date(p[0],p[1]-1,diaOriginalVenc);
+      var fechaCierreMes=new Date(p[0],p[1]-2,diaOriginalCierre); // mes anterior al venc
+      var cierreMesStr=fechaCierreMes.getFullYear()+'-'+pad(fechaCierreMes.getMonth()+1)+'-'+pad(fechaCierreMes.getDate());
+      var cierreMesSig=new Date(fechaCierreMes.getFullYear(),fechaCierreMes.getMonth()+1,diaOriginalCierre);
+      var cierreMesSigStr=cierreMesSig.getFullYear()+'-'+pad(cierreMesSig.getMonth()+1)+'-'+pad(cierreMesSig.getDate());
+
+      var totalMes=0;
+      // Consumos en cuotas: la cuota que corresponde a este período
+      for(var ci=0;ci<state.consumos.length;ci++){
+        var co=state.consumos[ci];
+        if(co.tcId!==tc.id||co.cancelado||!co.fecha) continue;
+        // Cuotas restantes
+        var pendientes=co.cuotas-co.pagadas;
+        if(pendientes<=0) continue;
+        // Determinar en qué mes de vencimiento cae la próxima cuota de este consumo
+        // La cuota N cae en el vencimiento posterior al cierre que incluye la fecha del consumo
+        // Simplificación: calcular cuántos períodos de cierre han pasado desde la compra
+        var fechaCompra=new Date(co.fecha+'T00:00:00');
+        // Encontrar cuántas cuotas ya se procesaron (pagadas)
+        // La cuota número (pagadas+1) cae en el primer vencimiento tras el cierre que incluye la compra,
+        // luego cada mes siguiente una cuota más
+        // Calcular mes de primera cuota: próximo cierre tras fecha de compra → siguiente vencimiento
+        var proxCierreTrasCompra=new Date(fechaCompra.getFullYear(),fechaCompra.getMonth(),diaOriginalCierre);
+        if(proxCierreTrasCompra<=fechaCompra) proxCierreTrasCompra=new Date(fechaCompra.getFullYear(),fechaCompra.getMonth()+1,diaOriginalCierre);
+        var primerVenc=new Date(proxCierreTrasCompra.getFullYear(),proxCierreTrasCompra.getMonth()+1,diaOriginalVenc);
+        // Mes de la cuota = primerVenc + (nroCuota-1) meses
+        // nroCuota para este "mes" = diferencia en meses entre primerVenc y fechaVencMes + 1
+        var diffMeses=(fechaVencMes.getFullYear()-primerVenc.getFullYear())*12+(fechaVencMes.getMonth()-primerVenc.getMonth());
+        var nroCuota=diffMeses+1; // cuota 1 = primer mes
+        if(nroCuota>=1&&nroCuota<=co.cuotas&&nroCuota>co.pagadas){
+          totalMes+=co.monto/co.cuotas;
+        }
+      }
+      // Recurrentes: siempre suman en cada mes futuro
+      for(var ri=0;ri<state.recurrentes.length;ri++){
+        var rr=state.recurrentes[ri];
+        if(rr.tcId!==tc.id) continue;
+        totalMes+=getRecMonto(rr);
+      }
+      resultado[mes][tc.id]=Math.round(totalMes);
+    }
+  }
+  return resultado;
+}
+
+function renderCompromisosFuturos(){
+  var cont=document.getElementById('tc-stats-content');
+  // Próximos 6 meses desde hoy
+  var meses=[];
+  var hoy=new Date();
+  for(var i=0;i<6;i++){
+    var d=new Date(hoy.getFullYear(),hoy.getMonth()+i,1);
+    meses.push(d.getFullYear()+'-'+pad(d.getMonth()+1));
+  }
+  var compromisos=getCompromisosMes(meses);
+  var labels=meses.map(monthLbl);
+
+  // Dataset por tarjeta
+  var datasets=[];
+  var totalesPorMes=meses.map(function(){return 0;});
+  for(var ti=0;ti<state.tarjetas.length;ti++){
+    var tc=state.tarjetas[ti];
+    var data=meses.map(function(m){return compromisos[m][tc.id]||0;});
+    for(var mi=0;mi<meses.length;mi++) totalesPorMes[mi]+=data[mi];
+    datasets.push({label:tc.nombre,data:data,backgroundColor:PIE_COLORS[ti%PIE_COLORS.length],borderRadius:4,stack:'s'});
+  }
+
+  // Tabla resumen
+  var legH='';
+  for(var li=0;li<state.tarjetas.length;li++) legH+='<span><span class="legend-dot" style="background:'+PIE_COLORS[li%PIE_COLORS.length]+'"></span>'+state.tarjetas[li].nombre+'</span>';
+  legH+='<span><span class="legend-dot" style="background:#e0e0e0"></span>Total</span>';
+
+  var tablaH='<table style="margin-top:16px;font-size:12px"><thead><tr><th>Mes</th>';
+  for(var ti2=0;ti2<state.tarjetas.length;ti2++) tablaH+='<th style="text-align:right">'+state.tarjetas[ti2].nombre+'</th>';
+  tablaH+='<th style="text-align:right;color:#EF9F27">Total</th></tr></thead><tbody>';
+  for(var mi2=0;mi2<meses.length;mi2++){
+    tablaH+='<tr><td><strong>'+labels[mi2]+'</strong></td>';
+    for(var ti3=0;ti3<state.tarjetas.length;ti3++){
+      var val=compromisos[meses[mi2]][state.tarjetas[ti3].id]||0;
+      tablaH+='<td style="text-align:right" class="'+(val>0?'amount-negative':'')+'">'+fmtS(val)+'</td>';
+    }
+    tablaH+='<td style="text-align:right;font-weight:500;color:#EF9F27">'+fmtS(totalesPorMes[mi2])+'</td></tr>';
+  }
+  tablaH+='</tbody></table>';
+
+  cont.innerHTML='<p style="font-size:12px;color:#aaa;margin-bottom:12px">Cuotas y recurrentes que vencen en cada mes, segun fecha de cierre de cada tarjeta.</p>'
+    +'<div class="legend">'+legH+'</div>'
+    +'<div style="position:relative;width:100%;height:280px"><canvas id="tc-futuros-c" role="img" aria-label="Compromisos futuros"></canvas></div>'
+    +tablaH;
+
+  destroyChart('tcfut');
+  charts['tcfut']=new Chart(document.getElementById('tc-futuros-c'),{
+    type:'bar',
+    data:{
+      labels:labels,
+      datasets:datasets.concat([{
+        label:'Total',
+        data:totalesPorMes,
+        type:'line',
+        borderColor:'#EF9F27',
+        backgroundColor:'transparent',
+        pointBackgroundColor:'#EF9F27',
+        pointRadius:5,
+        tension:0.3,
+        borderWidth:2,
+        order:0
+      }])
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+fmtS(ctx.parsed.y);}}}},
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{color:'#aaa'}},
+        y:{stacked:true,ticks:{color:'#aaa',callback:function(v){return fmtS(v);}},grid:{color:'rgba(255,255,255,0.05)'}}
+      }
+    }
+  });
+}
+
 function renderTCStats(){
   var cont=document.getElementById('tc-stats-content');var months=last6();
   if(tcStatsTab==='total'){
