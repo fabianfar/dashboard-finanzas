@@ -82,6 +82,9 @@ tr:last-child td{border-bottom:none}
 
 
 // Firebase (ya tenés los <script> de firebase arriba)
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyAwKXUOYl7rQ3y8LrZAlbrz9PwsLv7Px0M",
   authDomain: "dashboard-finanzas-1aaef.firebaseapp.com",
@@ -142,7 +145,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   console.warn('Error cargando:', e);
   // Fallback: si querés, podés inicializar con RAW y llamar bootstrapApp() igual
 });
-
+</script>
 
 <body>
 <div class="tabs" id="tabs-container"></div>
