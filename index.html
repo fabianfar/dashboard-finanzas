@@ -1541,6 +1541,8 @@ function renderPrestamoAuto(){
   }
 }
 
+// DEUDAS
+function addDebt(){
   var name=document.getElementById('debt-name').value.trim();var total=parseFloat(document.getElementById('debt-total').value);
   var paid=parseFloat(document.getElementById('debt-paid').value)||0;var quota=parseFloat(document.getElementById('debt-quota').value)||0;var rate=parseFloat(document.getElementById('debt-rate').value)||0;
   if(!name||!total||total<=0){alert('Completa nombre y monto total');return;}
