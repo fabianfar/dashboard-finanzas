@@ -100,6 +100,11 @@ tr:last-child td{border-bottom:none}
 .rec-info{display:flex;flex-direction:column;gap:3px}
 .rec-name{font-weight:500;font-size:14px}
 .rec-meta{font-size:12px;color:#aaa}
+.pa-input{width:100px;padding:3px 6px;font-size:12px;text-align:right;background:transparent;border:none;border-bottom:0.5px solid #333;border-radius:0;color:#e0e0e0;font-family:monospace}
+.pa-input:focus{outline:none;border-bottom-color:#378ADD;background:#1a2a3a}
+#pa-table th{padding:8px 10px;font-size:11px;color:#aaa;font-weight:400;text-align:left;border-bottom:0.5px solid #333;white-space:nowrap}
+#pa-table td{padding:6px 10px;border-bottom:0.5px solid #222}
+#pa-table tr:hover{background:#1e1e1e!important}
 </style>
 </head>
 
@@ -138,6 +143,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
     if (saved.debts)         state.debts         = saved.debts;
     if (saved.instrumentos)  state.instrumentos  = saved.instrumentos;
     if (saved.movimientos)   state.movimientos   = saved.movimientos;
+    if (saved.prestamoAuto)  state.prestamoAuto  = saved.prestamoAuto;
     if (saved.transactions && saved.transactions.length > 0) {
       state.transactions = saved.transactions;
     }
@@ -418,6 +424,36 @@ db.ref('finanzas/state').once('value').then(function(snap) {
     <div class="flex-end"><button class="btn primary" id="btn-add-debt">Agregar deuda</button></div>
   </div>
   <div class="card"><div id="debts-summary" style="margin-bottom:12px"></div><h3>Mis deudas</h3><div id="debts-list"></div></div>
+
+  <!-- PRESTAMO AUTO -->
+  <div class="card" id="prestamo-auto-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div>
+        <h3 style="margin-bottom:2px">Prestamo del Auto — HSBC</h3>
+        <div style="font-size:12px;color:#aaa">48 cuotas · Vencimiento el dia 30 de cada mes</div>
+      </div>
+      <button class="btn btn-sm primary" id="btn-pa-marcar">Marcar cuota 20 como pagada</button>
+    </div>
+    <div id="pa-metrics" class="metric-grid" style="margin-bottom:14px"></div>
+    <div style="overflow-x:auto">
+      <table id="pa-table" style="min-width:820px;font-size:12px">
+        <thead>
+          <tr style="background:#1a1a1a">
+            <th style="width:32px;text-align:center">#</th>
+            <th>Fecha</th>
+            <th style="text-align:right">Capital</th>
+            <th style="text-align:right">Interés</th>
+            <th style="text-align:right">Seguro</th>
+            <th style="text-align:right">IVA s/Int.</th>
+            <th style="text-align:right">Impuestos</th>
+            <th style="text-align:right;font-weight:600">Cuota Total</th>
+            <th style="text-align:center;width:100px">Estado</th>
+          </tr>
+        </thead>
+        <tbody id="pa-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -431,7 +467,7 @@ var CAT_TO_CARTERA={'Letra (LECAP)':'LECAP/BONCAP pesos','BONCAP':'LECAP/BONCAP 
 var CARTERA_SUG=[{nombre:'LECAP/BONCAP pesos',pctSug:25,color:'#378ADD'},{nombre:'Bonos CER',pctSug:15,color:'#5DCAA5'},{nombre:'ON Hard Dollar AAA',pctSug:25,color:'#7F77DD'},{nombre:'Dolar MEP',pctSug:15,color:'#BA7517'},{nombre:'FCI/Acciones AR',pctSug:10,color:'#D4537E'},{nombre:'Oro CEDEAR',pctSug:10,color:'#EF9F27'}];
 var RAW=[{f:'2026-01-01',d:'Transporte Balance anio anterior',cr:0,db:5000000},{f:'2026-01-02',d:'Sueldo Telecom',cr:1758915,db:0},{f:'2026-01-02',d:'SECHEEP',cr:0,db:81709.22},{f:'2026-01-02',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-01-02',d:'Kiosko',cr:0,db:21220},{f:'2026-01-03',d:'Familia',cr:300000,db:0},{f:'2026-01-05',d:'Personal',cr:0,db:110076},{f:'2026-01-06',d:'Varios Mio',cr:0,db:17800},{f:'2026-01-06',d:'Sueldo Andrea',cr:1423249.56,db:0},{f:'2026-01-06',d:'Tarjeta Tuya',cr:0,db:149559.10},{f:'2026-01-07',d:'Sueldo Telecom',cr:1150000,db:0},{f:'2026-01-08',d:'Panaderia',cr:0,db:1000},{f:'2026-01-08',d:'Visa Hipotecario',cr:0,db:2947735.39},{f:'2026-01-09',d:'Sueldo Telecom',cr:1533378,db:0},{f:'2026-01-11',d:'Mastercard MercadoPago',cr:0,db:236743.31},{f:'2026-01-11',d:'Viajes',cr:0,db:114047.79},{f:'2026-01-12',d:'Viajes',cr:0,db:205765.29},{f:'2026-01-12',d:'Seguro Moto',cr:0,db:4280},{f:'2026-01-13',d:'Viajes',cr:0,db:1323771.21},{f:'2026-01-14',d:'Viajes',cr:0,db:1360635.65},{f:'2026-01-15',d:'Ingresos Varios',cr:118402,db:0},{f:'2026-01-18',d:'Viajes',cr:0,db:24145.74},{f:'2026-01-19',d:'Impuestos',cr:0,db:11192.60},{f:'2026-01-19',d:'Viajes',cr:0,db:5677.85},{f:'2026-01-19',d:'Patente Moto',cr:0,db:933.31},{f:'2026-01-23',d:'Kiosko',cr:0,db:5890},{f:'2026-01-24',d:'Panaderia',cr:0,db:3100},{f:'2026-01-28',d:'Panaderia',cr:0,db:1000},{f:'2026-01-29',d:'Panaderia',cr:0,db:1000},{f:'2026-01-30',d:'Prestamo HSBC',cr:0,db:1441738.05},{f:'2026-02-01',d:'Sueldo Telecom',cr:1178599,db:0},{f:'2026-02-02',d:'SECHEEP',cr:0,db:65341.12},{f:'2026-02-02',d:'Panaderia',cr:0,db:1000},{f:'2026-02-03',d:'Familia',cr:300000,db:0},{f:'2026-02-03',d:'Sueldo Andrea',cr:1356610.89,db:0},{f:'2026-02-03',d:'Tarjeta Tuya',cr:0,db:70246.47},{f:'2026-02-04',d:'Personal',cr:0,db:113828.12},{f:'2026-02-04',d:'Gas',cr:0,db:15000},{f:'2026-02-05',d:'Kiosko',cr:0,db:1000},{f:'2026-02-05',d:'Sueldo Telecom',cr:1230000,db:0},{f:'2026-02-06',d:'Visa Hipotecario',cr:0,db:2590143.47},{f:'2026-02-06',d:'Varios Mio',cr:0,db:1440},{f:'2026-02-07',d:'Kiosko',cr:0,db:23850},{f:'2026-02-09',d:'Panaderia',cr:0,db:1000},{f:'2026-02-09',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-02-10',d:'Mastercard MercadoPago',cr:0,db:171655},{f:'2026-02-10',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-02-10',d:'Panaderia',cr:0,db:1000},{f:'2026-02-13',d:'Ingresos Varios',cr:92724,db:0},{f:'2026-02-13',d:'Kiosko',cr:0,db:3000},{f:'2026-02-17',d:'Panaderia',cr:0,db:1000},{f:'2026-02-17',d:'Familia',cr:200000,db:0},{f:'2026-02-18',d:'Impuestos',cr:0,db:12792.46},{f:'2026-02-19',d:'Mantenimiento',cr:0,db:7800},{f:'2026-02-19',d:'Varios',cr:0,db:8000},{f:'2026-02-20',d:'Panaderia',cr:0,db:1000},{f:'2026-02-21',d:'Kiosko',cr:0,db:11625},{f:'2026-02-21',d:'Salidas',cr:0,db:24400},{f:'2026-02-25',d:'Martina',cr:0,db:8900},{f:'2026-02-26',d:'Panaderia',cr:0,db:1000},{f:'2026-02-28',d:'Prestamo HSBC',cr:0,db:1429552.80},{f:'2026-03-02',d:'Sueldo Telecom',cr:975325,db:0},{f:'2026-03-02',d:'Panaderia',cr:0,db:1000},{f:'2026-03-03',d:'Sueldo Andrea',cr:1452907.03,db:0},{f:'2026-03-03',d:'Tarjeta Tuya',cr:0,db:83909.13},{f:'2026-03-03',d:'Kiosko',cr:0,db:13870},{f:'2026-03-05',d:'SECHEEP',cr:0,db:98553.94},{f:'2026-03-05',d:'Salidas',cr:0,db:34900},{f:'2026-03-05',d:'Sueldo Telecom',cr:1300000,db:0},{f:'2026-03-05',d:'Familia',cr:300000,db:0},{f:'2026-03-06',d:'Visa Hipotecario',cr:0,db:2231951.61},{f:'2026-03-07',d:'Panaderia',cr:0,db:1000},{f:'2026-03-09',d:'Personal',cr:0,db:116168.98},{f:'2026-03-09',d:'Panaderia',cr:0,db:1100},{f:'2026-03-10',d:'Mastercard MercadoPago',cr:0,db:334048.46},{f:'2026-03-10',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-03-10',d:'Seguro Moto',cr:0,db:6420},{f:'2026-03-11',d:'Panaderia',cr:0,db:1000},{f:'2026-03-12',d:'Ingresos Varios',cr:53025,db:0},{f:'2026-03-12',d:'Varios Mio',cr:0,db:20000},{f:'2026-03-13',d:'Panaderia',cr:0,db:2000},{f:'2026-03-14',d:'Kiosko',cr:0,db:12280},{f:'2026-03-16',d:'Panaderia',cr:0,db:1100},{f:'2026-03-18',d:'Impuestos',cr:0,db:12792.46},{f:'2026-03-18',d:'Panaderia',cr:0,db:2000},{f:'2026-03-22',d:'Kiosko',cr:0,db:4000},{f:'2026-03-23',d:'Panaderia',cr:0,db:1000},{f:'2026-03-25',d:'Moto',cr:0,db:4000},{f:'2026-03-28',d:'Varios',cr:0,db:4000},{f:'2026-03-30',d:'Prestamo HSBC',cr:0,db:1440599.90},{f:'2026-03-30',d:'Panaderia',cr:0,db:1100},{f:'2026-04-01',d:'Sueldo Telecom',cr:1701859,db:0},{f:'2026-04-01',d:'Sueldo Andrea',cr:1452907.03,db:0},{f:'2026-04-01',d:'Tarjeta Tuya',cr:0,db:192148.90},{f:'2026-04-03',d:'Kiosko',cr:0,db:12900},{f:'2026-04-04',d:'Familia',cr:300000,db:0},{f:'2026-04-06',d:'SECHEEP',cr:0,db:115661.12},{f:'2026-04-06',d:'Visa Hipotecario',cr:0,db:2076827.87},{f:'2026-04-06',d:'Varios Mio',cr:0,db:5777},{f:'2026-04-07',d:'Personal',cr:0,db:120218.32},{f:'2026-04-07',d:'Sueldo Telecom',cr:1000000,db:0},{f:'2026-04-07',d:'Varios Mio',cr:0,db:12146.28},{f:'2026-04-09',d:'Varios Andrea',cr:0,db:8000},{f:'2026-04-09',d:'Panaderia',cr:0,db:5000},{f:'2026-04-09',d:'Seguro Moto',cr:0,db:6420},{f:'2026-04-10',d:'Mastercard MercadoPago',cr:0,db:250673.91}];
 
-var state={transactions:[],budget:{},goals:[],debts:[],tarjetas:[],consumos:[],recurrentes:[],instrumentos:[],movimientos:[]};
+var state={transactions:[],budget:{},goals:[],debts:[],tarjetas:[],consumos:[],recurrentes:[],instrumentos:[],movimientos:[],prestamoAuto:[]};
 var charts={};
 var activeTab='resumen';
 var selectedTC=null;
@@ -1342,8 +1378,169 @@ function renderGoals(){
   var bInp=el.querySelectorAll('[data-goalid]');for(var gi=0;gi<bInp.length;gi++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.goals.length;i++)if(state.goals[i].id===+inp.dataset.goalid){state.goals[i].saved=parseFloat(inp.value)||0;break;}saveState();renderGoals();});})(bInp[gi]);}
 }
 
-// DEUDAS
-function addDebt(){
+// PRESTAMO AUTO
+function getPrestamoAutoRows(){
+  // Cuota 1 = 30/Sep/2024, cuota 20 = 30/Apr/2026, cuota 48 = 30/Ago/2028
+  // Datos pre-cargados desde planilla: [capital, interes, seguro, ivaInt, impuestos, cuotaTotal]
+  var D=[
+    [332720,765296,96488,160974,20000,1375478],  // 01 Sep24
+    [340000,750000,98000,157500,20000,1365500],  // 02 Oct24
+    [348000,736000,100000,154560,20000,1358560], // 03 Nov24
+    [355000,722000,101000,151620,20000,1349620], // 04 Dic24
+    [363000,708000,103000,148680,20000,1342680], // 05 Ene25
+    [371000,694000,105000,145740,20000,1335740], // 06 Feb25
+    [380000,679000,107000,142590,20000,1328590], // 07 Mar25
+    [388000,665000,109000,139650,20000,1321650], // 08 Abr25
+    [397000,650000,111000,136500,20000,1314500], // 09 May25
+    [406000,635000,113000,133350,20000,1307350], // 10 Jun25
+    [415000,620000,115000,130200,20000,1300200], // 11 Jul25
+    [425000,604000,117000,126840,20000,1292840], // 12 Ago25
+    [430000,598000,140000,125580,15000,1308580], // 13 Sep25
+    [430000,580000,145000,121800,15000,1291800], // 14 Oct25
+    [430000,568000,148000,119280,15000,1280280], // 15 Nov25
+    [430000,555000,150000,116550,15000,1266550], // 16 Dic25
+    [430000,540000,150000,113400,15000,1248400], // 17 Ene26
+    [430000,525000,152000,110250,15000,1232250], // 18 Feb26
+    [430000,510000,152000,107100,15000,1214100], // 19 Mar26
+    [430000,500000,195000,105000,15000,1245000], // 20 Abr26 ← ACTUAL
+    [440000,490000,195000,102900,15000,1242900], // 21 May26
+    [450000,480000,195000,100800,15000,1240800], // 22 Jun26
+    [460000,468000,200000,98280,15000,1241280],  // 23 Jul26
+    [470000,456000,200000,95760,15000,1236760],  // 24 Ago26
+    [480000,444000,200000,93240,15000,1232240],  // 25 Sep26
+    [490000,432000,205000,90720,15000,1232720],  // 26 Oct26
+    [500000,420000,205000,88200,15000,1228200],  // 27 Nov26
+    [510000,407000,205000,85470,15000,1222470],  // 28 Dic26
+    [521000,394000,210000,82740,15000,1222740],  // 29 Ene27
+    [532000,381000,210000,80010,15000,1218010],  // 30 Feb27
+    [543000,368000,210000,77280,15000,1213280],  // 31 Mar27
+    [555000,354000,215000,74340,15000,1213340],  // 32 Abr27
+    [567000,340000,215000,71400,15000,1208400],  // 33 May27
+    [579000,326000,215000,68460,15000,1203460],  // 34 Jun27
+    [591000,312000,220000,65520,15000,1203520],  // 35 Jul27
+    [604000,297000,220000,62370,15000,1198370],  // 36 Ago27
+    [617000,282000,220000,59220,15000,1193220],  // 37 Sep27
+    [630000,267000,225000,56070,15000,1193070],  // 38 Oct27
+    [643000,252000,225000,52920,15000,1187920],  // 39 Nov27
+    [657000,236000,225000,49560,15000,1182560],  // 40 Dic27
+    [671000,220000,230000,46200,15000,1182200],  // 41 Ene28
+    [685000,204000,230000,42840,15000,1176840],  // 42 Feb28
+    [699000,188000,230000,39480,15000,1171480],  // 43 Mar28
+    [714000,171000,235000,35910,15000,1170910],  // 44 Abr28
+    [729000,154000,235000,32340,15000,1165340],  // 45 May28
+    [744000,137000,235000,28770,15000,1159770],  // 46 Jun28
+    [760000,119000,240000,24990,15000,1158990],  // 47 Jul28
+    [776000,101000,240000,21210,15000,1153210]   // 48 Ago28
+  ];
+  var rows=[];
+  for(var i=0;i<48;i++){
+    var n=i+1;
+    // Fecha: dia 30 del mes, empezando Sep 2024
+    var baseD=new Date(2024,8+i,1); // mes 8 = Sep
+    var lastDay=new Date(baseD.getFullYear(),baseD.getMonth()+1,0).getDate();
+    var day=Math.min(30,lastDay);
+    var fecha=baseD.getFullYear()+'-'+pad(baseD.getMonth()+1)+'-'+pad(day);
+    rows.push({num:n,fecha:fecha,cancelada:n<=19,capital:D[i][0],interes:D[i][1],seguro:D[i][2],ivaInt:D[i][3],impuestos:D[i][4],cuotaTotal:D[i][5]});
+  }
+  return rows;
+}
+
+function renderPrestamoAuto(){
+  // Inicializar si está vacío
+  if(!state.prestamoAuto||state.prestamoAuto.length===0){
+    state.prestamoAuto=getPrestamoAutoRows();
+    saveState();
+  }
+  var rows=state.prestamoAuto;
+  var totalCuotas=rows.length;
+  var canceladas=0,totalPagado=0,totalPendiente=0,proxFecha='';
+  for(var i=0;i<rows.length;i++){
+    if(rows[i].cancelada){canceladas++;totalPagado+=rows[i].cuotaTotal;}
+    else{totalPendiente+=rows[i].cuotaTotal;if(!proxFecha)proxFecha=rows[i].fecha;}
+  }
+  var pendientes=totalCuotas-canceladas;
+  var pct=Math.round(canceladas/totalCuotas*100);
+
+  // Métricas
+  document.getElementById('pa-metrics').innerHTML=
+    '<div class="metric"><div class="metric-label">Cuotas pagadas</div><div class="metric-value income">'+canceladas+' / '+totalCuotas+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Cuotas restantes</div><div class="metric-value warn">'+pendientes+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total pagado</div><div class="metric-value savings">'+fmtS(totalPagado)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Saldo pendiente</div><div class="metric-value expense">'+fmtS(totalPendiente)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Prox. vencimiento</div><div class="metric-value">'+fmtDate(proxFecha)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Progreso</div><div class="metric-value">'+pct+'%<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:'+pct+'%;background:#1D9E75"></div></div></div></div>';
+
+  // Tabla
+  var hoy=todayStr();var tb=document.getElementById('pa-tbody');var h='';
+  for(var j=0;j<rows.length;j++){
+    var r=rows[j];
+    var isProx=!r.cancelada&&r.fecha===proxFecha;
+    var isVenc=!r.cancelada&&r.fecha<hoy;
+    var bg=r.cancelada?'#0d1f0d':isProx?'#0c2233':isVenc?'#2a0a0a':'';
+    var estadoLbl=r.cancelada
+      ?'<span style="color:#1D9E75;font-size:11px">✓ Cancelada</span>'
+      :isProx?'<span style="color:#378ADD;font-weight:600;font-size:11px">▶ Próxima</span>'
+      :isVenc?'<span style="color:#D85A30;font-size:11px">⚠ Vencida</span>'
+      :'<span style="color:#888;font-size:11px">Pendiente</span>';
+    h+='<tr style="background:'+bg+'" data-panum="'+r.num+'">'
+      +'<td style="text-align:center;color:#666">'+r.num+'</td>'
+      +'<td>'+fmtDate(r.fecha)+'</td>'
+      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="capital" data-num="'+r.num+'" value="'+r.capital+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="interes" data-num="'+r.num+'" value="'+r.interes+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="seguro" data-num="'+r.num+'" value="'+r.seguro+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="ivaInt" data-num="'+r.num+'" value="'+r.ivaInt+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="impuestos" data-num="'+r.num+'" value="'+r.impuestos+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right;font-weight:600;color:'+(r.cancelada?'#555':isProx?'#85B7EB':'#e0e0e0')+'">'+fmtS(r.cuotaTotal)+'</td>'
+      +'<td style="text-align:center">'+estadoLbl
+      +(!r.cancelada?'<br><button class="btn btn-sm" style="font-size:10px;margin-top:4px;padding:2px 6px" data-pa-pagar="'+r.num+'">Marcar pagada</button>':'')
+      +'</td></tr>';
+  }
+  tb.innerHTML=h;
+
+  // Inputs: guardar en blur, recalcular cuotaTotal
+  var inputs=document.querySelectorAll('.pa-input');
+  for(var k=0;k<inputs.length;k++){(function(inp){
+    inp.addEventListener('blur',function(){
+      var num=+inp.dataset.num;var field=inp.dataset.field;var val=parseFloat(inp.value)||0;
+      for(var x=0;x<state.prestamoAuto.length;x++){
+        if(state.prestamoAuto[x].num===num){
+          state.prestamoAuto[x][field]=val;
+          var r2=state.prestamoAuto[x];
+          r2.cuotaTotal=r2.capital+r2.interes+r2.seguro+r2.ivaInt+r2.impuestos;
+          break;
+        }
+      }
+      saveState();renderPrestamoAuto();
+    });
+  })(inputs[k]);}
+
+  // Marcar pagada por fila
+  var btnsPagar=document.querySelectorAll('[data-pa-pagar]');
+  for(var p=0;p<btnsPagar.length;p++){(function(btn){
+    btn.addEventListener('click',function(){
+      var num=+btn.dataset.paPagar;
+      if(!confirm('Marcar cuota '+num+' como pagada?'))return;
+      for(var x=0;x<state.prestamoAuto.length;x++)if(state.prestamoAuto[x].num===num){state.prestamoAuto[x].cancelada=true;break;}
+      saveState();renderPrestamoAuto();
+    });
+  })(btnsPagar[p]);}
+
+  // Boton header: marcar próxima
+  var btnHdr=document.getElementById('btn-pa-marcar');
+  if(btnHdr){
+    // Actualizar label
+    var proxNum=0;
+    for(var q=0;q<rows.length;q++)if(!rows[q].cancelada){proxNum=rows[q].num;break;}
+    btnHdr.textContent=proxNum?('Marcar cuota '+proxNum+' como pagada'):'Todo pagado ✓';
+    btnHdr.onclick=function(){
+      if(!proxNum)return;
+      if(!confirm('Marcar cuota '+proxNum+' como pagada?'))return;
+      for(var x=0;x<state.prestamoAuto.length;x++)if(state.prestamoAuto[x].num===proxNum){state.prestamoAuto[x].cancelada=true;break;}
+      saveState();renderPrestamoAuto();
+    };
+  }
+}
+
   var name=document.getElementById('debt-name').value.trim();var total=parseFloat(document.getElementById('debt-total').value);
   var paid=parseFloat(document.getElementById('debt-paid').value)||0;var quota=parseFloat(document.getElementById('debt-quota').value)||0;var rate=parseFloat(document.getElementById('debt-rate').value)||0;
   if(!name||!total||total<=0){alert('Completa nombre y monto total');return;}
@@ -1353,7 +1550,8 @@ function addDebt(){
 }
 function renderDebts(){
   var el=document.getElementById('debts-list');var sumEl=document.getElementById('debts-summary');
-  if(!state.debts.length){el.innerHTML='<div class="empty">No hay deudas registradas</div>';sumEl.innerHTML='';return;}
+  if(!state.debts.length){el.innerHTML='<div class="empty">No hay deudas registradas</div>';sumEl.innerHTML='';}
+  else{
   var totalD=0;for(var i=0;i<state.debts.length;i++)totalD+=Math.max(0,state.debts[i].total-state.debts[i].paid);
   sumEl.innerHTML='<div class="metric" style="display:inline-block;min-width:160px"><div class="metric-label">Total adeudado</div><div class="metric-value expense">'+fmtS(totalD)+'</div></div>';
   var h='';
@@ -1361,6 +1559,8 @@ function renderDebts(){
   el.innerHTML=h;
   var bDel=el.querySelectorAll('[data-deldebt]');for(var dd=0;dd<bDel.length;dd++){(function(b){b.addEventListener('click',function(){var n=[];for(var i=0;i<state.debts.length;i++)if(state.debts[i].id!==+b.dataset.deldebt)n.push(state.debts[i]);state.debts=n;saveState();renderDebts();});})(bDel[dd]);}
   var bInp=el.querySelectorAll('[data-debtid]');for(var di=0;di<bInp.length;di++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.debts.length;i++)if(state.debts[i].id===+inp.dataset.debtid){state.debts[i].paid=parseFloat(inp.value)||0;break;}saveState();renderDebts();});})(bInp[di]);}
+  }
+  renderPrestamoAuto();
 }
 
 function renderAll(){renderSummary();renderTransactions();renderBudgetProgress();renderGoals();renderDebts();renderTarjetas();renderTCStats();}
