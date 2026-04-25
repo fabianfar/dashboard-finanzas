@@ -264,7 +264,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
         </div>
       </div>
       <table id="co-table">
-        <thead><tr><th>Fecha</th><th>Descripcion</th><th>Categoria</th><th style="text-align:right">Total</th><th style="text-align:right">Cuota</th><th style="text-align:center">Cuotas</th><th style="text-align:right">Pendiente</th><th></th></tr></thead>
+        <thead><tr><th>Fecha</th><th>Descripcion</th><th>Categoria</th><th>Resumen</th><th style="text-align:right">Total</th><th style="text-align:right">Cuota</th><th style="text-align:center">Cuotas</th><th style="text-align:right">Pendiente</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -511,8 +511,8 @@ function saldoPendiente(tcId){
   var tot=0;for(var i=0;i<state.consumos.length;i++){var c=state.consumos[i];if(c.tcId===tcId&&!c.cancelado)tot+=Math.max(0,c.cuotas-c.pagadas)*(c.monto/c.cuotas);}return tot;
 }
 function saldoProxVenc(tcObj){
-  var fechaCierre=nextDate(tcObj.fechaCierre);var tot=0;
-  for(var i=0;i<state.consumos.length;i++){var c=state.consumos[i];if(c.tcId!==tcObj.id||c.cancelado||!c.fecha||c.fecha>fechaCierre)continue;if(c.cuotas===1)tot+=c.monto;else if(c.pagadas<c.cuotas)tot+=c.monto/c.cuotas;}
+  var proxCierre=nextDate(tcObj.fechaCierre);var tot=0;
+  for(var i=0;i<state.consumos.length;i++){var c=state.consumos[i];if(c.tcId!==tcObj.id||c.cancelado||!c.fecha||c.fecha>proxCierre)continue;if(c.cuotas===1)tot+=c.monto;else if(c.pagadas<c.cuotas)tot+=c.monto/c.cuotas;}
   for(var j=0;j<state.recurrentes.length;j++){var rObj=state.recurrentes[j];if(rObj.tcId!==tcObj.id)continue;tot+=getRecMonto(rObj);}
   return Math.round(tot);
 }
@@ -660,16 +660,44 @@ function editTarjetaFechas(id){
   document.getElementById('edtc-save-'+id).addEventListener('click',function(){var c=document.getElementById('edtc-c-'+id).value;var v=document.getElementById('edtc-v-'+id).value;if(!c||!v){alert('Completa ambas fechas');return;}tc.fechaCierre=c;tc.fechaVenc=v;saveState();renderTarjetas();});
   document.getElementById('edtc-cancel-'+id).addEventListener('click',function(){renderTarjetas();});
 }
+// Devuelve la fecha de cierre que precedio al vencimiento dado (un mes antes)
+function cierrePrevioAVenc(proxVenc,diaOriginalCierre){
+  var vd=new Date(proxVenc+'T00:00:00');
+  var cp=new Date(vd.getFullYear(),vd.getMonth()-1,diaOriginalCierre);
+  return cp.getFullYear()+'-'+pad(cp.getMonth()+1)+'-'+pad(cp.getDate());
+}
+// Devuelve la fecha del primer vencimiento al que pertenece un consumo segun el ciclo de facturacion
+function getPeriodoConsumo(co,tc){
+  if(!tc||!tc.fechaCierre||!tc.fechaVenc||!co.fecha)return'';
+  var dC=new Date(tc.fechaCierre+'T00:00:00').getDate();
+  var dV=new Date(tc.fechaVenc+'T00:00:00').getDate();
+  var fc=new Date(co.fecha+'T00:00:00');
+  // Proximo cierre tras la fecha de compra
+  var proxC=new Date(fc.getFullYear(),fc.getMonth(),dC);
+  if(proxC<=fc)proxC=new Date(fc.getFullYear(),fc.getMonth()+1,dC);
+  // Primer vencimiento = mes siguiente al cierre
+  var primerV=new Date(proxC.getFullYear(),proxC.getMonth()+1,dV);
+  return primerV.getFullYear()+'-'+pad(primerV.getMonth()+1)+'-'+pad(primerV.getDate());
+}
 function cierrePeriodo(tcId,esAuto){
   var tc=null;for(var i=0;i<state.tarjetas.length;i++)if(state.tarjetas[i].id===tcId){tc=state.tarjetas[i];break;}if(!tc)return;
   var proxVenc=nextDate(tc.fechaVenc);var hoy=todayStr();
   if(proxVenc>hoy){if(!esAuto)alert('El vencimiento aun no llego ('+fmtDate(proxVenc)+')');return;}
   if(tc.lastCierre&&tc.lastCierre===proxVenc){if(!esAuto)alert('El cierre para este vencimiento ya fue procesado.');return;}
-  var fechaCierre=nextDate(tc.fechaCierre);var cnt1=0,cntC=0;
-  for(var j=0;j<state.consumos.length;j++){var c=state.consumos[j];if(c.tcId!==tcId||c.cancelado||!c.fecha||c.fecha>fechaCierre)continue;if(c.cuotas===1){c.cancelado=true;cnt1++;}else if(c.pagadas<c.cuotas){c.pagadas++;cntC++;}}
+  // Usar el cierre que precedio a este vencimiento, NO el proximo cierre futuro
+  var dC=new Date(tc.fechaCierre+'T00:00:00').getDate();
+  var cierreDeEstePeriodo=cierrePrevioAVenc(proxVenc,dC);
+  var cnt1=0,cntC=0;
+  for(var j=0;j<state.consumos.length;j++){
+    var c=state.consumos[j];if(c.tcId!==tcId||c.cancelado||!c.fecha)continue;
+    // Solo procesar consumos que cierran en este periodo (comprados antes del cierre de este periodo)
+    if(c.fecha>cierreDeEstePeriodo)continue;
+    if(c.cuotas===1){c.cancelado=true;cnt1++;}
+    else if(c.pagadas<c.cuotas){c.pagadas++;cntC++;}
+  }
   tc.lastCierre=proxVenc;saveState();
-  if(!esAuto)alert('Cierre procesado.\nPagos unicos cancelados: '+cnt1+'\nCuotas registradas: '+cntC);
-  renderTarjetas();if(selectedTC===tcId)renderConsumosSection();
+  if(!esAuto)alert('Cierre procesado ('+fmtDate(cierreDeEstePeriodo)+' → '+fmtDate(proxVenc)+').\nPagos unicos cancelados: '+cnt1+'\nCuotas sumadas: '+cntC);
+  renderTarjetas();if(selectedTC===tcId)renderConsumosSection();renderTCStats();
 }
 function checkCierresAuto(){for(var i=0;i<state.tarjetas.length;i++)cierrePeriodo(state.tarjetas[i].id,true);}
 
@@ -756,8 +784,19 @@ function renderConsumos(){
     var co=consumos[ci];var pend=Math.max(0,co.cuotas-co.pagadas);var mc=co.monto/co.cuotas;
     var dots='';var maxDots=Math.min(co.cuotas,20);for(var di=0;di<maxDots;di++)dots+='<div class="cuota-dot" style="background:'+(di<co.pagadas?'#1D9E75':'#444')+'"></div>';
     var isCan=!!co.cancelado;
+    // Determinar a que vencimiento pertenece este consumo
+    var periodoVenc=getPeriodoConsumo(co,tc);
+    var periodoLbl='';var periodoColor='#aaa';
+    if(periodoVenc){
+      var hoyStr=todayStr();var proxVencStr=nextDate(tc.fechaVenc);
+      if(isCan){periodoLbl='Pagado';periodoColor='#1D9E75';}
+      else if(periodoVenc<hoyStr){periodoLbl='Vencido';periodoColor='#D85A30';}
+      else if(periodoVenc===proxVencStr){periodoLbl='Prox. ('+fmtDate(periodoVenc)+')';periodoColor='#EF9F27';}
+      else{periodoLbl=fmtDate(periodoVenc);periodoColor='#aaa';}
+    }
     hRows+='<tr data-coid="'+co.id+'" style="'+(isCan?'opacity:0.5;':'')+'">'
       +'<td>'+fmtDate(co.fecha)+'</td><td>'+co.desc+(isCan?' <span class="badge" style="background:#333;color:#888">cancelado</span>':'')+'</td><td>'+co.cat+'</td>'
+      +'<td style="font-size:12px;color:'+periodoColor+'">'+periodoLbl+'</td>'
       +'<td style="text-align:right">'+fmtS(co.monto)+'</td><td style="text-align:right">'+fmtS(mc)+'</td>'
       +'<td style="text-align:center"><div style="font-size:12px;margin-bottom:2px">'+co.pagadas+'/'+co.cuotas+'</div><div class="cuota-progress" style="justify-content:center">'+dots+'</div></td>'
       +'<td style="text-align:right" class="'+(pend>0&&!isCan?'amount-negative':'amount-positive')+'">'+fmtS(isCan?0:pend*mc)+'</td>'
@@ -783,65 +822,55 @@ function getTCMonthData(tcId,m){
 // Calcula los compromisos futuros por mes para cada tarjeta
 // Un consumo "cae" en un mes de vencimiento según la fecha de cierre de la tarjeta
 function getCompromisosMes(meses){
-  // meses: array de strings 'YYYY-MM' para los próximos N meses
-  // Para cada tarjeta, determinar en qué mes de vencimiento cae cada consumo
-  var resultado = {}; // {mes: {tcId: monto}}
-  for(var mi=0;mi<meses.length;mi++) resultado[meses[mi]]={};
+  var resultado={};
+  for(var mi=0;mi<meses.length;mi++)resultado[meses[mi]]={};
 
   for(var ti=0;ti<state.tarjetas.length;ti++){
     var tc=state.tarjetas[ti];
-    if(!tc.fechaCierre||!tc.fechaVenc) continue;
+    if(!tc.fechaCierre||!tc.fechaVenc)continue;
+    var dC=new Date(tc.fechaCierre+'T00:00:00').getDate();
+    var dV=new Date(tc.fechaVenc+'T00:00:00').getDate();
 
-    // Para cada mes futuro, calcular qué consumos vencen en ese vencimiento
-    for(var mi2=0;mi2<meses.length;mi2++){
-      var mes=meses[mi2];
-      var p=mes.split('-').map(Number);
-      // Fecha de cierre de ese mes (usando el día de cierre original pero en ese mes)
-      var diaOriginalCierre=new Date(tc.fechaCierre+'T00:00:00').getDate();
-      var diaOriginalVenc=new Date(tc.fechaVenc+'T00:00:00').getDate();
-      // Cierre del periodo que vence en este mes
-      // Si vencimiento es el mes M, el cierre es aproximadamente el mes M-1
-      var fechaVencMes=new Date(p[0],p[1]-1,diaOriginalVenc);
-      var fechaCierreMes=new Date(p[0],p[1]-2,diaOriginalCierre); // mes anterior al venc
-      var cierreMesStr=fechaCierreMes.getFullYear()+'-'+pad(fechaCierreMes.getMonth()+1)+'-'+pad(fechaCierreMes.getDate());
-      var cierreMesSig=new Date(fechaCierreMes.getFullYear(),fechaCierreMes.getMonth()+1,diaOriginalCierre);
-      var cierreMesSigStr=cierreMesSig.getFullYear()+'-'+pad(cierreMesSig.getMonth()+1)+'-'+pad(cierreMesSig.getDate());
+    // Inicializar cada mes en 0 para esta tarjeta
+    for(var mi2=0;mi2<meses.length;mi2++)resultado[meses[mi2]][tc.id]=0;
 
-      var totalMes=0;
-      // Consumos en cuotas: la cuota que corresponde a este período
-      for(var ci=0;ci<state.consumos.length;ci++){
-        var co=state.consumos[ci];
-        if(co.tcId!==tc.id||co.cancelado||!co.fecha) continue;
-        // Cuotas restantes
-        var pendientes=co.cuotas-co.pagadas;
-        if(pendientes<=0) continue;
-        // Determinar en qué mes de vencimiento cae la próxima cuota de este consumo
-        // La cuota N cae en el vencimiento posterior al cierre que incluye la fecha del consumo
-        // Simplificación: calcular cuántos períodos de cierre han pasado desde la compra
-        var fechaCompra=new Date(co.fecha+'T00:00:00');
-        // Encontrar cuántas cuotas ya se procesaron (pagadas)
-        // La cuota número (pagadas+1) cae en el primer vencimiento tras el cierre que incluye la compra,
-        // luego cada mes siguiente una cuota más
-        // Calcular mes de primera cuota: próximo cierre tras fecha de compra → siguiente vencimiento
-        var proxCierreTrasCompra=new Date(fechaCompra.getFullYear(),fechaCompra.getMonth(),diaOriginalCierre);
-        if(proxCierreTrasCompra<=fechaCompra) proxCierreTrasCompra=new Date(fechaCompra.getFullYear(),fechaCompra.getMonth()+1,diaOriginalCierre);
-        var primerVenc=new Date(proxCierreTrasCompra.getFullYear(),proxCierreTrasCompra.getMonth()+1,diaOriginalVenc);
-        // Mes de la cuota = primerVenc + (nroCuota-1) meses
-        // nroCuota para este "mes" = diferencia en meses entre primerVenc y fechaVencMes + 1
-        var diffMeses=(fechaVencMes.getFullYear()-primerVenc.getFullYear())*12+(fechaVencMes.getMonth()-primerVenc.getMonth());
-        var nroCuota=diffMeses+1; // cuota 1 = primer mes
-        if(nroCuota>=1&&nroCuota<=co.cuotas&&nroCuota>co.pagadas){
-          totalMes+=co.monto/co.cuotas;
+    // Consumos en cuotas / pago unico
+    for(var ci=0;ci<state.consumos.length;ci++){
+      var co=state.consumos[ci];
+      if(co.tcId!==tc.id||co.cancelado||!co.fecha)continue;
+      var pendientes=co.cuotas-co.pagadas;
+      if(pendientes<=0)continue;
+
+      // Calcular proximo cierre tras fecha de compra
+      var fechaCompra=new Date(co.fecha+'T00:00:00');
+      var proxC=new Date(fechaCompra.getFullYear(),fechaCompra.getMonth(),dC);
+      if(proxC<=fechaCompra)proxC=new Date(fechaCompra.getFullYear(),fechaCompra.getMonth()+1,dC);
+      // Primer vencimiento de este consumo
+      var primerV=new Date(proxC.getFullYear(),proxC.getMonth()+1,dV);
+
+      // Distribuir las cuotas pendientes en los meses futuros
+      var cuotasPagadas=co.pagadas;
+      for(var qi=0;qi<co.cuotas;qi++){
+        if(qi<cuotasPagadas)continue; // ya pagada
+        // Este numero de cuota (qi+1) vence en primerV + qi meses
+        var fechaEstaV=new Date(primerV.getFullYear(),primerV.getMonth()+qi,dV);
+        var mesEstaV=fechaEstaV.getFullYear()+'-'+pad(fechaEstaV.getMonth()+1);
+        if(resultado[mesEstaV]!==undefined){
+          resultado[mesEstaV][tc.id]=(resultado[mesEstaV][tc.id]||0)+co.monto/co.cuotas;
         }
       }
-      // Recurrentes: siempre suman en cada mes futuro
-      for(var ri=0;ri<state.recurrentes.length;ri++){
-        var rr=state.recurrentes[ri];
-        if(rr.tcId!==tc.id) continue;
-        totalMes+=getRecMonto(rr);
-      }
-      resultado[mes][tc.id]=Math.round(totalMes);
     }
+
+    // Recurrentes: suman en todos los meses futuros
+    for(var ri=0;ri<state.recurrentes.length;ri++){
+      var rr=state.recurrentes[ri];
+      if(rr.tcId!==tc.id)continue;
+      var mRec=getRecMonto(rr);
+      for(var mi3=0;mi3<meses.length;mi3++)resultado[meses[mi3]][tc.id]=(resultado[meses[mi3]][tc.id]||0)+mRec;
+    }
+
+    // Redondear
+    for(var mi4=0;mi4<meses.length;mi4++)resultado[meses[mi4]][tc.id]=Math.round(resultado[meses[mi4]][tc.id]||0);
   }
   return resultado;
 }
