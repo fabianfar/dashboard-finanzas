@@ -490,6 +490,7 @@ function nextDate(ds){if(!ds)return null;var h=new Date();h.setHours(0,0,0,0);va
 function destroyChart(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
 function fillSel(id,opts,val){var s=document.getElementById(id);if(!s)return;var h='';for(var i=0;i<opts.length;i++)h+='<option'+(opts[i]===val?' selected':'')+'>'+opts[i]+'</option>';s.innerHTML=h;}
 function simbol(moneda){return moneda==='USD'?'u$s ':'$ ';}
+function fmtPA(n){return '$ '+Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
 // RECURRENTES
 function getRecUltimoCobro(recObj){
@@ -1135,7 +1136,7 @@ function renderListaInstrumentos(){
       +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
       +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
       +'<td style="text-align:right" class="amount-positive">'+fmtN(costoTotal,smb)+'</td>'
-      +'<td style="text-align:right;padding:4px 8px"><input type="number" data-cotzid="'+inv.id+'" value="'+(cotz||'')+'" placeholder="—" min="0" step="0.0001" style="width:90px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0"></td>'
+      +'<td style="text-align:right;padding:4px 8px"><input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—" style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
       +'<td style="text-align:right" class="'+(cotz>0?'amount-positive':'')+'">'+( cotz>0?fmtN(valorActual,smb):'-')+'</td>'
       +'<td style="text-align:right" class="'+difColor+'">'+( difMonto!==null?(difMonto>=0?'+ ':'')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
       +'<td style="text-align:right;font-weight:500" class="'+difColor+'">'+( difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
@@ -1146,13 +1147,23 @@ function renderListaInstrumentos(){
   // Bind cotizacion inputs
   var cotzInputs=el.querySelectorAll('[data-cotzid]');
   for(var ci=0;ci<cotzInputs.length;ci++){(function(inp){
+    inp.addEventListener('focus',function(){
+      inp.value=inp.dataset.cotzraw>0?inp.dataset.cotzraw:'';
+      inp.select();
+    });
     function guardarCotz(){
-      var val=parseFloat(inp.value);
+      var val=parseFloat(inp.value.replace(/[^0-9.-]/g,''));
+      var smb2='$ ';
       for(var k=0;k<state.instrumentos.length;k++){
         if(state.instrumentos[k].id===+inp.dataset.cotzid){
-          state.instrumentos[k].cotizacion=isNaN(val)?0:val;break;
+          state.instrumentos[k].cotizacion=isNaN(val)?0:val;
+          smb2=simbol(state.instrumentos[k].moneda);
+          break;
         }
       }
+      var v=isNaN(val)?0:val;
+      inp.dataset.cotzraw=v;
+      inp.value=v>0?fmtN(v,smb2):'—';
       saveState();renderListaInstrumentos();if(selectedInv)renderMovimientos();renderInvResumen();
     }
     inp.addEventListener('blur',guardarCotz);
@@ -1485,33 +1496,44 @@ function renderPrestamoAuto(){
     h+='<tr style="background:'+bg+'" data-panum="'+r.num+'">'
       +'<td style="text-align:center;color:#666">'+r.num+'</td>'
       +'<td>'+fmtDate(r.fecha)+'</td>'
-      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="capital" data-num="'+r.num+'" value="'+r.capital+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
-      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="interes" data-num="'+r.num+'" value="'+r.interes+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
-      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="seguro" data-num="'+r.num+'" value="'+r.seguro+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
-      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="ivaInt" data-num="'+r.num+'" value="'+r.ivaInt+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
-      +'<td style="text-align:right"><input type="number" class="pa-input" data-field="impuestos" data-num="'+r.num+'" value="'+r.impuestos+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
-      +'<td style="text-align:right;font-weight:600;color:'+(r.cancelada?'#555':isProx?'#85B7EB':'#e0e0e0')+'">'+fmtS(r.cuotaTotal)+'</td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="capital" data-num="'+r.num+'" data-raw="'+r.capital+'" value="'+fmtPA(r.capital)+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="interes" data-num="'+r.num+'" data-raw="'+r.interes+'" value="'+fmtPA(r.interes)+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="seguro" data-num="'+r.num+'" data-raw="'+r.seguro+'" value="'+fmtPA(r.seguro)+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="ivaInt" data-num="'+r.num+'" data-raw="'+r.ivaInt+'" value="'+fmtPA(r.ivaInt)+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="impuestos" data-num="'+r.num+'" data-raw="'+r.impuestos+'" value="'+fmtPA(r.impuestos)+'" '+(r.cancelada?'style="opacity:0.5"':'')+'></td>'
+      +'<td style="text-align:right;font-weight:600;color:'+(r.cancelada?'#555':isProx?'#85B7EB':'#e0e0e0')+'">'+fmt(r.cuotaTotal)+'</td>'
       +'<td style="text-align:center">'+estadoLbl
       +(!r.cancelada?'<br><button class="btn btn-sm" style="font-size:10px;margin-top:4px;padding:2px 6px" data-pa-pagar="'+r.num+'">Marcar pagada</button>':'')
       +'</td></tr>';
   }
   tb.innerHTML=h;
 
-  // Inputs: guardar en blur, recalcular cuotaTotal
+  // Inputs: focus → numero crudo, blur → formato $ con decimales
   var inputs=document.querySelectorAll('.pa-input');
   for(var k=0;k<inputs.length;k++){(function(inp){
+    inp.addEventListener('focus',function(){
+      inp.value=inp.dataset.raw||'0';
+      inp.select();
+    });
     inp.addEventListener('blur',function(){
-      var num=+inp.dataset.num;var field=inp.dataset.field;var val=parseFloat(inp.value)||0;
+      var num=+inp.dataset.num;var field=inp.dataset.field;
+      var val=parseFloat(inp.value.replace(/[^0-9.-]/g,''))||0;
+      inp.dataset.raw=val;
+      inp.value=fmtPA(val);
       for(var x=0;x<state.prestamoAuto.length;x++){
         if(state.prestamoAuto[x].num===num){
           state.prestamoAuto[x][field]=val;
           var r2=state.prestamoAuto[x];
           r2.cuotaTotal=r2.capital+r2.interes+r2.seguro+r2.ivaInt+r2.impuestos;
+          // Actualizar celda Cuota Total sin re-renderizar toda la tabla
+          var row=document.querySelector('tr[data-panum="'+num+'"]');
+          if(row){var cells=row.querySelectorAll('td');var ctCell=cells[7];if(ctCell)ctCell.textContent=fmt(r2.cuotaTotal);}
           break;
         }
       }
-      saveState();renderPrestamoAuto();
+      saveState();
     });
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();});
   })(inputs[k]);}
 
   // Marcar pagada por fila
