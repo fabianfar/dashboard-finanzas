@@ -817,7 +817,7 @@ function renderConsumos(){
     if(periodoVenc){
       var hoyStr=todayStr();var proxVencStr=nextDate(tc.fechaVenc);
       if(isCan){periodoLbl='Pagado';periodoColor='#1D9E75';}
-      else if(periodoVenc<hoyStr){periodoLbl='Vencido';periodoColor='#D85A30';}
+      else if(periodoVenc<hoyStr){periodoLbl='En Resumen';periodoColor='#D85A30';}
       else if(periodoVenc===proxVencStr){periodoLbl='Prox. ('+fmtDate(periodoVenc)+')';periodoColor='#EF9F27';}
       else{periodoLbl=fmtDate(periodoVenc);periodoColor='#aaa';}
     }
