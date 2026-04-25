@@ -818,7 +818,7 @@ function renderConsumos(){
       var hoyStr=todayStr();var proxVencStr=nextDate(tc.fechaVenc);
       if(isCan){periodoLbl='Pagado';periodoColor='#1D9E75';}
       else if(periodoVenc<hoyStr){periodoLbl='En Resumen';periodoColor='#D85A30';}
-      else if(periodoVenc===proxVencStr){periodoLbl='Prox. ('+fmtDate(periodoVenc)+')';periodoColor='#EF9F27';}
+      else if(periodoVenc===proxVencStr){periodoLbl='Vto. ('+fmtDate(periodoVenc)+')';periodoColor='#EF9F27';}
       else{periodoLbl=fmtDate(periodoVenc);periodoColor='#aaa';}
     }
     hRows+='<tr data-coid="'+co.id+'" style="'+(isCan?'opacity:0.5;':'')+'">'
