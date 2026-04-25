@@ -529,7 +529,34 @@ function getPrecioPromedio(invId){
   return{cant:cantTotal,promedio:cantTotal>0?costoTotal/cantTotal:0};
 }
 function getValorCartera(){
-  var tot=0;for(var i=0;i<state.instrumentos.length;i++){var pos=getPrecioPromedio(state.instrumentos[i].id);tot+=pos.cant*pos.promedio;}return tot;
+  var tot=0;
+  for(var i=0;i<state.instrumentos.length;i++){
+    var inv=state.instrumentos[i];var pos=getPrecioPromedio(inv.id);
+    var cotz=parseFloat(inv.cotizacion)||0;
+    // Usar cotizacion si esta cargada, sino precio promedio (costo)
+    tot+=pos.cant*(cotz>0?cotz:pos.promedio);
+  }
+  return tot;
+}
+function renderInvResumen(){
+  // Refresca solo el bloque de metricas financieras sin re-renderizar toda la seccion
+  var cm=getCurMonth();var mt=[];for(var i=0;i<state.transactions.length;i++)if(state.transactions[i].date.startsWith(cm))mt.push(state.transactions[i]);
+  var income=0,expense=0;for(var j=0;j<mt.length;j++){if(mt[j].type==='ingreso')income+=mt[j].amount;else expense+=mt[j].amount;}
+  var totalAh=0;for(var k=0;k<state.goals.length;k++)totalAh+=state.goals[k].saved;
+  var totalDe=0;for(var l=0;l<state.debts.length;l++)totalDe+=Math.max(0,state.debts[l].total-state.debts[l].paid);
+  var sTC=0;for(var m=0;m<state.tarjetas.length;m++)sTC+=saldoPendiente(state.tarjetas[m].id);
+  var bal=income-expense;var disp=Math.max(0,bal);
+  var alertC=bal>=0?'#0a2a0a':'#2a0a0a';var alertB=bal>=0?'#1D9E75':'#D85A30';
+  var alertM=bal>=0?('Tenes aprox. '+fmtS(disp)+' disponibles este mes.'):'Los gastos superan los ingresos este mes.';
+  var tcM=sTC>0?' Recorda cubrir '+fmtS(sTC)+' en tarjetas.':'';
+  document.getElementById('inv-resumen-financiero').innerHTML=
+    '<h3 style="margin-bottom:14px">Panorama financiero actual</h3><div class="metric-grid">'
+    +'<div class="metric"><div class="metric-label">Balance del mes</div><div class="metric-value '+(bal>=0?'income':'expense')+'">'+fmtS(bal)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total ahorrado</div><div class="metric-value savings">'+fmtS(totalAh)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Deudas pendientes</div><div class="metric-value expense">'+fmtS(totalDe)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Venc. tarjetas</div><div class="metric-value warn">'+fmtS(sTC)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total cartera</div><div class="metric-value savings">'+fmtS(getValorCartera())+'</div></div>'
+    +'</div><div style="background:'+alertC+';border:0.5px solid '+alertB+';border-radius:8px;padding:12px;margin-top:4px;font-size:13px"><strong style="color:'+alertB+'">'+alertM+'</strong>'+(tcM?'<br><span style="color:#EF9F27">'+tcM+'</span>':'')+'</div>';
 }
 function getCartActual(){
   var cartActual={};var totalCart=0;
@@ -1042,9 +1069,23 @@ function renderListaInstrumentos(){
     el.innerHTML='<div class="empty">No hay instrumentos cargados. Agrega el primero arriba.</div>';
     document.getElementById('inv-movimientos-section').style.display='none';return;
   }
-  var h='<table style="margin-bottom:8px"><thead><tr><th>Ticker</th><th>Nombre</th><th>Categoria</th><th>Moneda</th><th>Vencimiento</th><th>Tasa</th><th style="text-align:right">Posicion</th><th style="text-align:right">P. Promedio</th><th style="text-align:right">Invertido</th><th></th></tr></thead><tbody>';
+  var h='<div style="overflow-x:auto"><table style="margin-bottom:8px;min-width:900px"><thead><tr>'
+    +'<th>Ticker</th><th>Nombre</th><th>Categoria</th><th>Moneda</th><th>Vencimiento</th><th>Tasa</th>'
+    +'<th style="text-align:right">Posicion</th><th style="text-align:right">P. Promedio</th>'
+    +'<th style="text-align:right">Costo total</th>'
+    +'<th style="text-align:right">Cotizacion</th>'
+    +'<th style="text-align:right">Valor actual</th>'
+    +'<th style="text-align:right">Dif. $</th>'
+    +'<th style="text-align:right">Dif. %</th>'
+    +'<th></th></tr></thead><tbody>';
   for(var i=0;i<state.instrumentos.length;i++){
     var inv=state.instrumentos[i];var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
+    var cotz=parseFloat(inv.cotizacion)||0;
+    var costoTotal=pos.cant*pos.promedio;
+    var valorActual=cotz>0?pos.cant*cotz:0;
+    var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
+    var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
+    var difColor=difMonto!==null?(difMonto>=0?'amount-positive':'amount-negative'):'';
     h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
       +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
       +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
@@ -1053,11 +1094,30 @@ function renderListaInstrumentos(){
       +'<td style="font-size:12px;color:#aaa">'+(inv.tasa||'-')+'</td>'
       +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
       +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
-      +'<td style="text-align:right" class="amount-positive">'+fmtN(pos.cant*pos.promedio,smb)+'</td>'
+      +'<td style="text-align:right" class="amount-positive">'+fmtN(costoTotal,smb)+'</td>'
+      +'<td style="text-align:right;padding:4px 8px"><input type="number" data-cotzid="'+inv.id+'" value="'+(cotz||'')+'" placeholder="—" min="0" step="0.0001" style="width:90px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0"></td>'
+      +'<td style="text-align:right" class="'+(cotz>0?'amount-positive':'')+'">'+( cotz>0?fmtN(valorActual,smb):'-')+'</td>'
+      +'<td style="text-align:right" class="'+difColor+'">'+( difMonto!==null?(difMonto>=0?'+ ':'')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
+      +'<td style="text-align:right;font-weight:500" class="'+difColor+'">'+( difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
       +'<td style="white-space:nowrap"><button class="btn btn-sm primary" data-selinv="'+inv.id+'">Ver mov.</button> <button class="btn btn-sm btn-danger" data-delinv="'+inv.id+'">x</button></td>'
       +'</tr>';
   }
-  h+='</tbody></table>';el.innerHTML=h;
+  h+='</tbody></table></div>';el.innerHTML=h;
+  // Bind cotizacion inputs
+  var cotzInputs=el.querySelectorAll('[data-cotzid]');
+  for(var ci=0;ci<cotzInputs.length;ci++){(function(inp){
+    function guardarCotz(){
+      var val=parseFloat(inp.value);
+      for(var k=0;k<state.instrumentos.length;k++){
+        if(state.instrumentos[k].id===+inp.dataset.cotzid){
+          state.instrumentos[k].cotizacion=isNaN(val)?0:val;break;
+        }
+      }
+      saveState();renderListaInstrumentos();if(selectedInv)renderMovimientos();renderInvResumen();
+    }
+    inp.addEventListener('blur',guardarCotz);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();});
+  })(cotzInputs[ci]);}
   var bSel=el.querySelectorAll('[data-selinv]');for(var s=0;s<bSel.length;s++){(function(b){b.addEventListener('click',function(){selectedInv=+b.dataset.selinv;renderMovimientosSection();renderListaInstrumentos();});})(bSel[s]);}
   var bDel=el.querySelectorAll('[data-delinv]');for(var d=0;d<bDel.length;d++){(function(b){b.addEventListener('click',function(){deleteInstrumento(+b.dataset.delinv);});})(bDel[d]);}
 }
@@ -1083,10 +1143,17 @@ function renderMovimientos(){
   var totalComp=0,cantAcum=0,costoAcum=0;
   for(var k=0;k<movs.length;k++){var mv=movs[k];if(mv.tipo==='compra'){totalComp+=mv.cantidad*mv.precio;cantAcum+=mv.cantidad;costoAcum+=mv.cantidad*mv.precio;}else{var pp0=cantAcum>0?costoAcum/cantAcum:0;costoAcum-=mv.cantidad*pp0;cantAcum-=mv.cantidad;}}
   var pos=getPrecioPromedio(inv.id);var ganReal=(pos.cant*pos.promedio)-totalComp;
+  var cotz=parseFloat(inv.cotizacion)||0;
+  var valorMercado=cotz>0?pos.cant*cotz:null;
+  var gananciaMercado=valorMercado!==null?valorMercado-(pos.cant*pos.promedio):null;
+  var pctMercado=pos.promedio>0&&cotz>0?((cotz-pos.promedio)/pos.promedio*100):null;
   document.getElementById('inv-metrics').innerHTML=
     '<div class="metric"><div class="metric-label">Posicion actual</div><div class="metric-value">'+pos.cant.toLocaleString('es-AR')+' unid.</div></div>'
     +'<div class="metric"><div class="metric-label">Precio promedio</div><div class="metric-value savings">'+fmtN(pos.promedio,smb)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Total invertido</div><div class="metric-value">'+fmtN(pos.cant*pos.promedio,smb)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Costo total</div><div class="metric-value">'+fmtN(pos.cant*pos.promedio,smb)+'</div></div>'
+    +(cotz>0?'<div class="metric"><div class="metric-label">Cotizacion actual</div><div class="metric-value savings">'+fmtN(cotz,smb)+'</div></div>':'')
+    +(valorMercado!==null?'<div class="metric"><div class="metric-label">Valor a mercado</div><div class="metric-value '+(gananciaMercado>=0?'income':'expense')+'">'+fmtN(valorMercado,smb)+'</div></div>':'')
+    +(gananciaMercado!==null?'<div class="metric"><div class="metric-label">G/P no realizada</div><div class="metric-value '+(gananciaMercado>=0?'income':'expense')+'">'+(gananciaMercado>=0?'+ ':'')+fmtN(Math.abs(gananciaMercado),smb)+(pctMercado!==null?' <span style="font-size:13px">('+( pctMercado>=0?'+':'')+pctMercado.toFixed(2)+'%)</span>':'')+'</div></div>':'')
     +'<div class="metric"><div class="metric-label">G/P realizada</div><div class="metric-value '+(ganReal>=0?'income':'expense')+'">'+(ganReal>=0?'+ ':'')+fmtN(Math.abs(ganReal),smb)+'</div></div>';
   var tbody=document.querySelector('#mov-table tbody');
   if(!movs.length){tbody.innerHTML='<tr><td colspan="8" class="empty">No hay movimientos registrados</td></tr>';return;}
@@ -1127,23 +1194,7 @@ function renderCarteraComparacion(){
 }
 
 function renderInversiones(){
-  var cm=getCurMonth();var mt=[];for(var i=0;i<state.transactions.length;i++)if(state.transactions[i].date.startsWith(cm))mt.push(state.transactions[i]);
-  var income=0,expense=0;for(var j=0;j<mt.length;j++){if(mt[j].type==='ingreso')income+=mt[j].amount;else expense+=mt[j].amount;}
-  var totalAh=0;for(var k=0;k<state.goals.length;k++)totalAh+=state.goals[k].saved;
-  var totalDe=0;for(var l=0;l<state.debts.length;l++)totalDe+=Math.max(0,state.debts[l].total-state.debts[l].paid);
-  var sTC=0;for(var m=0;m<state.tarjetas.length;m++)sTC+=saldoPendiente(state.tarjetas[m].id);
-  var bal=income-expense;var disp=Math.max(0,bal);
-  var alertC=bal>=0?'#0a2a0a':'#2a0a0a';var alertB=bal>=0?'#1D9E75':'#D85A30';
-  var alertM=bal>=0?('Tenes aprox. '+fmtS(disp)+' disponibles este mes.'):'Los gastos superan los ingresos este mes.';
-  var tcM=sTC>0?' Recorda cubrir '+fmtS(sTC)+' en tarjetas.':'';
-  document.getElementById('inv-resumen-financiero').innerHTML=
-    '<h3 style="margin-bottom:14px">Panorama financiero actual</h3><div class="metric-grid">'
-    +'<div class="metric"><div class="metric-label">Balance del mes</div><div class="metric-value '+(bal>=0?'income':'expense')+'">'+fmtS(bal)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Total ahorrado</div><div class="metric-value savings">'+fmtS(totalAh)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Deudas pendientes</div><div class="metric-value expense">'+fmtS(totalDe)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Venc. tarjetas</div><div class="metric-value warn">'+fmtS(sTC)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Total cartera</div><div class="metric-value savings">'+fmtS(getValorCartera())+'</div></div>'
-    +'</div><div style="background:'+alertC+';border:0.5px solid '+alertB+';border-radius:8px;padding:12px;margin-top:4px;font-size:13px"><strong style="color:'+alertB+'">'+alertM+'</strong>'+(tcM?'<br><span style="color:#EF9F27">'+tcM+'</span>':'')+'</div>';
+  renderInvResumen();
   renderListaInstrumentos();
   if(selectedInv)renderMovimientosSection();
   document.getElementById('inv-cartera-comparacion').innerHTML=renderCarteraComparacion();
