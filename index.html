@@ -395,6 +395,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
 <div class="section" id="tab-presupuesto">
   <div class="card"><h3>Presupuesto mensual por categoria</h3><div id="budget-form"></div><div class="flex-end"><button class="btn primary" id="btn-save-budget">Guardar</button></div></div>
   <div class="card"><h3>Estado del mes actual</h3><div id="budget-progress"></div></div>
+  <div class="card" id="budget-vs-income-card"><div id="budget-vs-income"></div></div>
 </div>
 
 <!-- METAS -->
@@ -1366,10 +1367,71 @@ function renderBudgetProgress(){
   for(var k in state.budget){if(!seen[k]){seen[k]=true;cats.push(k);}}
   for(var k2 in spent){if(!seen[k2]){seen[k2]=true;cats.push(k2);}}
   var el=document.getElementById('budget-progress');
-  if(!cats.length){el.innerHTML='<div class="empty">Define un presupuesto para comenzar</div>';return;}
+  if(!cats.length){el.innerHTML='<div class="empty">Define un presupuesto para comenzar</div>';document.getElementById('budget-vs-income-card').style.display='none';return;}
+  document.getElementById('budget-vs-income-card').style.display='';
+  var totalBudget=0;
   var h='';
-  for(var j=0;j<cats.length;j++){var c2=cats[j];var budget=state.budget[c2]||0;var use=spent[c2]||0;var pct=budget>0?Math.min(100,Math.round(use/budget*100)):0;var color=pct>90?'#D85A30':pct>70?'#EF9F27':'#1D9E75';h+='<div class="progress-row"><span class="progress-label">'+c2+'</span><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+color+'"></div></div><span style="font-size:12px;color:#aaa;min-width:38px;text-align:right">'+pct+'%</span><span style="font-size:12px;color:#aaa;min-width:150px;text-align:right">'+fmtS(use)+' / '+(budget>0?fmtS(budget):'sin limite')+'</span></div>';}
+  for(var j=0;j<cats.length;j++){
+    var c2=cats[j];var budget=state.budget[c2]||0;var use=spent[c2]||0;
+    totalBudget+=budget;
+    var pct=budget>0?Math.min(100,Math.round(use/budget*100)):0;
+    var color=pct>90?'#D85A30':pct>70?'#EF9F27':'#1D9E75';
+    h+='<div class="progress-row"><span class="progress-label">'+c2+'</span><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+color+'"></div></div><span style="font-size:12px;color:#aaa;min-width:38px;text-align:right">'+pct+'%</span><span style="font-size:12px;color:#aaa;min-width:150px;text-align:right">'+fmtS(use)+' / '+(budget>0?fmtS(budget):'sin limite')+'</span></div>';
+  }
   el.innerHTML=h;
+
+  // --- Comparacion vs promedio de ingresos del año ---
+  var curYear=new Date().getFullYear()+'';
+  var monthsWithIncome={};
+  for(var ti=0;ti<state.transactions.length;ti++){
+    var tx=state.transactions[ti];
+    if(tx.type==='ingreso'&&tx.date.startsWith(curYear)){
+      var mes=tx.date.slice(0,7);
+      monthsWithIncome[mes]=(monthsWithIncome[mes]||0)+tx.amount;
+    }
+  }
+  var mesesArr=Object.keys(monthsWithIncome).sort();
+  var totalIngresos=0;for(var mi=0;mi<mesesArr.length;mi++)totalIngresos+=monthsWithIncome[mesesArr[mi]];
+  var avgIngreso=mesesArr.length>0?Math.round(totalIngresos/mesesArr.length):0;
+
+  var difAbs=totalBudget-avgIngreso;
+  var difPct=avgIngreso>0?((difAbs/avgIngreso)*100):0;
+  var superavit=difAbs<0; // presupuesto < ingreso = bien
+  var pctUsed=avgIngreso>0?Math.min(100,Math.round(totalBudget/avgIngreso*100)):0;
+  var barColor=pctUsed>100?'#D85A30':pctUsed>85?'#EF9F27':'#1D9E75';
+
+  // Desglose por categoria para la barra apilada
+  var stackBars='';var usedPct=0;
+  var CAT_COLORS=['#1D9E75','#378ADD','#EF9F27','#9B6EDB','#D85A30','#30A8C8','#C87A30','#7AC830','#C830A8','#30C8A8'];
+  var budgetCats=Object.keys(state.budget).filter(function(c){return state.budget[c]>0;});
+  for(var bi=0;bi<budgetCats.length;bi++){
+    var bv=state.budget[budgetCats[bi]];
+    var bpct=avgIngreso>0?(bv/avgIngreso*100):0;
+    var bclr=CAT_COLORS[bi%CAT_COLORS.length];
+    stackBars+='<div title="'+budgetCats[bi]+': '+fmtS(bv)+' ('+bpct.toFixed(1)+'%)" style="height:100%;width:'+Math.min(bpct,100-usedPct).toFixed(2)+'%;background:'+bclr+';transition:width 0.4s"></div>';
+    usedPct+=bpct;if(usedPct>=100)break;
+  }
+
+  var bvi=document.getElementById('budget-vs-income');
+  bvi.innerHTML=
+    '<h3 style="margin-bottom:14px">Presupuesto vs Promedio de ingresos '+curYear+'</h3>'
+    +'<div class="metric-grid" style="margin-bottom:18px">'
+    +'<div class="metric"><div class="metric-label">Total presupuestado</div><div class="metric-value warn">'+fmtS(totalBudget)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Promedio ingresos ('+mesesArr.length+' meses)</div><div class="metric-value income">'+fmtS(avgIngreso)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">'+(superavit?'Margen disponible':'Deficit presupuestado')+'</div><div class="metric-value '+(superavit?'income':'expense')+'">'+(superavit?'':'- ')+fmtS(Math.abs(difAbs))+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Presupuesto sobre ingresos</div><div class="metric-value '+(pctUsed>100?'expense':pctUsed>85?'warn':'income')+'">'+pctUsed+'%</div></div>'
+    +'</div>'
+    // Barra comparativa
+    +'<div style="margin-bottom:6px;font-size:12px;color:#aaa;display:flex;justify-content:space-between"><span>Distribucion del presupuesto sobre el ingreso promedio</span><span style="color:'+(superavit?'#1D9E75':'#D85A30')+';font-weight:600">'+(superavit?'▲ Superavit '+Math.abs(difPct.toFixed(1))+'%':'▼ Deficit '+Math.abs(difPct.toFixed(1))+'%')+'</span></div>'
+    +'<div style="position:relative;height:28px;background:#1a1a1a;border-radius:8px;overflow:hidden;margin-bottom:10px;border:0.5px solid #333">'
+    +'<div style="display:flex;height:100%;width:100%">'+stackBars+'</div>'
+    +(avgIngreso>0&&totalBudget<=avgIngreso*1.5?'<div style="position:absolute;top:0;left:'+Math.min(100,pctUsed)+'%;height:100%;width:2px;background:#fff;opacity:0.7"></div>':'')
+    +'</div>'
+    // Leyenda de categorias
+    +'<div style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-bottom:4px">'
+    +budgetCats.map(function(c,bi2){return '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#aaa"><div style="width:10px;height:10px;border-radius:2px;background:'+CAT_COLORS[bi2%CAT_COLORS.length]+'"></div>'+c+': '+fmtS(state.budget[c])+'</div>';}).join('')
+    +'</div>'
+    +(mesesArr.length===0?'<div style="margin-top:10px;font-size:12px;color:#888">⚠ No hay ingresos registrados en '+curYear+' para calcular el promedio.</div>':'');
 }
 
 // METAS
