@@ -69,6 +69,36 @@ tr:last-child td{border-bottom:none}
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .progress-label{font-size:13px;min-width:130px;color:#e0e0e0}
 .goal-card,.debt-card{padding:12px 14px;background:#2a2a2a;border-radius:8px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px}
+/* ---- GOAL CELEBRATION ---- */
+@keyframes goalGlow{0%,100%{box-shadow:0 0 18px 4px #FFD70066,0 0 0 1.5px #FFD700}50%{box-shadow:0 0 38px 12px #FFD700aa,0 0 0 2px #FFD700}}
+@keyframes trophySpin{0%{transform:rotate(-12deg) scale(1)}30%{transform:rotate(14deg) scale(1.18)}60%{transform:rotate(-8deg) scale(1.1)}100%{transform:rotate(0deg) scale(1)}}
+@keyframes ribbonDrop{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes popIn{0%{transform:scale(0.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.goal-card-complete{
+  background:linear-gradient(135deg,#1a1400 0%,#2a2000 50%,#1a1a00 100%) !important;
+  animation:goalGlow 2.4s ease-in-out infinite;
+  border:1.5px solid #FFD700 !important;
+  position:relative;overflow:hidden;
+}
+.goal-card-complete::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,215,0,0.07) 50%,transparent 100%);
+  background-size:200% auto;
+  animation:shimmer 3s linear infinite;
+  pointer-events:none;
+}
+.goal-trophy{font-size:42px;animation:trophySpin 0.8s cubic-bezier(.36,.07,.19,.97) both;display:inline-block;filter:drop-shadow(0 0 10px #FFD700)}
+.goal-complete-label{
+  background:linear-gradient(90deg,#FFD700,#FFA500,#FFD700);
+  background-size:200% auto;
+  animation:shimmer 2s linear infinite;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  font-weight:700;font-size:15px;letter-spacing:1px;
+}
+.goal-ribbon{animation:ribbonDrop 0.5s ease both}
+#goal-confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+
 .goal-header,.debt-header{display:flex;justify-content:space-between;align-items:center}
 .goal-name,.debt-name{font-weight:500}
 .debt-meta{font-size:12px;color:#aaa}
@@ -1442,11 +1472,97 @@ function addGoal(){
   document.getElementById('goal-name').value='';document.getElementById('goal-target').value='';document.getElementById('goal-saved').value='';
   saveState();renderGoals();
 }
+// ---- CONFETTI ENGINE ----
+var _confettiAnim=null;
+function launchConfetti(){
+  var canvas=document.getElementById('goal-confetti-canvas');
+  if(!canvas){canvas=document.createElement('canvas');canvas.id='goal-confetti-canvas';document.body.appendChild(canvas);}
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  var ctx=canvas.getContext('2d');
+  var pieces=[];var COLORS=['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FF8C00','#00FA9A','#FF69B4'];
+  var SHAPES=['circle','rect','triangle'];
+  for(var i=0;i<220;i++){
+    var side=window.innerWidth*0.3+Math.random()*window.innerWidth*0.4;
+    pieces.push({
+      x:side,y:-10-Math.random()*200,
+      vx:(Math.random()-0.5)*9,vy:Math.random()*4+3,
+      rot:Math.random()*360,rotV:(Math.random()-0.5)*8,
+      w:6+Math.random()*10,h:4+Math.random()*6,
+      color:COLORS[Math.floor(Math.random()*COLORS.length)],
+      shape:SHAPES[Math.floor(Math.random()*SHAPES.length)],
+      alpha:1,gravity:0.12+Math.random()*0.08,wobble:Math.random()*0.3,wobbleT:Math.random()*Math.PI*2
+    });
+  }
+  if(_confettiAnim)cancelAnimationFrame(_confettiAnim);
+  var frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    var alive=false;
+    for(var j=0;j<pieces.length;j++){
+      var p=pieces[j];
+      p.vy+=p.gravity;p.vx+=Math.sin(p.wobbleT)*p.wobble;p.wobbleT+=0.05;
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.rotV;
+      if(frame>80)p.alpha=Math.max(0,p.alpha-0.018);
+      if(p.alpha<=0||p.y>canvas.height+20)continue;
+      alive=true;
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;
+      if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}
+      else if(p.shape==='rect'){ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);}
+      else{ctx.beginPath();ctx.moveTo(0,-p.h);ctx.lineTo(p.w/2,p.h/2);ctx.lineTo(-p.w/2,p.h/2);ctx.closePath();ctx.fill();}
+      ctx.restore();
+    }
+    frame++;
+    if(alive&&frame<200){_confettiAnim=requestAnimationFrame(draw);}
+    else{ctx.clearRect(0,0,canvas.width,canvas.height);}
+  }
+  draw();
+}
+
+var _celebratedGoals={};
 function renderGoals(){
-  var el=document.getElementById('goals-list');if(!state.goals.length){el.innerHTML='<div class="empty">No hay metas registradas</div>';return;}
+  var el=document.getElementById('goals-list');
+  if(!state.goals.length){el.innerHTML='<div class="empty">No hay metas registradas</div>';return;}
   var h='';
-  for(var i=0;i<state.goals.length;i++){var g=state.goals[i];var pct=Math.min(100,Math.round(g.saved/g.target*100));h+='<div class="goal-card"><div class="goal-header"><span class="goal-name">'+g.name+'</span><button class="btn btn-sm btn-danger" data-delgoal="'+g.id+'">x</button></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+(pct>=100?'#1D9E75':'#378ADD')+'"></div></div><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span style="font-size:12px;color:#aaa">'+fmtS(g.saved)+' de '+fmtS(g.target)+' ('+pct+'%)</span><div style="display:flex;gap:6px;align-items:center"><label style="font-size:12px;margin:0">Actualizar:</label><input type="number" value="'+g.saved+'" min="0" style="width:100px;padding:4px 8px;font-size:12px" data-goalid="'+g.id+'"></div></div></div>';}
+  var newlyCompleted=[];
+  for(var i=0;i<state.goals.length;i++){
+    var g=state.goals[i];
+    var pct=Math.min(100,Math.round(g.saved/g.target*100));
+    var complete=pct>=100;
+    if(complete){
+      if(!_celebratedGoals[g.id])newlyCompleted.push(g.id);
+      h+='<div class="goal-card goal-card-complete" style="padding:16px 18px">'
+        // Ribbon
+        +'<div class="goal-ribbon" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+        +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<span class="goal-trophy">🏆</span>'
+        +'<div><div class="goal-complete-label">¡META ALCANZADA!</div>'
+        +'<div style="font-size:16px;font-weight:600;color:#FFD700;margin-top:2px">'+g.name+'</div></div></div>'
+        +'<button class="btn btn-sm btn-danger" data-delgoal="'+g.id+'">x</button>'
+        +'</div>'
+        // Stars row
+        +'<div style="font-size:22px;letter-spacing:4px;margin-bottom:8px;animation:popIn 0.6s ease both">⭐⭐⭐</div>'
+        // Progress bar (full gold)
+        +'<div class="progress-bar" style="height:10px;margin-bottom:8px"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#FFD700,#FFA500,#FFD700);background-size:200% auto;animation:shimmer 2s linear infinite"></div></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+        +'<span style="font-size:13px;color:#FFD700;font-weight:500">'+fmtS(g.saved)+' / '+fmtS(g.target)+' — 100% completado 🎉</span>'
+        +'<div style="display:flex;gap:6px;align-items:center"><label style="font-size:12px;margin:0;color:#aaa">Monto:</label><input type="number" value="'+g.saved+'" min="0" style="width:110px;padding:4px 8px;font-size:12px;background:#1a1400;border:1px solid #FFD70066;color:#FFD700;border-radius:6px" data-goalid="'+g.id+'"></div>'
+        +'</div></div>';
+    } else {
+      h+='<div class="goal-card"><div class="goal-header"><span class="goal-name">'+g.name+'</span><button class="btn btn-sm btn-danger" data-delgoal="'+g.id+'">x</button></div>'
+        +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+(pct>=80?'#EF9F27':'#378ADD')+'"></div></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+        +'<span style="font-size:12px;color:#aaa">'+fmtS(g.saved)+' de '+fmtS(g.target)+' ('+pct+'%)'
+        +(pct>=80?' <span style="color:#EF9F27">— ¡Casi!</span>':'')+'</span>'
+        +'<div style="display:flex;gap:6px;align-items:center"><label style="font-size:12px;margin:0">Actualizar:</label><input type="number" value="'+g.saved+'" min="0" style="width:100px;padding:4px 8px;font-size:12px" data-goalid="'+g.id+'"></div>'
+        +'</div></div>';
+    }
+  }
   el.innerHTML=h;
+  // Disparar confetti para metas recien completadas
+  if(newlyCompleted.length>0){
+    for(var ni=0;ni<newlyCompleted.length;ni++)_celebratedGoals[newlyCompleted[ni]]=true;
+    setTimeout(launchConfetti,120);
+  }
   var bDel=el.querySelectorAll('[data-delgoal]');for(var d=0;d<bDel.length;d++){(function(b){b.addEventListener('click',function(){var n=[];for(var i=0;i<state.goals.length;i++)if(state.goals[i].id!==+b.dataset.delgoal)n.push(state.goals[i]);state.goals=n;saveState();renderGoals();});})(bDel[d]);}
   var bInp=el.querySelectorAll('[data-goalid]');for(var gi=0;gi<bInp.length;gi++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.goals.length;i++)if(state.goals[i].id===+inp.dataset.goalid){state.goals[i].saved=parseFloat(inp.value)||0;break;}saveState();renderGoals();});})(bInp[gi]);}
 }
