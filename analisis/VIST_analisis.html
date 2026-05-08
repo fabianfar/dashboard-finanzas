@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vista Energy S.A.B. de C.V. (VIST) — Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy: #0F2340;
+    --navy-mid: #1B3A5C;
+    --accent: #00B050;
+    --accent-light: #33C373;
+    --accent-dark: #008A3C;
+    --light: #F4F6F4;
+    --white: #FFFFFF;
+    --green: #27AE60;
+    --red: #E74C3C;
+    --amber: #E8A020;
+    --text: #12263A;
+    --text-secondary: #5A7080;
+    --border: #D8E4D8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ═══════════════════════════════════════
+     A) HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 48px 56px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,176,80,0.13) 0%, transparent 68%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 200px;
+    width: 250px; height: 180px;
+    background: radial-gradient(ellipse, rgba(0,176,80,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+
+  .logo-box {
+    width: 110px; height: 110px;
+    background: var(--white);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .hero-title-block { flex: 1; }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .company-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 44px;
+    font-weight: normal;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+
+  .ticker-badge {
+    border: 1.5px solid var(--accent);
+    color: var(--accent-light);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
+    color: #7A9BB5;
+    font-size: 14px;
+    margin-top: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,176,80,0.3);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .stat-label {
+    font-size: 10.5px;
+    color: #7A9BB5;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  .stat-value.green { color: var(--accent-light); }
+  .stat-value.amber { color: var(--amber); }
+  .stat-value.red-val { color: #FF6B6B; }
+
+  /* ═══════════════════════════════════════
+     GENERAL
+  ═══════════════════════════════════════ */
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  section { padding: 48px 0; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-dark);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: var(--navy);
+    margin-bottom: 28px;
+    font-weight: normal;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 32px;
+  }
+
+  /* ═══════════════════════════════════════
+     B) DESCRIPCIÓN
+  ═══════════════════════════════════════ */
+  .about-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px 40px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    line-height: 1.8;
+    font-size: 15px;
+    color: #2C3E50;
+  }
+
+  .accent-term { color: var(--accent-dark); font-weight: 600; }
+
+  .biz-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .biz-tag {
+    background: rgba(0,176,80,0.09);
+    color: var(--accent-dark);
+    border: 1px solid rgba(0,176,80,0.28);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════
+     C) POSICIÓN COMPETITIVA
+  ═══════════════════════════════════════ */
+  .competitive-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .subsector-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .subsector-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .subsector-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .subsector-name { font-weight: 700; font-size: 14px; color: var(--navy); }
+
+  .position-badge {
+    background: var(--accent);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .position-badge.p2 { background: var(--navy-mid); }
+
+  .subsector-share { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+  .subsector-note { font-size: 13px; color: #3A4A3A; }
+
+  .rival-block {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 32px 28px;
+    color: var(--white);
+  }
+
+  .rival-tag {
+    font-size: 10.5px;
+    color: #7A9BB5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .rival-name {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .rival-slogan {
+    color: var(--accent-light);
+    font-size: 13px;
+    font-style: italic;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .rival-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rival-bullets li {
+    padding-left: 18px;
+    position: relative;
+    font-size: 13.5px;
+    color: #A8C0D0;
+    line-height: 1.55;
+  }
+
+  .rival-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent-light);
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════════════════════
+     D) POTENCIAL FUTURO
+  ═══════════════════════════════════════ */
+  .catalyst-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .catalyst-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 16px 16px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .catalyst-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+  .catalyst-title { font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 10px; }
+  .catalyst-text { font-size: 13.5px; color: #3A4A3A; line-height: 1.65; }
+
+  .risk-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 18px 28px;
+    color: #7A9BB5;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .risk-keyword { color: var(--accent-light); font-weight: 600; }
+
+  /* ═══════════════════════════════════════
+     E) DATOS FUNDAMENTALES
+  ═══════════════════════════════════════ */
+  .market-cap-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .mcap-big { flex: 1; min-width: 200px; }
+  .mcap-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+  .mcap-value {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    color: var(--navy);
+    font-weight: normal;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  .mcap-metrics { display: flex; gap: 32px; flex-wrap: wrap; }
+  .metric-item { text-align: center; }
+  .metric-value { font-size: 22px; font-weight: 700; color: var(--navy); }
+  .metric-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .data-table { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+
+  .table-header { padding: 16px 22px; font-weight: 700; font-size: 13px; letter-spacing: 0.3px; }
+  .table-header.dark { background: var(--navy); color: var(--white); }
+  .table-header.accent { background: var(--accent); color: var(--white); }
+  .table-header .th-sub { font-weight: 400; font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 13px 22px; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text-secondary); }
+  td:last-child { font-weight: 600; text-align: right; }
+  .yoy-green { color: var(--green); }
+  .yoy-red { color: var(--red); }
+  .yoy-amber { color: var(--amber); }
+  tr:nth-child(even) { background: #F8FAF8; }
+
+  .miss-badge {
+    display: inline-block;
+    background: rgba(231,76,60,0.1);
+    color: var(--red);
+    border: 1px solid rgba(231,76,60,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    margin: 12px 22px;
+    line-height: 1.6;
+  }
+
+  /* ═══════════════════════════════════════
+     F) ANÁLISIS TÉCNICO
+  ═══════════════════════════════════════ */
+  .technical-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .ath-block {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ath-label { font-size: 11px; color: #7A9BB5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .ath-pct {
+    font-family: Georgia, serif;
+    font-size: 88px;
+    line-height: 0.9;
+    color: var(--amber);
+    letter-spacing: -4px;
+    margin-bottom: 24px;
+  }
+
+  .ath-details { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .ath-details li { font-size: 13px; color: #A8C0D0; display: flex; flex-direction: column; }
+  .detail-label { font-size: 10px; color: #7A9BB5; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 1px; }
+
+  .technical-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 16px 16px 0;
+    padding: 32px 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .technical-card h3 { font-family: Georgia, serif; font-size: 18px; font-weight: normal; color: var(--navy); margin-bottom: 20px; }
+
+  .tech-bullets { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .tech-bullets li {
+    padding-left: 20px;
+    position: relative;
+    font-size: 14px;
+    color: #2C3E50;
+    line-height: 1.55;
+  }
+  .tech-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--accent-dark); font-size: 12px; top: 2px; }
+
+  /* ═══════════════════════════════════════
+     G) GRÁFICO
+  ═══════════════════════════════════════ */
+  .chart-section { padding-bottom: 56px; }
+  .chart-wrapper { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+  .chart-wrapper iframe { width: 100%; height: 560px; border: none; display: block; }
+
+  /* ═══════════════════════════════════════
+     H) FOOTER
+  ═══════════════════════════════════════ */
+  footer {
+    background: var(--navy);
+    color: #7A9BB5;
+    padding: 40px 56px;
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+  footer .footer-date { color: var(--white); font-weight: 600; margin-bottom: 12px; font-size: 13px; }
+  footer a { color: var(--accent-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .sources-title { color: #A8C0D0; font-weight: 600; margin-bottom: 8px; margin-top: 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .sources-list { display: flex; flex-direction: column; gap: 4px; }
+
+  /* ═══════════════════════════════════════
+     PRODUCTION BAR (unique element)
+  ═══════════════════════════════════════ */
+  .production-bar-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+  }
+  .prod-title { font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 20px; }
+  .prod-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .prod-label { font-size: 12px; color: var(--text-secondary); width: 90px; flex-shrink: 0; text-align: right; }
+  .prod-bar-bg { flex: 1; background: #EAF2EA; border-radius: 6px; height: 22px; overflow: hidden; }
+  .prod-bar { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: white; }
+  .prod-value { font-size: 13px; font-weight: 700; color: var(--navy); width: 100px; flex-shrink: 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .hero { padding: 32px 24px; border-left-width: 8px; }
+    .hero-top { flex-wrap: wrap; }
+    .company-name { font-size: 28px; }
+    .competitive-grid, .tables-grid, .technical-grid { grid-template-columns: 1fr; }
+    .catalyst-grid { grid-template-columns: 1fr; }
+    .ath-pct { font-size: 64px; }
+    .mcap-value { font-size: 32px; }
+    footer { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     A) HERO
+═══════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-top">
+
+    <!-- Vista Energy Logo SVG inline -->
+    <div class="logo-box">
+      <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Vista Energy: "V" shape as oil derrick / chevron + text -->
+        <!-- Green chevron V shape -->
+        <polygon points="10,22 45,62 80,22 70,22 45,50 20,22" fill="#00B050"/>
+        <!-- Secondary smaller V -->
+        <polygon points="22,22 45,46 68,22 60,22 45,38 30,22" fill="#0F2340"/>
+        <!-- VISTA text below -->
+        <text x="45" y="80" font-family="Arial,sans-serif" font-weight="900" font-size="13.5" fill="#0F2340" text-anchor="middle" letter-spacing="2">VISTA</text>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="title-row">
+        <h1 class="company-name">Vista Energy</h1>
+        <span class="ticker-badge">NYSE: VIST</span>
+      </div>
+      <p class="hero-subtitle">Vista Energy S.A.B. de C.V. &nbsp;·&nbsp; Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+
+  <!-- Stat Strip -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">~$72.50</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">~$7.2B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ingresos Q1'26 YoY</div>
+      <div class="stat-value green">+58%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">EPS Q1'26 YoY</div>
+      <div class="stat-value green">+19%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a Máx. Histórico</div>
+      <div class="stat-value amber">−5.3%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     B) ¿A QUÉ SE DEDICA?
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Descripción</div>
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="about-card">
+      <p>
+        Vista Energy es la principal empresa independiente de exploración y producción de petróleo y gas
+        de América Latina con cotización internacional. Su activo central es la
+        <span class="accent-term">Formación Vaca Muerta</span>, en la cuenca Neuquina de Argentina —
+        la mayor reserva de shale oil y gas fuera de Norteamérica, comparable en escala al
+        <span class="accent-term">Permian Basin</span> de EE.UU. Fue fundada en 2017 por
+        <span class="accent-term">Miguel Galuccio</span>, ex-CEO de YPF, y es la primera empresa
+        latinoamericana de E&amp;P en cotizar en Nueva York.
+      </p>
+      <br>
+      <p>
+        Opera a través de sus segmentos <span class="accent-term">Argentina</span> (activo dominante,
+        Vaca Muerta: bloques Bajada del Palo Oeste, Sur Río Neuquén, y La Amarga Chica adquirida en 2025)
+        y <span class="accent-term">México</span> (menor participación). La compañía tiene un historial
+        de cumplimiento de guidance y crecimiento orgánico extraordinario: pasó de ~20.000 BOE/día en 2020
+        a 135.000 BOE/día en Q1 2026 (+67% YoY), con un plan para alcanzar
+        <span class="accent-term">200.000+ BOE/día hacia 2030</span>.
+        Su <span class="accent-term">lifting cost de $4.3/BOE</span> es uno de los más competitivos del mundo.
+      </p>
+      <div class="biz-tags">
+        <span class="biz-tag">Shale Oil — Vaca Muerta</span>
+        <span class="biz-tag">Exploración &amp; Producción (E&amp;P)</span>
+        <span class="biz-tag">Exportación de crudo (Medanito)</span>
+        <span class="biz-tag">Gas Natural</span>
+        <span class="biz-tag">La Amarga Chica (adq. 2025)</span>
+        <span class="biz-tag">Equinor Assets (adq. en curso)</span>
+        <span class="biz-tag">Petronas E&amp;P Argentina (anunciado)</span>
+        <span class="biz-tag">ADR NYSE · Clase A BMV</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     C) POSICIÓN COMPETITIVA
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Mercado</div>
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="competitive-grid">
+
+      <div class="subsector-cards">
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Shale Oil privado en Vaca Muerta</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">117.000 bbl/día en Q1'26 · mayor productor privado del play</div>
+          <div class="subsector-note">YPF (empresa estatal) es el mayor operador total del play, pero Vista es la empresa privada cotizada con mayor producción y crecimiento. TotalEnergies y Shell también operan en Vaca Muerta pero con menor exposición pura al shale.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Productor E&amp;P independiente LatAm (NYSE)</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Única E&amp;P argentina pura con liquidez relevante en NYSE</div>
+          <div class="subsector-note">Competitors como Pampa Energía (PAM) o Tecpetrol tienen E&amp;P pero son conglomerados diversificados. Vista es la "pure play" de Vaca Muerta para el inversor internacional.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Eficiencia operativa — Lifting Cost</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">$4.3/BOE — 8% mejor YoY · benchmark global de bajo costo</div>
+          <div class="subsector-note">Para contexto: el lifting cost promedio de empresas de shale en EE.UU. es $8–$14/BOE. Vista opera a menos de la mitad del costo, maximizando el margen libre con petróleo a $65+ Brent.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Crecimiento de reservas probadas</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Reservas probadas +57% YoY en 2025 · runway de décadas en Vaca Muerta</div>
+          <div class="subsector-note">La adquisición de La Amarga Chica y los activos de Equinor añaden >27.000 acres netos y 244 pozos adicionales al inventario de perforación.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <div class="rival-tag">Rival Principal</div>
+        <div class="rival-name">YPF S.A.</div>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul class="rival-bullets">
+          <li>YPF es el mayor operador de Vaca Muerta, con producción de 200.000+ BOE/día y ventaja en escala, infraestructura y acceso preferencial a bloques clave del gobierno argentino.</li>
+          <li>Al ser empresa estatal, YPF tiene garantías implícitas del gobierno y acceso a subsidios, contratos preferenciales y permisos de exportación que Vista debe negociar en condiciones de mercado.</li>
+          <li>YPF también cotiza en NYSE (YPF) y compite por el mismo capital inversor que busca exposición a Vaca Muerta y a la tesis Argentina bajo el gobierno de Milei.</li>
+          <li>Riesgo político: un cambio de gobierno en Argentina podría alterar las condiciones de exportación, precios domésticos y permisos de bloques, afectando más a Vista (empresa privada) que a la empresa estatal.</li>
+          <li>La construcción del oleoducto Vaca Muerta Sur (liderado por YPF) podría favorecer más a YPF en términos de capacidad de evacuación, aunque Vista tiene contratos de transporte asegurados.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     D) POTENCIAL FUTURO
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Perspectivas</div>
+    <h2 class="section-title">Potencial futuro del sector</h2>
+
+    <div class="catalyst-grid">
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">▲</span>
+        <div class="catalyst-title">Vaca Muerta: el Permian Basin de LatAm</div>
+        <div class="catalyst-text">
+          Vaca Muerta es la segunda mayor reserva de shale gas y cuarta de shale oil del mundo.
+          Argentina exporta crecientes volúmenes de crudo Medanito y avanza en GNL (gas natural licuado)
+          para Europa. Vista se posiciona como el vehículo de inversión puro para capitalizar esta
+          tendencia, con producción que crece +67% YoY y un plan para 200.000 BOE/d en 2030.
+          El gobierno Milei facilita el marco regulatorio y la libre exportación de divisas.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">●</span>
+        <div class="catalyst-title">M&amp;A acumulativo: creación de valor vía adquisiciones</div>
+        <div class="catalyst-text">
+          Vista tiene un historial de adquisiciones altamente acretivas: La Amarga Chica (2025)
+          añadió 68% de producción YoY. La adquisición de los activos de Equinor (+27.000 acres,
+          +22.000 bbl/día) y la anunciada compra de Petronas E&amp;P Argentina son el siguiente
+          escalón. El management ha demostrado disciplina de capital y ejecución impecable.
+          FCF positivo de $150–$200M proyectado para 2026.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">■</span>
+        <div class="catalyst-title">Eficiencia de costos + macro Argentina favorable</div>
+        <div class="catalyst-text">
+          Lifting cost de $4.3/BOE es un diferencial estructural: con Brent a $65, Vista opera
+          con márgenes de ~$60/bbl, imposibles de replicar en el Permian Basin o el Mar del Norte.
+          La normalización macro argentina (desregulación Milei, libre acceso al MULC, estabilización
+          del tipo de cambio) reduce el riesgo país y mejora la valuación relativa frente a pares globales.
+          EBITDA proyectado 2028: $2.8B.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="risk-block">
+      <strong style="color:#A8C0D0;">Riesgos a vigilar:</strong>
+      &nbsp;<span class="risk-keyword">Precio del Brent</span> (guidance asume $65; a $55 el FCF se comprime)
+      · <span class="risk-keyword">Riesgo político Argentina</span> (cambio de gobierno en 2027)
+      · <span class="risk-keyword">Capacidad de evacuación</span> (oleoductos al Atlántico; cuello de botella transitorio)
+      · <span class="risk-keyword">EPS miss en Q1'26</span> (impuesto a las ganancias diferido, no operativo, pero afectó sentimiento)
+      · <span class="risk-keyword">Tipo de cambio ARS/USD</span> (costos laborales en pesos, ingresos en dólares)
+      · <span class="risk-keyword">FCF negativo en 2025</span> (por capex agresivo; FCF positivo previsto desde 2026)
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     E) DATOS FUNDAMENTALES
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Financials</div>
+    <h2 class="section-title">Datos fundamentales</h2>
+
+    <!-- Market Cap + Production bars -->
+    <div class="market-cap-card">
+      <div class="mcap-big">
+        <div class="mcap-label">Market Capitalization</div>
+        <div class="mcap-value">$7.2B</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">E&amp;P pura Vaca Muerta · market cap +65.9% YoY · P/E ~17×</div>
+      </div>
+      <div class="mcap-metrics">
+        <div class="metric-item">
+          <div class="metric-value">~17×</div>
+          <div class="metric-label">P/E ratio</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">$451M</div>
+          <div class="metric-label">Adj. EBITDA Q1</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">$4.3</div>
+          <div class="metric-label">Lifting cost/BOE</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">135k</div>
+          <div class="metric-label">BOE/día Q1'26</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">$87–$89</div>
+          <div class="metric-label">PT JPM / UBS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production bar visual -->
+    <div class="production-bar-card">
+      <div class="prod-title">📊 Evolución de producción total (BOE/día) — Crecimiento histórico</div>
+      <div class="prod-row">
+        <div class="prod-label">2020</div>
+        <div class="prod-bar-bg">
+          <div class="prod-bar" style="width:10%; background:#0F2340;">20k</div>
+        </div>
+        <div class="prod-value">~20.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">2022</div>
+        <div class="prod-bar-bg">
+          <div class="prod-bar" style="width:22%; background:#1B3A5C;">45k</div>
+        </div>
+        <div class="prod-value">~45.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">2024</div>
+        <div class="prod-bar-bg">
+          <div class="prod-bar" style="width:43%; background:#008A3C;">80k</div>
+        </div>
+        <div class="prod-value">~80.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">Q1 2026</div>
+        <div class="prod-bar-bg">
+          <div class="prod-bar" style="width:72%; background:#00B050;">135k (+67%)</div>
+        </div>
+        <div class="prod-value" style="color:var(--accent-dark);font-weight:800;">135.000 ★</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">Guía 2026</div>
+        <div class="prod-bar-bg">
+          <div class="prod-bar" style="width:75%; background:#33C373; opacity:0.7;">140k (est.)</div>
+        </div>
+        <div class="prod-value" style="color:#999;">140.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">Target 2030</div>
+        <div class="prod-bar-bg">
+          <div class="prod-bar" style="width:100%; background:#E8A020; opacity:0.6;">200k+</div>
+        </div>
+        <div class="prod-value" style="color:#999;">200.000+</div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+
+      <!-- Last quarter -->
+      <div class="data-table">
+        <div class="table-header dark">
+          Q1 2026 · Último trimestre reportado
+          <div class="th-sub">Trimestre finalizado 31 marzo 2026 · Publicado 29-30 abril 2026</div>
+        </div>
+        <table>
+          <tr>
+            <td>Ingresos netos (mgmt.)</td>
+            <td class="yoy-green">$694.3M &nbsp;(+58% YoY)</td>
+          </tr>
+          <tr>
+            <td>EPS diluido</td>
+            <td class="yoy-green">$0.98 &nbsp;(+19% YoY)</td>
+          </tr>
+          <tr>
+            <td>Adj. EBITDA</td>
+            <td class="yoy-green">$451M &nbsp;(+64% YoY)</td>
+          </tr>
+          <tr>
+            <td>Producción total</td>
+            <td class="yoy-green">135.000 BOE/d &nbsp;(+67% YoY)</td>
+          </tr>
+          <tr>
+            <td>Producción oil</td>
+            <td class="yoy-green">117.000 bbl/d &nbsp;(+68% YoY)</td>
+          </tr>
+          <tr>
+            <td>Ingreso exportaciones</td>
+            <td class="yoy-green">$428.5M &nbsp;(+96% YoY)</td>
+          </tr>
+          <tr>
+            <td>Lifting Cost</td>
+            <td class="yoy-green">$4.3/BOE &nbsp;(−8% YoY)</td>
+          </tr>
+          <tr>
+            <td>Net Income</td>
+            <td class="yoy-green">$107.7M &nbsp;(+30% YoY)</td>
+          </tr>
+          <tr>
+            <td>CapEx</td>
+            <td class="yoy-amber">$391M (vs $1.5B plan anual)</td>
+          </tr>
+        </table>
+        <div class="miss-badge">
+          ⚠ EPS $0.98 vs consenso $1.56 → Miss −37%. Causa: mayor impuesto a las ganancias diferido (no operativo). EBITDA y producción superaron expectativas.
+        </div>
+      </div>
+
+      <!-- Next quarter -->
+      <div class="data-table">
+        <div class="table-header accent">
+          Q2 2026 · Previsión próximo trimestre
+          <div class="th-sub">Reporta ~agosto 2026 · Trim. finaliza junio 2026</div>
+        </div>
+        <table>
+          <tr>
+            <td>EPS consensus</td>
+            <td class="yoy-green">~$1.65–$1.81</td>
+          </tr>
+          <tr>
+            <td>Producción guidance</td>
+            <td class="yoy-green">"Sustancial crecimiento secuencial"</td>
+          </tr>
+          <tr>
+            <td>Objetivo produc. 2026</td>
+            <td class="yoy-green">140.000 BOE/día anual</td>
+          </tr>
+          <tr>
+            <td>Adj. EBITDA FY 2026</td>
+            <td class="yoy-green">$1.9B (a Brent $65)</td>
+          </tr>
+          <tr>
+            <td>FCF FY 2026</td>
+            <td class="yoy-green">$150–$200M (positivo)</td>
+          </tr>
+          <tr>
+            <td>CapEx FY 2026</td>
+            <td>$1.5B–$1.6B (80-90 pozos)</td>
+          </tr>
+          <tr>
+            <td>EBITDA run rate Q4'26</td>
+            <td class="yoy-green">~$2.0B anualizado</td>
+          </tr>
+          <tr>
+            <td>Target 2028</td>
+            <td class="yoy-green">180k BOE/d · EBITDA $2.8B</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     F) ANÁLISIS TÉCNICO
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Técnico</div>
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+
+    <div class="technical-grid">
+
+      <div class="ath-block">
+        <div class="ath-label">Dist. al ATH de cierre</div>
+        <div class="ath-pct">−5.3%</div>
+        <ul class="ath-details">
+          <li>
+            <span class="detail-label">Precio actual (aprox.)</span>
+            ~$72.50 (6 mayo 2026)
+          </li>
+          <li>
+            <span class="detail-label">ATH de cierre</span>
+            $76.55 — 30 marzo 2026
+          </li>
+          <li>
+            <span class="detail-label">Máx. intradía 52 sem.</span>
+            $79.20
+          </li>
+          <li>
+            <span class="detail-label">Mín. 52 semanas</span>
+            $31.63 (recuperó +129%)
+          </li>
+          <li>
+            <span class="detail-label">PT promedio analistas</span>
+            $87–$89 (UBS / JPMorgan)
+          </li>
+          <li>
+            <span class="detail-label">Upside vs PT JPMorgan</span>
+            +22.8% vs precio actual
+          </li>
+        </ul>
+      </div>
+
+      <div class="technical-card">
+        <h3>Lectura técnica · Mayo 2026</h3>
+        <ul class="tech-bullets">
+          <li>
+            <strong>Corrección post-ATH justificada:</strong> VIST alcanzó $76.55 el 30 de marzo de 2026 y retrocedió ~5.3% tras el EPS miss en Q1 (por tax diferido). La corrección es moderada dado que el miss fue contable, no operativo — EBITDA y producción fueron récord.
+          </li>
+          <li>
+            <strong>Rango de soporte:</strong> $70–$72 es la zona de soporte más relevante, donde confluyen la media de 50 días (estimada) y la base del rally post-adquisición de La Amarga Chica. Perder $68–$69 abriría camino a $62–$64.
+          </li>
+          <li>
+            <strong>Resistencias clave:</strong> $76–$77 (ATH de cierre) y $79–$80 (ATH intradía 52 sem). Una ruptura por encima de $80 en volumen significativo activaría territorio de precio descubierto hacia $87–$89 (target UBS/JPM).
+          </li>
+          <li>
+            <strong>Desde el mínimo a 52 sem.:</strong> VIST recuperó +129% desde $31.63. El rally refleja la consolidación de La Amarga Chica, la aceleración de producción y el re-rating del riesgo argentino bajo Milei. Poca de esta tesis está descontada aún a múltiplos comprimidos (~17× P/E).
+          </li>
+          <li>
+            <strong>Valoración relativa:</strong> VIST cotiza con descuento vs pares de shale EE.UU. (Permian producers a 25–30× P/E) pese a tener lifting cost un 50-70% más bajo. El re-rating al alza es el escenario base si Argentina mantiene estabilidad macro.
+          </li>
+          <li>
+            <strong>Catalizador técnico próximo:</strong> Confirmación de la adquisición de Petronas E&amp;P Argentina y aceleración de producción en Q2 → "sustancial crecimiento secuencial" según management. Un Q2 fuerte podría ser el detonante para superar el ATH en $77–$80.
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     G) GRÁFICO TRADINGVIEW
+═══════════════════════════════════════ -->
+<section class="chart-section">
+  <div class="container">
+    <div class="section-label">Precio</div>
+    <h2 class="section-title">Gráfico de cotización · Últimos 24 meses (semanal)</h2>
+    <div class="chart-wrapper">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3AVIST&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        scrolling="no"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     H) FOOTER
+═══════════════════════════════════════ -->
+<footer>
+  <div class="footer-date">📊 Análisis generado el 7 de mayo de 2026</div>
+  <div>Datos de mercado al cierre de la semana del 5 de mayo de 2026. Precio indicativo aproximado de $72.50. Tipo de cambio: operaciones en USD. Este análisis es de carácter informativo y no constituye asesoramiento de inversión. Riesgo país Argentina debe ser considerado por el inversor.</div>
+
+  <div class="sources-title">Fuentes consultadas</div>
+  <div class="sources-list">
+    <div>· <a href="https://www.sec.gov/Archives/edgar/data/0001762506/000119312526191692/d93526dex1.htm" target="_blank">SEC EDGAR — Vista Energy Form 6-K Q1 2026 (Management Report)</a></div>
+    <div>· <a href="https://www.sec.gov/Archives/edgar/data/0001762506/000119312526191639/d109013dex1.htm" target="_blank">SEC EDGAR — Vista Energy Form 6-K Q1 2026 (Financial Statements)</a></div>
+    <div>· <a href="https://ca.investing.com/news/company-news/vista-energy-sab-de-cv-vist-q1-2026-earnings-call-highlights-record-production-and-revenue--4602204" target="_blank">Investing.com — Vista Energy Q1 2026 Earnings Call Highlights</a></div>
+    <div>· <a href="https://www.macrotrends.net/stocks/charts/VIST/vista-energy,-sab-de-cv--/stock-price-history" target="_blank">MacroTrends — VIST Price History &amp; ATH $76.55</a></div>
+    <div>· <a href="https://www.cnn.com/markets/stocks/VIST" target="_blank">CNN Markets — VIST Quote &amp; Analyst Coverage (UBS $87, JPM $89)</a></div>
+    <div>· <a href="https://www.gurufocus.com/news/8823773/vista-energy-vist-set-to-report-q1-earnings-with-strong-expectations" target="_blank">GuruFocus — Vista Energy Q1 2026 Preview &amp; Expectations</a></div>
+    <div>· <a href="https://www.tickerreport.com/banking-finance/13366170/vista-energy-q4-earnings-call-highlights.html" target="_blank">TickerReport — Vista Energy Q4 2025 Earnings Call (FY 2026 Guidance)</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

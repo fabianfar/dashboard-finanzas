@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invesco QQQ Trust (QQQ) — Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy: #002B5C;
+    --navy-mid: #003F80;
+    --accent: #0075BE;
+    --accent-light: #4FA8E0;
+    --accent-dark: #005A94;
+    --light: #F4F7FB;
+    --white: #FFFFFF;
+    --green: #27AE60;
+    --red: #E74C3C;
+    --amber: #F39C12;
+    --text: #0A1F3D;
+    --text-secondary: #5A6E85;
+    --border: #D4E0EE;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Calibri,Arial,sans-serif; background:var(--light); color:var(--text); font-size:15px; line-height:1.65; }
+
+  /* HERO */
+  .hero { background:var(--navy); border-left:14px solid var(--accent); padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-70px; right:-70px; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle,rgba(0,117,190,0.18) 0%,transparent 65%); pointer-events:none; }
+  .hero-top { display:flex; align-items:center; gap:32px; flex-wrap:nowrap; }
+  .logo-box { width:110px; height:110px; background:var(--white); border-radius:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 8px 32px rgba(0,0,0,0.35); }
+  .hero-title-block { flex:1; }
+  .title-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .company-name { font-family:Georgia,serif; font-size:44px; font-weight:normal; color:var(--white); letter-spacing:-0.5px; }
+  .ticker-badge { border:1.5px solid var(--accent-light); color:var(--accent-light); padding:4px 14px; border-radius:20px; font-size:15px; font-weight:700; letter-spacing:1px; }
+  .etf-badge { background:rgba(0,117,190,0.25); color:#A8D4F0; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:700; letter-spacing:1.5px; border:1px solid rgba(0,117,190,0.4); }
+  .hero-subtitle { color:#7A9BB5; font-size:14px; margin-top:8px; }
+  .stat-strip { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .stat-card { background:rgba(255,255,255,0.06); border:1px solid rgba(0,117,190,0.35); border-top:3px solid var(--accent); border-radius:10px; padding:16px 20px; flex:1; min-width:130px; }
+  .stat-label { font-size:10.5px; color:#7A9BB5; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+  .stat-value { font-size:22px; font-weight:700; color:var(--white); letter-spacing:-0.5px; }
+  .stat-value.green { color:#5DD891; }
+  .stat-value.athatm { color:var(--accent-light); }
+
+  /* GENERAL */
+  .container { max-width:1140px; margin:0 auto; padding:0 32px; }
+  section { padding:48px 0; }
+  .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent-dark); margin-bottom:8px; }
+  .section-title { font-family:Georgia,serif; font-size:28px; color:var(--navy); margin-bottom:28px; font-weight:normal; }
+  .section-divider { height:1px; background:var(--border); margin:0 32px; }
+
+  /* B - ABOUT */
+  .about-card { background:var(--white); border-radius:16px; padding:36px 40px; box-shadow:0 2px 20px rgba(0,0,0,0.06); line-height:1.8; font-size:15px; color:#2C3E50; }
+  .accent-term { color:var(--accent-dark); font-weight:600; }
+  .biz-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+  .biz-tag { background:rgba(0,117,190,0.08); color:var(--accent-dark); border:1px solid rgba(0,117,190,0.25); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+
+  /* C - COMPETITIVE */
+  .competitive-grid { display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start; }
+  .subsector-cards { display:flex; flex-direction:column; gap:14px; }
+  .subsector-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 12px 12px 0; padding:18px 22px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .subsector-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .subsector-name { font-weight:700; font-size:14px; color:var(--navy); }
+  .position-badge { background:var(--accent); color:white; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:800; }
+  .position-badge.p2 { background:var(--navy-mid); }
+  .subsector-share { font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .subsector-note { font-size:13px; color:#2C3E50; }
+  .rival-block { background:var(--navy); border-radius:16px; padding:32px 28px; color:var(--white); }
+  .rival-tag { font-size:10.5px; color:#7A9BB5; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+  .rival-name { font-family:Georgia,serif; font-size:26px; color:var(--white); margin-bottom:4px; }
+  .rival-slogan { color:var(--accent-light); font-size:13px; font-style:italic; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .rival-bullets { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .rival-bullets li { padding-left:18px; position:relative; font-size:13.5px; color:#A8C0D8; line-height:1.55; }
+  .rival-bullets li::before { content:'›'; position:absolute; left:0; color:var(--accent-light); font-weight:700; }
+
+  /* D - CATALYSTS */
+  .catalyst-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px; }
+  .catalyst-card { background:var(--white); border-top:4px solid var(--accent); border-radius:0 0 16px 16px; padding:28px 24px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .catalyst-icon { font-size:28px; margin-bottom:12px; display:block; }
+  .catalyst-title { font-weight:700; font-size:15px; color:var(--navy); margin-bottom:10px; }
+  .catalyst-text { font-size:13.5px; color:#2C3A4A; line-height:1.65; }
+  .risk-block { background:var(--navy); border-radius:12px; padding:18px 28px; color:#7A9BB5; font-size:13.5px; line-height:1.7; }
+  .risk-keyword { color:var(--accent-light); font-weight:600; }
+
+  /* E - FUNDAMENTALS */
+  .market-cap-card { background:var(--white); border-radius:16px; padding:28px 36px; display:flex; align-items:center; gap:48px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; flex-wrap:wrap; }
+  .mcap-big { flex:1; min-width:200px; }
+  .mcap-label { font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; }
+  .mcap-value { font-family:Georgia,serif; font-size:46px; color:var(--navy); font-weight:normal; letter-spacing:-1px; line-height:1.1; }
+  .mcap-metrics { display:flex; gap:32px; flex-wrap:wrap; }
+  .metric-item { text-align:center; }
+  .metric-value { font-size:22px; font-weight:700; color:var(--navy); }
+  .metric-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+  .tables-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .data-table { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .table-header { padding:16px 22px; font-weight:700; font-size:13px; letter-spacing:0.3px; }
+  .table-header.dark { background:var(--navy); color:var(--white); }
+  .table-header.accent { background:var(--accent); color:var(--white); }
+  .table-header .th-sub { font-weight:400; font-size:11px; opacity:0.75; margin-top:2px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:13px 22px; font-size:13.5px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  td:first-child { color:var(--text-secondary); }
+  td:last-child { font-weight:600; text-align:right; }
+  .yoy-green { color:var(--green); }
+  .yoy-red { color:var(--red); }
+  .yoy-amber { color:var(--amber); }
+  tr:nth-child(even) { background:#F7FAFD; }
+
+  /* HOLDINGS */
+  .holdings-card { background:var(--white); border-radius:16px; padding:28px 36px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; }
+  .holdings-title { font-weight:700; font-size:14px; color:var(--navy); margin-bottom:20px; }
+  .holdings-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+  .holding-item { background:#F0F6FB; border:1px solid var(--border); border-radius:10px; padding:12px 14px; text-align:center; }
+  .holding-ticker { font-size:13px; font-weight:800; color:var(--navy); margin-bottom:4px; }
+  .holding-pct { font-size:18px; font-weight:700; color:var(--accent); line-height:1; }
+  .holding-name { font-size:10px; color:var(--text-secondary); margin-top:4px; line-height:1.2; }
+  .sector-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .sector-label { font-size:12px; color:var(--text-secondary); width:160px; flex-shrink:0; }
+  .sector-bar-bg { flex:1; background:#EAF2FB; border-radius:6px; height:18px; overflow:hidden; }
+  .sector-bar { height:100%; border-radius:6px; display:flex; align-items:center; padding-left:8px; font-size:11px; font-weight:700; color:white; }
+  .sector-pct { font-size:12px; font-weight:700; color:var(--navy); width:40px; text-align:right; }
+
+  /* F - TECHNICAL */
+  .technical-grid { display:grid; grid-template-columns:320px 1fr; gap:20px; align-items:stretch; }
+  .ath-block { background:var(--navy); border-radius:16px; padding:40px 32px; display:flex; flex-direction:column; justify-content:center; }
+  .ath-label { font-size:11px; color:#7A9BB5; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .ath-pct { font-family:Georgia,serif; font-size:80px; line-height:0.9; color:var(--accent-light); letter-spacing:-3px; margin-bottom:16px; }
+  .ath-pill { display:inline-block; background:rgba(0,117,190,0.25); color:var(--accent-light); border:1px solid rgba(0,117,190,0.5); border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:0.5px; margin-bottom:20px; }
+  .ath-details { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .ath-details li { font-size:13px; color:#A8C0D8; display:flex; flex-direction:column; }
+  .detail-label { font-size:10px; color:#7A9BB5; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:1px; }
+  .technical-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 16px 16px 0; padding:32px; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .technical-card h3 { font-family:Georgia,serif; font-size:18px; font-weight:normal; color:var(--navy); margin-bottom:20px; }
+  .tech-bullets { list-style:none; display:flex; flex-direction:column; gap:14px; }
+  .tech-bullets li { padding-left:20px; position:relative; font-size:14px; color:#2C3E50; line-height:1.55; }
+  .tech-bullets li::before { content:'▸'; position:absolute; left:0; color:var(--accent-dark); font-size:12px; top:2px; }
+
+  /* G - CHART */
+  .chart-section { padding-bottom:56px; }
+  .chart-wrapper { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,0.08); }
+  .chart-wrapper iframe { width:100%; height:560px; border:none; display:block; }
+
+  /* H - FOOTER */
+  footer { background:var(--navy); color:#7A9BB5; padding:40px 56px; font-size:12.5px; line-height:1.8; }
+  footer .footer-date { color:var(--white); font-weight:600; margin-bottom:12px; font-size:13px; }
+  footer a { color:var(--accent-light); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+  .sources-title { color:#A8C0D8; font-weight:600; margin-bottom:8px; margin-top:16px; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+  .sources-list { display:flex; flex-direction:column; gap:4px; }
+
+  @media(max-width:640px){
+    .hero{padding:32px 24px;border-left-width:8px;}
+    .hero-top{flex-wrap:wrap;}
+    .company-name{font-size:28px;}
+    .competitive-grid,.tables-grid,.technical-grid{grid-template-columns:1fr;}
+    .catalyst-grid{grid-template-columns:1fr;}
+    .holdings-grid{grid-template-columns:repeat(2,1fr);}
+    .ath-pct{font-size:60px;}
+    .mcap-value{font-size:32px;}
+    footer{padding:32px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- A) HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="logo-box">
+      <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="74" height="74" rx="14" fill="#002B5C"/>
+        <text x="45" y="44" font-family="Georgia,serif" font-weight="700" font-size="30" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">QQQ</text>
+        <rect x="16" y="54" width="58" height="4" rx="2" fill="#0075BE"/>
+        <text x="45" y="68" font-family="Arial,sans-serif" font-weight="600" font-size="8.5" fill="#4FA8E0" text-anchor="middle" letter-spacing="1.5">INVESCO</text>
+      </svg>
+    </div>
+    <div class="hero-title-block">
+      <div class="title-row">
+        <h1 class="company-name">Invesco QQQ Trust</h1>
+        <span class="ticker-badge">NASDAQ: QQQ</span>
+        <span class="etf-badge">ETF</span>
+      </div>
+      <p class="hero-subtitle">NASDAQ-100 Index · ETF Large-Cap Growth &nbsp;·&nbsp; Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-card"><div class="stat-label">Precio NAV</div><div class="stat-value">$695.77</div></div>
+    <div class="stat-card"><div class="stat-label">AUM Total</div><div class="stat-value">$444B</div></div>
+    <div class="stat-card"><div class="stat-label">Retorno 1 Año</div><div class="stat-value green">+45.2%</div></div>
+    <div class="stat-card"><div class="stat-label">Retorno 1 Mes</div><div class="stat-value green">+18.2%</div></div>
+    <div class="stat-card"><div class="stat-label">Dist. Máx. Histórico</div><div class="stat-value athatm">ATH ✦</div></div>
+  </div>
+</div>
+
+<!-- B) DESCRIPCIÓN -->
+<section>
+  <div class="container">
+    <div class="section-label">Descripción</div>
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="about-card">
+      <p>El <span class="accent-term">Invesco QQQ Trust (Series 1)</span> es un ETF de gestión pasiva que replica el rendimiento del <span class="accent-term">NASDAQ-100 Index</span> — las 100 mayores empresas no financieras del NASDAQ, ponderadas por market cap. Lanzado el <span class="accent-term">10 de marzo de 1999</span>, es el segundo ETF más negociado de EE.UU. por volumen diario y uno de los productos de inversión más reconocidos del mundo.</p>
+      <br>
+      <p>QQQ ofrece exposición concentrada a líderes en <span class="accent-term">tecnología</span> (~62%), <span class="accent-term">comunicaciones</span> (~15%) y <span class="accent-term">consumo discrecional</span> (~10%), excluyendo financieras. Con expense ratio de <span class="accent-term">0.18% anual</span> y AUM de $444B, es el vehículo de referencia para capturar el crecimiento de las mega-caps tecnológicas. En abril de 2026, el NASDAQ-100 vivió su <span class="accent-term">mejor mes desde los inicios del COVID-19</span>, cerrando en máximos históricos absolutos.</p>
+      <div class="biz-tags">
+        <span class="biz-tag">NASDAQ-100 Index</span>
+        <span class="biz-tag">Large-Cap Growth</span>
+        <span class="biz-tag">Tecnología ~62%</span>
+        <span class="biz-tag">Comunicaciones ~15%</span>
+        <span class="biz-tag">Expense Ratio 0.18%</span>
+        <span class="biz-tag">AUM $444B</span>
+        <span class="biz-tag">CAGR 10.6% desde 1999</span>
+        <span class="biz-tag">Nasdaq-100 +540% a 10 años</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- C) COMPETENCIA -->
+<section>
+  <div class="container">
+    <div class="section-label">Mercado ETF</div>
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="competitive-grid">
+      <div class="subsector-cards">
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">ETFs NASDAQ-100 puros</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">AUM $444B · 2° más negociado EE.UU. por volumen diario</div>
+          <div class="subsector-note">QQQM (Invesco, mismo índice, expense ratio 0.15%) compite solo en segmento retail. QQQ domina el trading institucional y el mercado de opciones gracias a su liquidez imbatible y décadas de historial.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">ETFs Large-Cap Growth EE.UU.</span>
+            <span class="position-badge p2">#2</span>
+          </div>
+          <div class="subsector-share">SPY/VOO lideran en AUM; QQQ lidera en retorno 10 años (+540% vs +270%)</div>
+          <div class="subsector-note">IVV (iShares S&P 500) y VOO (Vanguard, 0.03% TER) tienen mayor diversificación y menor volatilidad. QQQ paga con mayor concentración la prima de rendimiento que ofrece sobre el S&P 500.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">ETFs de IA / Tecnología temáticos</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">NVIDIA al 8.4% · 64/100 empresas patentan en IA disruptiva</div>
+          <div class="subsector-note">ETFs de IA puros (BOTZ, AIQ, CHAT, FTEC) tienen menor liquidez y mayor riesgo idiosincrático. QQQ captura el boom de IA con la diversificación buffer de 100 mega-caps de calidad comprobada.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Ecosistema de derivados (opciones)</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Mayor volumen de opciones de cualquier ETF en EE.UU.</div>
+          <div class="subsector-note">QQQ es el subyacente de opciones más líquido del mercado: estrategias covered calls, collars, spreads y TQQQ (3x) se construyen sobre QQQ. Ningún competidor replica esta profundidad de mercado de derivados.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <div class="rival-tag">Rival Principal</div>
+        <div class="rival-name">VOO / SPY<br><span style="font-size:15px;font-family:sans-serif;opacity:0.8;">S&amp;P 500 ETFs (Vanguard / SPDR)</span></div>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul class="rival-bullets">
+          <li>VOO (Vanguard S&P 500, AUM $600B+) cobra solo 0.03% de expense ratio — 6 veces más barato. En horizontes de 20-30 años la diferencia de 15 bps se capitaliza significativamente en portafolios grandes.</li>
+          <li>Mayor diversificación: 500 empresas vs 100, con inclusión de financieras, energía y value stocks que amortiguan caídas tecnológicas y suben en entornos de tasas altas.</li>
+          <li>En cada ciclo de tasas altas (2022, 2018), el S&P 500 superó al NASDAQ-100 por amplios márgenes — el mismo riesgo de concentración que da los retornos récord en bull markets es el que amplifica las caídas.</li>
+          <li>SPY es el ETF con mayor AUM del mundo ($630B+) y el historial más largo en gestión de grandes capitales institucionales, generando más confianza entre fondos de pensiones y endowments.</li>
+          <li>En términos de retorno ajustado por riesgo (Sharpe ratio), el S&P 500 frecuentemente supera al NASDAQ-100 en períodos de 15+ años al incluir toda la recuperación de ciclos value.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- D) POTENCIAL FUTURO -->
+<section>
+  <div class="container">
+    <div class="section-label">Perspectivas</div>
+    <h2 class="section-title">Potencial futuro del sector</h2>
+    <div class="catalyst-grid">
+      <div class="catalyst-card">
+        <span class="catalyst-icon">▲</span>
+        <div class="catalyst-title">IA Generativa: el mayor ciclo capex de la historia</div>
+        <div class="catalyst-text">Las 10 holdings principales de QQQ son las principales beneficiarias del gasto global en infraestructura de IA — proyectado a superar $1 billón anual hacia 2030. NVIDIA (+1.260% desde inicio del boom), Microsoft (Azure +27%), Amazon (AWS +28%) y Meta lideran este ciclo. Wall Street proyecta $370B en revenue para NVIDIA en su año fiscal actual. El índice captura directamente cada dólar de gasto en IA que fluye a los hiperescaladores.</div>
+      </div>
+      <div class="catalyst-card">
+        <span class="catalyst-icon">●</span>
+        <div class="catalyst-title">Cloud computing: el 70% de workloads aún no migró</div>
+        <div class="catalyst-text">La migración al cloud global apenas supera el 30% de los workloads empresariales totales. El 70% restante representa el runway de crecimiento para AWS, Azure y GCP — todos en QQQ. A esto se suman plataformas SaaS (Salesforce, ServiceNow, Adobe) con modelos de suscripción que generan FCF recurrente creciente. QQQ es la cesta perfecta de este secular growth.</div>
+      </div>
+      <div class="catalyst-card">
+        <span class="catalyst-icon">■</span>
+        <div class="catalyst-title">Recompras masivas: combustible estructural del alza</div>
+        <div class="catalyst-text">Las mega-caps del NASDAQ-100 generan cientos de miles de millones en FCF anual que retornan al accionista vía buybacks: Apple ($100B), Alphabet ($70B+), Meta ($50B+). Este flujo de recompra soporta el precio de las acciones estructuralmente y eleva el EPS sin crecimiento de ventas. El índice batió al S&P 500 en 7 de los últimos 10 años y el ciclo de IA puede extender ese diferencial.</div>
+      </div>
+    </div>
+    <div class="risk-block">
+      <strong style="color:#C8D8E8;">Riesgos a vigilar:</strong>
+      &nbsp;<span class="risk-keyword">Concentración top-10 al 49.6%</span> (riesgo idiosincrático amplificado)
+      · <span class="risk-keyword">Valoración extendida</span> (P/E ~37× vs S&amp;P 500 ~22×)
+      · <span class="risk-keyword">Subida de tipos Fed</span> (comprime múltiplos growth)
+      · <span class="risk-keyword">Regulación antimonopolio Big Tech</span> (UE + DOJ)
+      · <span class="risk-keyword">Conflicto Taiwan/China</span> (semiconductores TSMC-NVIDIA)
+      · <span class="risk-keyword">Rotación sectorial a value</span> en inflación persistente
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- E) DATOS FUNDAMENTALES -->
+<section>
+  <div class="container">
+    <div class="section-label">Fundamentals</div>
+    <h2 class="section-title">Datos del fondo y composición</h2>
+
+    <div class="market-cap-card">
+      <div class="mcap-big">
+        <div class="mcap-label">Assets Under Management (AUM)</div>
+        <div class="mcap-value">$444B</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">2° ETF más negociado EE.UU. · +$145.6B en AUM en 12 meses · Lanzado 10 mar 1999</div>
+      </div>
+      <div class="mcap-metrics">
+        <div class="metric-item"><div class="metric-value">37.4×</div><div class="metric-label">P/E implícito</div></div>
+        <div class="metric-item"><div class="metric-value">0.18%</div><div class="metric-label">Expense ratio</div></div>
+        <div class="metric-item"><div class="metric-value">100</div><div class="metric-label">Holdings</div></div>
+        <div class="metric-item"><div class="metric-value">10.6%</div><div class="metric-label">CAGR desde 1999</div></div>
+        <div class="metric-item"><div class="metric-value">+540%</div><div class="metric-label">Retorno 10 años</div></div>
+      </div>
+    </div>
+
+    <!-- Holdings Visual -->
+    <div class="holdings-card">
+      <div class="holdings-title">📊 Top 10 Holdings — Ponderación al 3 mayo 2026 (49.6% combinado del fondo)</div>
+      <div class="holdings-grid">
+        <div class="holding-item" style="border-top:3px solid #76B900;">
+          <div class="holding-ticker">NVDA</div><div class="holding-pct">8.4%</div><div class="holding-name">NVIDIA</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #555555;">
+          <div class="holding-ticker">AAPL</div><div class="holding-pct">~8.0%</div><div class="holding-name">Apple</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #0078D4;">
+          <div class="holding-ticker">MSFT</div><div class="holding-pct">~7.8%</div><div class="holding-name">Microsoft</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #FF9900;">
+          <div class="holding-ticker">AMZN</div><div class="holding-pct">~5.9%</div><div class="holding-name">Amazon</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #0866FF;">
+          <div class="holding-ticker">META</div><div class="holding-pct">~4.8%</div><div class="holding-name">Meta</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #4285F4;">
+          <div class="holding-ticker">GOOGL</div><div class="holding-pct">~4.5%</div><div class="holding-name">Alphabet A</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #4285F4;">
+          <div class="holding-ticker">GOOG</div><div class="holding-pct">~3.8%</div><div class="holding-name">Alphabet C</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #CC0000;">
+          <div class="holding-ticker">TSLA</div><div class="holding-pct">~3.4%</div><div class="holding-name">Tesla</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #0071CE;">
+          <div class="holding-ticker">WMT</div><div class="holding-pct">~2.3%</div><div class="holding-name">Walmart</div>
+        </div>
+        <div class="holding-item" style="border-top:3px solid #CC0000;">
+          <div class="holding-ticker">AVGO</div><div class="holding-pct">~2.1%</div><div class="holding-name">Broadcom</div>
+        </div>
+      </div>
+      <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:12px;">Distribución sectorial del índice</div>
+      <div class="sector-row">
+        <div class="sector-label">Tecnología</div>
+        <div class="sector-bar-bg"><div class="sector-bar" style="width:62%;background:#0075BE;">Tecnología</div></div>
+        <div class="sector-pct">~62%</div>
+      </div>
+      <div class="sector-row">
+        <div class="sector-label">Comunicaciones</div>
+        <div class="sector-bar-bg"><div class="sector-bar" style="width:15%;background:#003F80;">Comms</div></div>
+        <div class="sector-pct">~15%</div>
+      </div>
+      <div class="sector-row">
+        <div class="sector-label">Consumo Discrecional</div>
+        <div class="sector-bar-bg"><div class="sector-bar" style="width:10%;background:#4FA8E0;">Discr.</div></div>
+        <div class="sector-pct">~10%</div>
+      </div>
+      <div class="sector-row">
+        <div class="sector-label">Salud / Biotech</div>
+        <div class="sector-bar-bg"><div class="sector-bar" style="width:6%;background:#7DC4E8;font-size:10px;">Salud</div></div>
+        <div class="sector-pct">~6%</div>
+      </div>
+      <div class="sector-row">
+        <div class="sector-label">Industriales + Otros</div>
+        <div class="sector-bar-bg"><div class="sector-bar" style="width:7%;background:#B0CDE8;font-size:10px;">Otros</div></div>
+        <div class="sector-pct">~7%</div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+      <div class="data-table">
+        <div class="table-header dark">
+          Desempeño reciente · Q1–Q2 2026
+          <div class="th-sub">Período enero–mayo 2026 · Datos actualizados al 6 mayo 2026</div>
+        </div>
+        <table>
+          <tr><td>Retorno NAV 1 año</td><td class="yoy-green">+45.18%</td></tr>
+          <tr><td>Retorno NAV 3 meses</td><td class="yoy-green">+16.64%</td></tr>
+          <tr><td>Retorno NAV 1 mes (abril)</td><td class="yoy-green">+18.22% ★ mejor desde COVID</td></tr>
+          <tr><td>52-sem low → ATH</td><td class="yoy-green">$484.17 → $695.77 (+43.7%)</td></tr>
+          <tr><td>Flujos netos 1 año</td><td class="yoy-green">+$18.75B inflows</td></tr>
+          <tr><td>AUM variación 1 año</td><td class="yoy-green">+$145.6B</td></tr>
+          <tr><td>NVDA (mayor holding)</td><td class="yoy-green">+1.260% desde inicio IA boom</td></tr>
+          <tr><td>13-day Nasdaq surge</td><td class="yoy-green">"New bull phase" (R. Detrick)</td></tr>
+        </table>
+      </div>
+
+      <div class="data-table">
+        <div class="table-header accent">
+          Perspectivas Q2 2026 · Proyecciones
+          <div class="th-sub">Catalizadores y consenso — Trimestre en curso</div>
+        </div>
+        <table>
+          <tr><td>NVIDIA revenue FY est.</td><td class="yoy-green">~$370B (Wall St. consensus)</td></tr>
+          <tr><td>AWS growth est. Q2</td><td class="yoy-green">~25–28% YoY</td></tr>
+          <tr><td>Azure growth est. Q2</td><td class="yoy-green">~27% YoY</td></tr>
+          <tr><td>Rebalanceo trimestral</td><td>Junio 2026 · posibles cambios pesos</td></tr>
+          <tr><td>Catalizador #1</td><td>Earnings NVDA (mayo/jun 2026)</td></tr>
+          <tr><td>Catalizador #2</td><td>WWDC Apple (jun 2026)</td></tr>
+          <tr><td>Catalizador #3</td><td>Decisión Fed (tasas, junio 2026)</td></tr>
+          <tr><td>Riesgo principal</td><td class="yoy-amber">CPI alto → compresión múltiplos</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- F) TÉCNICO -->
+<section>
+  <div class="container">
+    <div class="section-label">Técnico</div>
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+    <div class="technical-grid">
+      <div class="ath-block">
+        <div class="ath-label">Dist. al ATH de cierre</div>
+        <div class="ath-pct">ATH</div>
+        <span class="ath-pill">✦ MÁXIMO HISTÓRICO ABSOLUTO</span>
+        <ul class="ath-details">
+          <li><span class="detail-label">Cierre ATH (nuevo)</span>$695.77 — 6 mayo 2026</li>
+          <li><span class="detail-label">ATH intradía 52 sem.</span>$695.93</li>
+          <li><span class="detail-label">Mín. 52 semanas</span>$484.17 (recuperó +43.7%)</li>
+          <li><span class="detail-label">Retorno 1 año total</span>+42.49% (vs S&P 500 ~18%)</li>
+          <li><span class="detail-label">Mejor mes reciente</span>Abril 2026: +18.2% (mejor desde COVID)</li>
+        </ul>
+      </div>
+      <div class="technical-card">
+        <h3>Lectura técnica · Mayo 2026</h3>
+        <ul class="tech-bullets">
+          <li><strong>Máximo histórico absoluto:</strong> QQQ marcó ATH de cierre en $695.77 el 6 de mayo de 2026, consolidando la recuperación total del sell-off provocado por el conflicto EE.UU.-Irán de principios de 2026 (caída máxima: −12% desde ATH previo). Abril fue el mejor mes mensual desde COVID-19.</li>
+          <li><strong>Rally en 13 días consecutivos:</strong> El analista Ryan Detrick (Carson Group) denominó la "subida de 13 días" del NASDAQ como señal de inicio de una "nueva fase alcista estructural". Los flujos de $18.75B en entradas netas anuales confirman demanda institucional sostenida.</li>
+          <li><strong>Territorio de precio descubierto:</strong> Sin resistencias históricas por encima. Próximas referencias técnicas proyectadas: $720–$730 (extensión Fibonacci 127.2% del rango previo) y $755–$760 (161.8%).</li>
+          <li><strong>Soporte primario:</strong> $660–$665 (base del breakout del ATH previo). Soporte estructural en $630 (canal alcista desde mínimos 2025). Perder $620 invalidaría la estructura alcista de corto plazo.</li>
+          <li><strong>Riesgo de concentración:</strong> Top-10 al 49.6% amplifica todo movimiento: si NVIDIA o Apple corrigen 10%, el índice siente el impacto inmediato. En 2022, QQQ cedió −33% en el año; en el sell-off de 2025, −24%. La volatilidad es el precio de la concentración.</li>
+          <li><strong>Catalizador técnico Q2:</strong> Earnings de NVIDIA (mayo/junio), WWDC de Apple (junio) y señal dovish de la Fed son los tres detonantes que pueden extender el rally hacia $720+. Un dato de CPI por encima del 3.5% es el principal riesgo de ruptura bajista.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- G) GRÁFICO -->
+<section class="chart-section">
+  <div class="container">
+    <div class="section-label">Precio</div>
+    <h2 class="section-title">Gráfico de cotización · Últimos 24 meses (semanal)</h2>
+    <div class="chart-wrapper">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3AQQQ&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        scrolling="no"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- H) FOOTER -->
+<footer>
+  <div class="footer-date">📊 Análisis generado el 7 de mayo de 2026</div>
+  <div>Datos de mercado al cierre del 6 de mayo de 2026. ETF de gestión pasiva — análisis de carácter informativo, no constituye asesoramiento de inversión. La rentabilidad pasada no garantiza resultados futuros. Los ETFs conllevan riesgo de pérdida de capital.</div>
+  <div style="margin-top:10px;"><strong style="color:#A8C0D8;">Nota metodológica:</strong> Al tratarse de un ETF (no empresa operativa), "Ventas YoY" y "EPS" se expresan como retornos NAV y rendimiento del índice. Las "previsiones" reflejan proyecciones de holdings y catalizadores macro del NASDAQ-100.</div>
+  <div class="sources-title">Fuentes consultadas</div>
+  <div class="sources-list">
+    <div>· <a href="https://www.invesco.com/qqq-etf/en/home.html" target="_blank">Invesco QQQ Official — Fund Home &amp; Performance Data</a></div>
+    <div>· <a href="https://www.macrotrends.net/stocks/charts/QQQ/invesco-qqq/stock-price-history" target="_blank">MacroTrends — QQQ ATH $695.77 cierre 6 mayo 2026</a></div>
+    <div>· <a href="https://etfdb.com/etf/QQQ/" target="_blank">ETFdb — QQQ Fund Flows, AUM &amp; Ratings completos</a></div>
+    <div>· <a href="https://www.tradingview.com/symbols/NASDAQ-QQQ/" target="_blank">TradingView — QQQ NAV Returns &amp; AUM $444B</a></div>
+    <div>· <a href="https://finance.yahoo.com/quote/QQQ/history/" target="_blank">Yahoo Finance — QQQ Historical Quotes &amp; Close $695.77</a></div>
+    <div>· <a href="https://www.fool.com/investing/2026/05/07/should-you-buy-invesco-qqq-etf-nasdaq-record-high/" target="_blank">Motley Fool — QQQ en ATH · Top 10 holdings 49.6% (7 mayo 2026)</a></div>
+    <div>· <a href="https://blockchainreporter.net/qqq-stock-price/" target="_blank">QQQ Stock Price Guide &amp; ETF Analysis 2026 — 52-week range &amp; metrics</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

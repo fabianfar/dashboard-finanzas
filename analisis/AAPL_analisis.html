@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Inc. (AAPL) — Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy: #1D1D1F;
+    --accent: #0071E3;
+    --accent-light: #2997FF;
+    --light: #F5F5F7;
+    --white: #FFFFFF;
+    --green: #34C759;
+    --red: #FF3B30;
+    --text: #1D1D1F;
+    --text-secondary: #6E6E73;
+    --border: #D2D2D7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ═══════════════════════════════════════
+     A) HERO
+  ═══════════════════════════════════════ */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 48px 56px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,113,227,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+
+  .logo-box {
+    width: 110px; height: 110px;
+    background: var(--white);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .hero-title-block {
+    flex: 1;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .company-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 44px;
+    font-weight: normal;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+
+  .ticker-badge {
+    border: 1.5px solid var(--accent-light);
+    color: var(--accent-light);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
+    color: #8E8E93;
+    font-size: 14px;
+    margin-top: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  /* STAT CARDS STRIP */
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(0,113,227,0.4);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+
+  .stat-value.green { color: var(--green); }
+  .stat-value.amber { color: #FF9F0A; }
+
+  /* ═══════════════════════════════════════
+     SECTIONS GENERAL
+  ═══════════════════════════════════════ */
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  section {
+    padding: 48px 0;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: var(--navy);
+    margin-bottom: 28px;
+    font-weight: normal;
+  }
+
+  /* ═══════════════════════════════════════
+     B) A QUÉ SE DEDICA
+  ═══════════════════════════════════════ */
+  .about-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px 40px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    line-height: 1.75;
+    font-size: 15px;
+    color: #3A3A3C;
+  }
+
+  .about-card .accent-term {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .biz-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .biz-tag {
+    background: rgba(0,113,227,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,113,227,0.25);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════
+     C) POSICIÓN COMPETITIVA
+  ═══════════════════════════════════════ */
+  .competitive-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .subsector-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .subsector-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .subsector-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .subsector-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+  }
+
+  .position-badge {
+    background: var(--accent);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .subsector-share {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .subsector-note {
+    font-size: 13px;
+    color: #3A3A3C;
+  }
+
+  .rival-block {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 32px 28px;
+    color: var(--white);
+  }
+
+  .rival-tag {
+    font-size: 11px;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .rival-name {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .rival-slogan {
+    color: var(--accent-light);
+    font-size: 13px;
+    font-style: italic;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .rival-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rival-bullets li {
+    padding-left: 18px;
+    position: relative;
+    font-size: 13.5px;
+    color: #D1D1D6;
+    line-height: 1.5;
+  }
+
+  .rival-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent-light);
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════════════════════
+     D) POTENCIAL FUTURO
+  ═══════════════════════════════════════ */
+  .catalyst-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .catalyst-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 16px 16px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .catalyst-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .catalyst-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .catalyst-text {
+    font-size: 13.5px;
+    color: #3A3A3C;
+    line-height: 1.6;
+  }
+
+  .risk-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 18px 28px;
+    color: #8E8E93;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .risk-block .risk-keyword {
+    color: var(--accent-light);
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════
+     E) DATOS FUNDAMENTALES
+  ═══════════════════════════════════════ */
+  .market-cap-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .mcap-big {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .mcap-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .mcap-value {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    color: var(--navy);
+    font-weight: normal;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+
+  .mcap-metrics {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .metric-item { text-align: center; }
+  .metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .metric-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .data-table {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .table-header {
+    padding: 16px 22px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+
+  .table-header.dark {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .table-header.accent {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .table-header .th-sub {
+    font-weight: 400;
+    font-size: 11px;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  td {
+    padding: 13px 22px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td:first-child { color: var(--text-secondary); }
+  td:last-child { font-weight: 600; text-align: right; }
+
+  .yoy-green { color: var(--green); }
+  .yoy-red { color: var(--red); }
+
+  tr:nth-child(even) { background: #FAFAFA; }
+
+  /* ═══════════════════════════════════════
+     F) ANÁLISIS TÉCNICO
+  ═══════════════════════════════════════ */
+  .technical-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .ath-block {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ath-label {
+    font-size: 11px;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .ath-pct {
+    font-family: Georgia, serif;
+    font-size: 88px;
+    line-height: 0.9;
+    color: #FF9F0A;
+    letter-spacing: -4px;
+    margin-bottom: 24px;
+  }
+
+  .ath-details {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ath-details li {
+    font-size: 13px;
+    color: #D1D1D6;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ath-details .detail-label {
+    font-size: 10px;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 1px;
+  }
+
+  .technical-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 16px 16px 0;
+    padding: 32px 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .technical-card h3 {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: normal;
+    color: var(--navy);
+    margin-bottom: 20px;
+  }
+
+  .tech-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tech-bullets li {
+    padding-left: 20px;
+    position: relative;
+    font-size: 14px;
+    color: #3A3A3C;
+    line-height: 1.55;
+  }
+
+  .tech-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 2px;
+  }
+
+  /* ═══════════════════════════════════════
+     G) CHART
+  ═══════════════════════════════════════ */
+  .chart-section {
+    padding-bottom: 56px;
+  }
+
+  .chart-wrapper {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  }
+
+  .chart-wrapper iframe {
+    width: 100%;
+    height: 560px;
+    border: none;
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════
+     H) FOOTER
+  ═══════════════════════════════════════ */
+  footer {
+    background: var(--navy);
+    color: #8E8E93;
+    padding: 40px 56px;
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+
+  footer .footer-date {
+    color: var(--white);
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+
+  footer a {
+    color: var(--accent-light);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  .sources-title {
+    color: #D1D1D6;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ═══════════════════════════════════════
+     DIVIDER
+  ═══════════════════════════════════════ */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 32px;
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 640px) {
+    .hero { padding: 32px 24px; border-left-width: 8px; }
+    .hero-top { flex-wrap: wrap; }
+    .company-name { font-size: 28px; }
+    .competitive-grid,
+    .tables-grid,
+    .technical-grid { grid-template-columns: 1fr; }
+    .catalyst-grid { grid-template-columns: 1fr; }
+    .ath-pct { font-size: 64px; }
+    .mcap-value { font-size: 32px; }
+    footer { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     A) HERO
+═══════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-top">
+    <!-- Logo Apple SVG inline -->
+    <div class="logo-box">
+      <svg width="68" height="80" viewBox="0 0 68 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Apple logo SVG inline reproduction -->
+        <path d="M55.2 41.3C55.1 33.2 61.8 29.3 62.1 29.1C58.3 23.5 52.2 22.7 50.1 22.6C44.8 22.1 39.7 25.7 37 25.7C34.3 25.7 30.1 22.7 25.6 22.8C19.8 22.9 14.4 26.1 11.4 31.2C5.3 41.5 9.7 56.7 15.5 65.1C18.4 69.2 21.8 73.8 26.4 73.6C30.8 73.4 32.5 70.8 37.9 70.8C43.3 70.8 44.8 73.6 49.5 73.5C54.3 73.4 57.3 69.4 60.1 65.3C63.4 60.5 64.8 55.9 64.8 55.7C64.7 55.6 55.3 51.9 55.2 41.3Z" fill="#1D1D1F"/>
+        <path d="M46.5 16.2C48.9 13.2 50.5 9.1 50.1 5C46.5 5.2 42 7.4 39.5 10.3C37.3 12.9 35.4 17.1 35.9 21.1C39.9 21.4 44 19.1 46.5 16.2Z" fill="#1D1D1F"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="title-row">
+        <h1 class="company-name">Apple Inc.</h1>
+        <span class="ticker-badge">NASDAQ: AAPL</span>
+      </div>
+      <p class="hero-subtitle">Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+
+  <!-- Stat Strip -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">$284.44</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">$4.17T</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ventas Q2 FY26 YoY</div>
+      <div class="stat-value green">+17%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">EPS Q2 FY26 YoY</div>
+      <div class="stat-value green">+22%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a Máx. Histórico</div>
+      <div class="stat-value amber">−0.5%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     B) ¿A QUÉ SE DEDICA?
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Descripción</div>
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="about-card">
+      <p>
+        Apple Inc. diseña, fabrica y comercializa <span class="accent-term">smartphones</span>,
+        computadoras personales, tablets, wearables y accesorios, y provee una creciente cartera de
+        <span class="accent-term">servicios de suscripción</span> a escala global. Su ecosistema integrado —
+        hardware, software y servicios — genera efectos de red poderosos y márgenes difíciles de replicar.
+      </p>
+      <br>
+      <p>
+        El segmento <span class="accent-term">iPhone</span> representa la mayor parte de los ingresos,
+        pero la estrella de crecimiento es <span class="accent-term">Services</span> (App Store, Apple Music,
+        iCloud, Apple TV+, Apple Pay, AppleCare), que alcanzó en Q2 FY2026 un
+        <span class="accent-term">récord histórico de $30.97B</span> — un negocio de márgenes brutos
+        superiores al 75%. Otros segmentos incluyen <span class="accent-term">Mac</span>,
+        <span class="accent-term">iPad</span>, y Wearables (AirPods, Apple Watch, Vision Pro).
+        En septiembre de 2026, John Ternus — arquitecto del hardware M-series — tomará las riendas como
+        CEO, con Tim Cook pasando a presidente ejecutivo.
+      </p>
+      <div class="biz-tags">
+        <span class="biz-tag">iPhone</span>
+        <span class="biz-tag">Services &amp; Subscriptions</span>
+        <span class="biz-tag">Mac / M-series Silicon</span>
+        <span class="biz-tag">iPad</span>
+        <span class="biz-tag">AirPods / Apple Watch</span>
+        <span class="biz-tag">Apple Vision Pro</span>
+        <span class="biz-tag">Apple Pay / Wallet</span>
+        <span class="biz-tag">App Store</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     C) POSICIÓN COMPETITIVA
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Mercado</div>
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="competitive-grid">
+
+      <div class="subsector-cards">
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Smartphones Premium (EE.UU.)</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Cuota ~57% en EE.UU. · iPhone 17 lidera ventas globales Q1 2026</div>
+          <div class="subsector-note">Samsung Galaxy S25 compite en alta gama, pero iOS retiene al usuario con mayor stickiness.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Computadoras de escritorio / laptops premium</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Cuota ~15% global laptops; liderazgo en ASP y satisfacción</div>
+          <div class="subsector-note">Chip M4 y MacBook Neo amplían ventaja arquitectónica frente a Intel/AMD. Microsoft Surface en distante competencia.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Wearables (smartwatch + TWS)</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Apple Watch: ~30% global smartwatch · AirPods dominan TWS premium</div>
+          <div class="subsector-note">Samsung Galaxy Watch y Garmin en smartwatch; Sony y Samsung en TWS premium.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Plataformas de pago móvil</span>
+            <span class="position-badge">#2</span>
+          </div>
+          <div class="subsector-share">Apple Pay: fuerte en EE.UU. y Europa · Google Pay lidera globalmente</div>
+          <div class="subsector-note">La integración nativa en iPhone es la ventaja diferencial sobre Google Pay y PayPal.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <div class="rival-tag">Rival Principal</div>
+        <div class="rival-name">Samsung Electronics</div>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul class="rival-bullets">
+          <li>Domina el mercado global de smartphones con ~20% de cuota, especialmente en mercados emergentes donde Apple tiene menor penetración.</li>
+          <li>Vertically integrated: Samsung fabrica sus propios chips (Exynos), pantallas AMOLED y baterías, amenazando la cadena de suministro de Apple.</li>
+          <li>En mayo 2026, Samsung superó $1T de market cap impulsada por el rally de chips; su división de semiconductores vuelve a ser proveedor de Apple.</li>
+          <li>Galaxy S25 con Google Gemini on-device plantea una narrativa de IA que presiona a Apple a acelerar el rediseño de Siri (WWDC junio 2026).</li>
+          <li>Ecosistema Android/Google más abierto atrae a usuarios que rechazan el "jardín amurallado" de iOS, especialmente en Europa y Asia.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     D) POTENCIAL FUTURO DEL SECTOR
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Perspectivas</div>
+    <h2 class="section-title">Potencial futuro del sector</h2>
+
+    <div class="catalyst-grid">
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">▲</span>
+        <div class="catalyst-title">IA on-device &amp; "Apple Intelligence"</div>
+        <div class="catalyst-text">
+          La integración de IA generativa directamente en el chip A18/M4 posiciona a Apple para monetizar
+          el mayor ciclo de upgrade de iPhone desde 2017. WWDC junio 2026 presentará Siri rediseñado:
+          si logra un "ChatGPT moment" móvil, el ciclo de renovación puede ser histórico.
+          Acuerdos con OpenAI y posibles modelos propios amplían el moat de servicios.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">●</span>
+        <div class="catalyst-title">Services: el motor de margen</div>
+        <div class="catalyst-text">
+          Con 2.35B de dispositivos activos, Services tiene un runway enorme: App Store, iCloud+,
+          Apple TV+, Apple Fitness+ y Apple Card crecen a doble dígito. El margen bruto de Services
+          (~75%) seguirá elevando el mix consolidado. Regulación antimonopolio (UE y EE.UU.) es
+          el único freno relevante a corto plazo.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">■</span>
+        <div class="catalyst-title">Expansión en mercados emergentes &amp; diversificación de producción</div>
+        <div class="catalyst-text">
+          India supera ya el 15% de la producción de iPhone; Apple explora Intel y Samsung como
+          proveedores de chips en EE.UU. para reducir dependencia de TSMC/Taiwan. La expansión
+          en India, Indonesia y el sudeste asiático puede añadir cientos de millones de nuevos usuarios
+          premium en 3-5 años.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="risk-block">
+      <strong style="color:#D1D1D6;">Riesgos a vigilar:</strong>
+      &nbsp;<span class="risk-keyword">Regulación antimonopolio App Store (UE y DOJ)</span> ·
+      <span class="risk-keyword">Tensión arancelaria EE.UU.–China</span> (costos +$900M estimados)
+      · <span class="risk-keyword">Transición CEO a Ternus</span> (ejecución de hoja de ruta de IA)
+      · <span class="risk-keyword">Dependencia de TSMC</span> / riesgo geopolítico Taiwan ·
+      <span class="risk-keyword">Saturación de mercado</span> en smartphones de alta gama en Europa y China
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     E) DATOS FUNDAMENTALES
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Financials</div>
+    <h2 class="section-title">Datos fundamentales</h2>
+
+    <!-- Market Cap Card -->
+    <div class="market-cap-card">
+      <div class="mcap-big">
+        <div class="mcap-label">Market Capitalization</div>
+        <div class="mcap-value">$4.17T</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">3er mayor market cap del mundo · May 2026</div>
+      </div>
+      <div class="mcap-metrics">
+        <div class="metric-item">
+          <div class="metric-value">34.4×</div>
+          <div class="metric-label">P/E ratio</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">$8.27</div>
+          <div class="metric-label">EPS TTM</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">49.3%</div>
+          <div class="metric-label">Gross Margin Q2</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">$100B</div>
+          <div class="metric-label">Buyback anunciado</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">0.38%</div>
+          <div class="metric-label">Dividend Yield</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="tables-grid">
+
+      <!-- Last quarter -->
+      <div class="data-table">
+        <div class="table-header dark">
+          Q2 FY2026 · Último trimestre reportado
+          <div class="th-sub">Trimestre finalizado 28 marzo 2026 · Publicado 30 abril 2026</div>
+        </div>
+        <table>
+          <tr>
+            <td>Ventas totales</td>
+            <td class="yoy-green">$111.2B &nbsp;(+17% YoY)</td>
+          </tr>
+          <tr>
+            <td>EPS diluido</td>
+            <td class="yoy-green">$2.01 &nbsp;(+22% YoY)</td>
+          </tr>
+          <tr>
+            <td>iPhone</td>
+            <td class="yoy-green">$56.99B &nbsp;(+20%)</td>
+          </tr>
+          <tr>
+            <td>Services</td>
+            <td class="yoy-green">$30.97B &nbsp;(ATH) (+16%)</td>
+          </tr>
+          <tr>
+            <td>Mac</td>
+            <td class="yoy-green">$8.4B &nbsp;(+5%)</td>
+          </tr>
+          <tr>
+            <td>iPad</td>
+            <td class="yoy-green">$6.91B &nbsp;(+4%)</td>
+          </tr>
+          <tr>
+            <td>Margen Bruto</td>
+            <td class="yoy-green">49.3%</td>
+          </tr>
+          <tr>
+            <td>Vs. Consenso Ventas</td>
+            <td class="yoy-green">Beat +$1.5B</td>
+          </tr>
+          <tr>
+            <td>Vs. Consenso EPS</td>
+            <td class="yoy-green">Beat +$0.06</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Next quarter -->
+      <div class="data-table">
+        <div class="table-header accent">
+          Q3 FY2026 · Previsión próximo trimestre
+          <div class="th-sub">Reporta ~30 julio 2026 · Trim. finaliza junio 2026</div>
+        </div>
+        <table>
+          <tr>
+            <td>Ventas consensus</td>
+            <td class="yoy-green">~$107–$110B</td>
+          </tr>
+          <tr>
+            <td>Guidance mgmt. (YoY)</td>
+            <td class="yoy-green">+14% a +17%</td>
+          </tr>
+          <tr>
+            <td>EPS consensus</td>
+            <td class="yoy-green">~$1.87</td>
+          </tr>
+          <tr>
+            <td>Services (est.)</td>
+            <td class="yoy-green">~$31–$32B</td>
+          </tr>
+          <tr>
+            <td>iPhone (est.)</td>
+            <td class="yoy-green">~$47–$50B</td>
+          </tr>
+          <tr>
+            <td>Margen Bruto (est.)</td>
+            <td>~48.5–49.5%</td>
+          </tr>
+          <tr>
+            <td>Catalizador clave</td>
+            <td>WWDC Siri IA · junio 2026</td>
+          </tr>
+          <tr>
+            <td>Nota guidance</td>
+            <td style="color:var(--green);font-size:12px;">Muy por encima del consenso previo de +9.5%</td>
+          </tr>
+          <tr>
+            <td>Riesgo</td>
+            <td style="color:#FF9F0A;font-size:12px;">Aranceles +$900M costos estimados</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     F) ANÁLISIS TÉCNICO
+═══════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Técnico</div>
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+
+    <div class="technical-grid">
+
+      <div class="ath-block">
+        <div class="ath-label">Dist. al ATH de cierre</div>
+        <div class="ath-pct">−0.5%</div>
+        <ul class="ath-details">
+          <li>
+            <span class="detail-label">Cierre actual</span>
+            $284.44 (6 mayo 2026)
+          </li>
+          <li>
+            <span class="detail-label">ATH de cierre</span>
+            $285.92 — 2 diciembre 2025
+          </li>
+          <li>
+            <span class="detail-label">Máx. intradía 52 sem.</span>
+            $288.62
+          </li>
+          <li>
+            <span class="detail-label">Mín. 52 semanas</span>
+            $193.25 (agosto 2025)
+          </li>
+        </ul>
+      </div>
+
+      <div class="technical-card">
+        <h3>Lectura técnica · Mayo 2026</h3>
+        <ul class="tech-bullets">
+          <li>
+            <strong>Zonas clave:</strong> AAPL cotiza a tan solo −0.5% de su ATH de cierre ($285.92). El precio se mueve dentro de un canal alcista desde el mínimo de $193 de agosto 2025, recuperando +47% en 9 meses.
+          </li>
+          <li>
+            <strong>Resistencia inmediata:</strong> $285.92 (ATH cierre) y $288.62 (ATH intradía 52 sem). La ruptura sostenida por encima de $288-$290 abriría territorio de precio descubierto — próximos targets: $310 (Morgan Stanley) y $330 (Wedbush).
+          </li>
+          <li>
+            <strong>Soporte primario:</strong> $275–$276, zona de consolidación post-earnings. Segundo soporte relevante en $261–$262.
+          </li>
+          <li>
+            <strong>Estructura técnica:</strong> Gap al alza post Q2 FY26 (+17% revenue) fue parcialmente llenado; la reciente consolidación en $278–$285 es saludable para la continuación alcista.
+          </li>
+          <li>
+            <strong>Próximo catalizador técnico:</strong> WWDC (junio 2026) con anuncio del nuevo Siri con IA. Un evento positivo podría ser el detonante para superar $290 y marcar nuevos máximos históricos.
+          </li>
+          <li>
+            <strong>Volumen:</strong> Volumen promedio en 48M acciones/día; días recientes operan en 23–25M, indicando compresión antes del siguiente movimiento.
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════
+     G) GRÁFICO TRADINGVIEW
+═══════════════════════════════════════ -->
+<section class="chart-section">
+  <div class="container">
+    <div class="section-label">Precio</div>
+    <h2 class="section-title">Gráfico de cotización · Últimos 24 meses (semanal)</h2>
+    <div class="chart-wrapper">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3AAAPL&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        scrolling="no"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     H) FOOTER
+═══════════════════════════════════════ -->
+<footer>
+  <div class="footer-date">📊 Análisis generado el 6 de mayo de 2026</div>
+  <div>Datos de mercado al cierre del 5 de mayo de 2026. Precio indicativo del 6 de mayo de 2026 (mercado abierto). Este análisis es de carácter informativo y no constituye asesoramiento de inversión.</div>
+
+  <div class="sources-title">Fuentes consultadas</div>
+  <div class="sources-list">
+    <div>· <a href="https://www.apple.com/newsroom/2026/04/apple-reports-second-quarter-results/" target="_blank">Apple Newsroom — Q2 FY2026 Earnings (abril 2026)</a></div>
+    <div>· <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000320193" target="_blank">SEC EDGAR — Apple Inc. Form 8-K &amp; 10-Q FY2026</a></div>
+    <div>· <a href="https://finance.yahoo.com/quote/AAPL/" target="_blank">Yahoo Finance — AAPL Quote &amp; Historical Data</a></div>
+    <div>· <a href="https://www.cnbc.com/2026/04/30/apple-aapl-q2-2026-earnings-report.html" target="_blank">CNBC — Apple Q2 FY2026 Earnings Report</a></div>
+    <div>· <a href="https://www.macrotrends.net/stocks/charts/AAPL/apple/stock-price-history" target="_blank">MacroTrends — AAPL Price History &amp; ATH</a></div>
+    <div>· <a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/" target="_blank">TradingView — AAPL Technical Analysis</a></div>
+    <div>· <a href="https://companiesmarketcap.com/apple/marketcap/" target="_blank">CompaniesMarketCap — Apple Market Cap May 2026</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
