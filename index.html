@@ -229,25 +229,16 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   </div>
   <div id="tc-cards-grid" class="tc-grid"></div>
 
-  <!-- Estadísticas siempre visibles -->
-  <div class="card" id="tc-stats-card">
-    <h3>Estadisticas de tarjetas</h3>
-    <div class="tc-stats-tabs" id="tc-stats-tabs">
-      <button class="tc-stats-tab active" data-stab="futuros">Compromisos futuros</button>
-      <button class="tc-stats-tab" data-stab="total">Total historico</button>
-      <button class="tc-stats-tab" data-stab="portarjeta">Por tarjeta</button>
-      <button class="tc-stats-tab" data-stab="categoria">Por categoria</button>
-    </div>
-    <div id="tc-stats-content"></div>
-  </div>
-
   <div id="tc-consumos-section" style="display:none">
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
         <h3 style="margin:0" id="tc-consumos-title">Consumos</h3>
-        <select id="tc-selector" style="width:auto;max-width:220px"></select>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#aaa">Tarjeta:</span>
+          <select id="tc-selector" style="width:auto;max-width:200px"></select>
+        </div>
       </div>
-      <div class="metric-grid" id="tc-metrics"></div>
+      <div class="metric-grid" id="tc-metrics" style="margin-bottom:16px"></div>
       <div style="background:#2a2a2a;border-radius:8px;padding:14px;margin-bottom:14px">
         <h3>Nuevo consumo</h3>
         <div class="form-row four">
@@ -268,7 +259,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
         <h3 style="margin-bottom:10px">Suscripciones recurrentes <span class="badge badge-rec">auto</span></h3>
         <div id="rec-list"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;padding-top:14px;border-top:0.5px solid #333;flex-wrap:wrap;gap:8px">
         <h3 style="margin:0">Consumos registrados</h3>
         <div style="display:flex;gap:8px;align-items:center">
           <label style="font-size:12px;margin:0;color:#aaa">Mostrar:</label>
@@ -1362,16 +1353,141 @@ function addDebt(){
   ['debt-name','debt-total','debt-paid','debt-quota','debt-rate'].forEach(function(id){document.getElementById(id).value='';});
   saveState();renderDebts();
 }
+// ---- PRESTAMO AUTO ----
+function fmtPA(n){return '$ '+Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function getPrestamoAutoRows(){
+  var D=[
+    [332720,765296,96488,160974,20000,1375478],[340000,750000,98000,157500,20000,1365500],[348000,736000,100000,154560,20000,1358560],
+    [355000,722000,101000,151620,20000,1349620],[363000,708000,103000,148680,20000,1342680],[371000,694000,105000,145740,20000,1335740],
+    [380000,679000,107000,142590,20000,1328590],[388000,665000,109000,139650,20000,1321650],[397000,650000,111000,136500,20000,1314500],
+    [406000,635000,113000,133350,20000,1307350],[415000,620000,115000,130200,20000,1300200],[425000,604000,117000,126840,20000,1292840],
+    [430000,598000,140000,125580,15000,1308580],[430000,580000,145000,121800,15000,1291800],[430000,568000,148000,119280,15000,1280280],
+    [430000,555000,150000,116550,15000,1266550],[430000,540000,150000,113400,15000,1248400],[430000,525000,152000,110250,15000,1232250],
+    [430000,510000,152000,107100,15000,1214100],[430000,500000,195000,105000,15000,1245000],
+    [440000,490000,195000,102900,15000,1242900],[450000,480000,195000,100800,15000,1240800],[460000,468000,200000,98280,15000,1241280],
+    [470000,456000,200000,95760,15000,1236760],[480000,444000,200000,93240,15000,1232240],[490000,432000,205000,90720,15000,1232720],
+    [500000,420000,205000,88200,15000,1228200],[510000,407000,205000,85470,15000,1222470],[521000,394000,210000,82740,15000,1222740],
+    [532000,381000,210000,80010,15000,1218010],[543000,368000,210000,77280,15000,1213280],[555000,354000,215000,74340,15000,1213340],
+    [567000,340000,215000,71400,15000,1208400],[579000,326000,215000,68460,15000,1203460],[591000,312000,220000,65520,15000,1203520],
+    [604000,297000,220000,62370,15000,1198370],[617000,282000,220000,59220,15000,1193220],[630000,267000,225000,56070,15000,1193070],
+    [643000,252000,225000,52920,15000,1187920],[657000,236000,225000,49560,15000,1182560],[671000,220000,230000,46200,15000,1182200],
+    [685000,204000,230000,42840,15000,1176840],[699000,188000,230000,39480,15000,1171480],[714000,171000,235000,35910,15000,1170910],
+    [729000,154000,235000,32340,15000,1165340],[744000,137000,235000,28770,15000,1159770],[760000,119000,240000,24990,15000,1158990],
+    [776000,101000,240000,21210,15000,1153210]
+  ];
+  var rows=[];
+  for(var i=0;i<48;i++){
+    var n=i+1;
+    var baseD=new Date(2024,8+i,1);
+    var lastDay=new Date(baseD.getFullYear(),baseD.getMonth()+1,0).getDate();
+    var day=Math.min(30,lastDay);
+    var fecha=baseD.getFullYear()+'-'+pad(baseD.getMonth()+1)+'-'+pad(day);
+    rows.push({num:n,fecha:fecha,cancelada:n<=19,capital:D[i][0],interes:D[i][1],seguro:D[i][2],ivaInt:D[i][3],impuestos:D[i][4],cuotaTotal:D[i][5]});
+  }
+  return rows;
+}
+function renderPrestamoAuto(){
+  var card=document.getElementById('prestamo-auto-card');if(!card)return;
+  if(!state.prestamoAuto||state.prestamoAuto.length===0){state.prestamoAuto=getPrestamoAutoRows();saveState();}
+  var rows=state.prestamoAuto;
+  var totalCuotas=rows.length;var canceladas=0,totalPagado=0,totalPendiente=0,proxFecha='';
+  for(var i=0;i<rows.length;i++){
+    if(rows[i].cancelada){canceladas++;totalPagado+=rows[i].cuotaTotal;}
+    else{totalPendiente+=rows[i].cuotaTotal;if(!proxFecha)proxFecha=rows[i].fecha;}
+  }
+  var pendientes=totalCuotas-canceladas;var pct=Math.round(canceladas/totalCuotas*100);
+  var pmEl=document.getElementById('pa-metrics');
+  if(pmEl)pmEl.innerHTML=
+    '<div class="metric"><div class="metric-label">Cuotas pagadas</div><div class="metric-value income">'+canceladas+' / '+totalCuotas+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Cuotas restantes</div><div class="metric-value warn">'+pendientes+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total pagado</div><div class="metric-value savings">'+fmtS(totalPagado)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Saldo pendiente</div><div class="metric-value expense">'+fmtS(totalPendiente)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Prox. vencimiento</div><div class="metric-value">'+fmtDate(proxFecha)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Progreso</div><div class="metric-value">'+pct+'%<div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:'+pct+'%;background:#1D9E75"></div></div></div></div>';
+  var hoy=todayStr();var tb=document.getElementById('pa-tbody');if(!tb)return;
+  var h='';
+  for(var j=0;j<rows.length;j++){
+    var r=rows[j];
+    var isProx=!r.cancelada&&r.fecha===proxFecha;var isVenc=!r.cancelada&&r.fecha<hoy;
+    var bg=r.cancelada?'#0d1f0d':isProx?'#0c2233':isVenc?'#2a0a0a':'';
+    var estadoLbl=r.cancelada
+      ?'<span style="color:#1D9E75;font-size:11px">✓ Cancelada</span>'
+      :isProx?'<span style="color:#378ADD;font-weight:600;font-size:11px">▶ Próxima</span>'
+      :isVenc?'<span style="color:#D85A30;font-size:11px">⚠ Vencida</span>'
+      :'<span style="color:#888;font-size:11px">Pendiente</span>';
+    h+='<tr style="background:'+bg+'" data-panum="'+r.num+'">'
+      +'<td style="text-align:center;color:#666">'+r.num+'</td>'
+      +'<td>'+fmtDate(r.fecha)+'</td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="capital" data-num="'+r.num+'" data-raw="'+r.capital+'" value="'+fmtPA(r.capital)+'"></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="interes" data-num="'+r.num+'" data-raw="'+r.interes+'" value="'+fmtPA(r.interes)+'"></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="seguro" data-num="'+r.num+'" data-raw="'+r.seguro+'" value="'+fmtPA(r.seguro)+'"></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="ivaInt" data-num="'+r.num+'" data-raw="'+r.ivaInt+'" value="'+fmtPA(r.ivaInt)+'"></td>'
+      +'<td style="text-align:right"><input type="text" class="pa-input" data-field="impuestos" data-num="'+r.num+'" data-raw="'+r.impuestos+'" value="'+fmtPA(r.impuestos)+'"></td>'
+      +'<td style="text-align:right;font-weight:600;color:'+(r.cancelada?'#555':isProx?'#85B7EB':'#e0e0e0')+'">'+fmtPA(r.cuotaTotal)+'</td>'
+      +'<td style="text-align:center">'+estadoLbl
+      +(!r.cancelada?'<br><button class="btn btn-sm" style="font-size:10px;margin-top:4px;padding:2px 6px" data-pa-pagar="'+r.num+'">✓ Pagar</button>':'')
+      +'</td></tr>';
+  }
+  tb.innerHTML=h;
+  // Inputs focus/blur
+  var inputs=card.querySelectorAll('.pa-input');
+  for(var k=0;k<inputs.length;k++){(function(inp){
+    inp.addEventListener('focus',function(){inp.value=inp.dataset.raw||'0';inp.select();});
+    inp.addEventListener('blur',function(){
+      var num=+inp.dataset.num;var field=inp.dataset.field;
+      var val=parseFloat(inp.value.replace(/[^0-9.-]/g,''))||0;
+      inp.dataset.raw=val;inp.value=fmtPA(val);
+      for(var x=0;x<state.prestamoAuto.length;x++){
+        if(state.prestamoAuto[x].num===num){
+          state.prestamoAuto[x][field]=val;
+          var r2=state.prestamoAuto[x];
+          r2.cuotaTotal=r2.capital+r2.interes+r2.seguro+r2.ivaInt+r2.impuestos;
+          var row2=card.querySelector('tr[data-panum="'+num+'"]');
+          if(row2){var cells=row2.querySelectorAll('td');if(cells[7])cells[7].textContent=fmtPA(r2.cuotaTotal);}
+          break;
+        }
+      }
+      saveState();
+    });
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();});
+  })(inputs[k]);}
+  // Marcar pagada por fila
+  var btnsPagar=card.querySelectorAll('[data-pa-pagar]');
+  for(var p=0;p<btnsPagar.length;p++){(function(btn){
+    btn.addEventListener('click',function(){
+      var num=+btn.dataset.paPagar;
+      if(!confirm('Marcar cuota '+num+' como pagada?'))return;
+      for(var x=0;x<state.prestamoAuto.length;x++)if(state.prestamoAuto[x].num===num){state.prestamoAuto[x].cancelada=true;break;}
+      saveState();renderPrestamoAuto();
+    });
+  })(btnsPagar[p]);}
+  // Botón header
+  var proxNum=0;for(var q=0;q<rows.length;q++)if(!rows[q].cancelada){proxNum=rows[q].num;break;}
+  var btnHdr=document.getElementById('btn-pa-marcar');
+  if(btnHdr){
+    btnHdr.textContent=proxNum?'✓ Marcar cuota '+proxNum+' como pagada':'Todo pagado ✓';
+    btnHdr.onclick=function(){
+      if(!proxNum)return;
+      if(!confirm('Marcar cuota '+proxNum+' como pagada?'))return;
+      for(var x=0;x<state.prestamoAuto.length;x++)if(state.prestamoAuto[x].num===proxNum){state.prestamoAuto[x].cancelada=true;break;}
+      saveState();renderPrestamoAuto();
+    };
+  }
+}
+
 function renderDebts(){
   var el=document.getElementById('debts-list');var sumEl=document.getElementById('debts-summary');
-  if(!state.debts.length){el.innerHTML='<div class="empty">No hay deudas registradas</div>';sumEl.innerHTML='';return;}
-  var totalD=0;for(var i=0;i<state.debts.length;i++)totalD+=Math.max(0,state.debts[i].total-state.debts[i].paid);
-  sumEl.innerHTML='<div class="metric" style="display:inline-block;min-width:160px"><div class="metric-label">Total adeudado</div><div class="metric-value expense">'+fmtS(totalD)+'</div></div>';
-  var h='';
-  for(var j=0;j<state.debts.length;j++){var d=state.debts[j];var rem=Math.max(0,d.total-d.paid);var pct=Math.min(100,Math.round(d.paid/d.total*100));h+='<div class="debt-card"><div class="debt-header"><span class="debt-name">'+d.name+'</span><button class="btn btn-sm btn-danger" data-deldebt="'+d.id+'">x</button></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:#1D9E75"></div></div><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><div class="debt-meta">Pagado: '+fmtS(d.paid)+' / '+fmtS(d.total)+' - Pendiente: '+fmtS(rem)+(d.quota>0?' - Cuota: '+fmtS(d.quota):'')+(d.rate>0?' - '+d.rate+'% anual':'')+'</div><div style="display:flex;gap:6px;align-items:center"><label style="font-size:12px;margin:0">Pagado:</label><input type="number" value="'+d.paid+'" min="0" style="width:100px;padding:4px 8px;font-size:12px" data-debtid="'+d.id+'"></div></div></div>';}
-  el.innerHTML=h;
-  var bDel=el.querySelectorAll('[data-deldebt]');for(var dd=0;dd<bDel.length;dd++){(function(b){b.addEventListener('click',function(){var n=[];for(var i=0;i<state.debts.length;i++)if(state.debts[i].id!==+b.dataset.deldebt)n.push(state.debts[i]);state.debts=n;saveState();renderDebts();});})(bDel[dd]);}
-  var bInp=el.querySelectorAll('[data-debtid]');for(var di=0;di<bInp.length;di++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.debts.length;i++)if(state.debts[i].id===+inp.dataset.debtid){state.debts[i].paid=parseFloat(inp.value)||0;break;}saveState();renderDebts();});})(bInp[di]);}
+  if(!state.debts.length){el.innerHTML='<div class="empty">No hay deudas registradas</div>';sumEl.innerHTML='';}
+  else{
+    var totalD=0;for(var i=0;i<state.debts.length;i++)totalD+=Math.max(0,state.debts[i].total-state.debts[i].paid);
+    sumEl.innerHTML='<div class="metric" style="display:inline-block;min-width:160px"><div class="metric-label">Total adeudado</div><div class="metric-value expense">'+fmtS(totalD)+'</div></div>';
+    var h='';
+    for(var j=0;j<state.debts.length;j++){var d=state.debts[j];var rem=Math.max(0,d.total-d.paid);var pct=Math.min(100,Math.round(d.paid/d.total*100));h+='<div class="debt-card"><div class="debt-header"><span class="debt-name">'+d.name+'</span><button class="btn btn-sm btn-danger" data-deldebt="'+d.id+'">x</button></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:#1D9E75"></div></div><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><div class="debt-meta">Pagado: '+fmtS(d.paid)+' / '+fmtS(d.total)+' - Pendiente: '+fmtS(rem)+(d.quota>0?' - Cuota: '+fmtS(d.quota):'')+(d.rate>0?' - '+d.rate+'% anual':'')+'</div><div style="display:flex;gap:6px;align-items:center"><label style="font-size:12px;margin:0">Pagado:</label><input type="number" value="'+d.paid+'" min="0" style="width:100px;padding:4px 8px;font-size:12px" data-debtid="'+d.id+'"></div></div></div>';}
+    el.innerHTML=h;
+    var bDel=el.querySelectorAll('[data-deldebt]');for(var dd=0;dd<bDel.length;dd++){(function(b){b.addEventListener('click',function(){var n=[];for(var i=0;i<state.debts.length;i++)if(state.debts[i].id!==+b.dataset.deldebt)n.push(state.debts[i]);state.debts=n;saveState();renderDebts();});})(bDel[dd]);}
+    var bInp=el.querySelectorAll('[data-debtid]');for(var di=0;di<bInp.length;di++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.debts.length;i++)if(state.debts[i].id===+inp.dataset.debtid){state.debts[i].paid=parseFloat(inp.value)||0;break;}saveState();renderDebts();});})(bInp[di]);}
+  }
+  renderPrestamoAuto();
 }
 
 // ---- ANÁLISIS BURSÁTIL ----
