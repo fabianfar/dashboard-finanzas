@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MercadoLibre Inc. (MELI) — Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy: #141C2E;
+    --navy-mid: #1E2D4A;
+    --accent: #FFC400;
+    --accent-light: #FFD84D;
+    --accent-dark: #CC9A00;
+    --light: #F7F6F0;
+    --white: #FFFFFF;
+    --green: #27AE60;
+    --red: #E74C3C;
+    --amber: #E67E22;
+    --text: #141C2E;
+    --text-secondary: #5A6880;
+    --border: #E0DDD0;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Calibri,Arial,sans-serif; background:var(--light); color:var(--text); font-size:15px; line-height:1.65; }
+
+  /* HERO */
+  .hero { background:var(--navy); border-left:14px solid var(--accent); padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; right:-60px; width:440px; height:440px; border-radius:50%; background:radial-gradient(circle,rgba(255,196,0,0.14) 0%,transparent 65%); pointer-events:none; }
+  .hero::after { content:''; position:absolute; bottom:-30px; left:180px; width:260px; height:180px; background:radial-gradient(ellipse,rgba(255,196,0,0.07) 0%,transparent 70%); pointer-events:none; }
+  .hero-top { display:flex; align-items:center; gap:32px; flex-wrap:nowrap; }
+  .logo-box { width:110px; height:110px; background:var(--white); border-radius:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+  .hero-title-block { flex:1; }
+  .title-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .company-name { font-family:Georgia,serif; font-size:44px; font-weight:normal; color:var(--white); letter-spacing:-0.5px; }
+  .ticker-badge { border:1.5px solid var(--accent); color:var(--accent); padding:4px 14px; border-radius:20px; font-size:15px; font-weight:700; letter-spacing:1px; }
+  .hero-subtitle { color:#8895AA; font-size:14px; margin-top:8px; }
+  .stat-strip { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .stat-card { background:rgba(255,255,255,0.06); border:1px solid rgba(255,196,0,0.3); border-top:3px solid var(--accent); border-radius:10px; padding:16px 20px; flex:1; min-width:130px; }
+  .stat-label { font-size:10.5px; color:#8895AA; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+  .stat-value { font-size:22px; font-weight:700; color:var(--white); letter-spacing:-0.5px; }
+  .stat-value.green { color:#5DD891; }
+  .stat-value.red-v { color:#FF6B6B; }
+  .stat-value.amber { color:var(--accent-light); }
+
+  /* GENERAL */
+  .container { max-width:1140px; margin:0 auto; padding:0 32px; }
+  section { padding:48px 0; }
+  .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent-dark); margin-bottom:8px; }
+  .section-title { font-family:Georgia,serif; font-size:28px; color:var(--navy); margin-bottom:28px; font-weight:normal; }
+  .section-divider { height:1px; background:var(--border); margin:0 32px; }
+
+  /* B */
+  .about-card { background:var(--white); border-radius:16px; padding:36px 40px; box-shadow:0 2px 20px rgba(0,0,0,0.06); line-height:1.8; font-size:15px; color:#2C3E50; }
+  .accent-term { color:var(--accent-dark); font-weight:600; }
+  .biz-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+  .biz-tag { background:rgba(255,196,0,0.10); color:var(--accent-dark); border:1px solid rgba(255,196,0,0.3); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+
+  /* C */
+  .competitive-grid { display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start; }
+  .subsector-cards { display:flex; flex-direction:column; gap:14px; }
+  .subsector-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 12px 12px 0; padding:18px 22px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .subsector-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .subsector-name { font-weight:700; font-size:14px; color:var(--navy); }
+  .position-badge { background:var(--accent); color:var(--navy); padding:2px 10px; border-radius:12px; font-size:12px; font-weight:800; }
+  .position-badge.p2 { background:var(--navy-mid); color:white; }
+  .subsector-share { font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .subsector-note { font-size:13px; color:#2C3E50; }
+  .rival-block { background:var(--navy); border-radius:16px; padding:32px 28px; color:var(--white); }
+  .rival-tag { font-size:10.5px; color:#8895AA; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+  .rival-name { font-family:Georgia,serif; font-size:26px; color:var(--white); margin-bottom:4px; }
+  .rival-slogan { color:var(--accent); font-size:13px; font-style:italic; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .rival-bullets { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .rival-bullets li { padding-left:18px; position:relative; font-size:13.5px; color:#A8B8CC; line-height:1.55; }
+  .rival-bullets li::before { content:'›'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+  /* D */
+  .catalyst-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px; }
+  .catalyst-card { background:var(--white); border-top:4px solid var(--accent); border-radius:0 0 16px 16px; padding:28px 24px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .catalyst-icon { font-size:28px; margin-bottom:12px; display:block; }
+  .catalyst-title { font-weight:700; font-size:15px; color:var(--navy); margin-bottom:10px; }
+  .catalyst-text { font-size:13.5px; color:#2C3A4A; line-height:1.65; }
+  .risk-block { background:var(--navy); border-radius:12px; padding:18px 28px; color:#8895AA; font-size:13.5px; line-height:1.7; }
+  .risk-keyword { color:var(--accent-light); font-weight:600; }
+
+  /* E */
+  .market-cap-card { background:var(--white); border-radius:16px; padding:28px 36px; display:flex; align-items:center; gap:48px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; flex-wrap:wrap; }
+  .mcap-big { flex:1; min-width:200px; }
+  .mcap-label { font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; }
+  .mcap-value { font-family:Georgia,serif; font-size:46px; color:var(--navy); font-weight:normal; letter-spacing:-1px; line-height:1.1; }
+  .mcap-metrics { display:flex; gap:32px; flex-wrap:wrap; }
+  .metric-item { text-align:center; }
+  .metric-value { font-size:22px; font-weight:700; color:var(--navy); }
+  .metric-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+  .tables-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .data-table { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .table-header { padding:16px 22px; font-weight:700; font-size:13px; letter-spacing:0.3px; }
+  .table-header.dark { background:var(--navy); color:var(--white); }
+  .table-header.accent { background:var(--accent); color:var(--navy); }
+  .table-header .th-sub { font-weight:400; font-size:11px; opacity:0.75; margin-top:2px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:13px 22px; font-size:13.5px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  td:first-child { color:var(--text-secondary); }
+  td:last-child { font-weight:600; text-align:right; }
+  .yoy-green { color:var(--green); }
+  .yoy-red { color:var(--red); }
+  .yoy-amber { color:var(--amber); }
+  tr:nth-child(even) { background:#FAFAF5; }
+
+  /* KPI GRID */
+  .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .kpi-card { background:var(--white); border-radius:12px; padding:20px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.05); border-bottom:4px solid var(--accent); }
+  .kpi-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+  .kpi-value { font-size:26px; font-weight:800; color:var(--navy); letter-spacing:-0.5px; line-height:1; }
+  .kpi-sub { font-size:11.5px; color:var(--green); font-weight:600; margin-top:5px; }
+  .kpi-sub.red { color:var(--red); }
+  .kpi-sub.amber { color:var(--amber); }
+
+  /* F */
+  .technical-grid { display:grid; grid-template-columns:320px 1fr; gap:20px; align-items:stretch; }
+  .ath-block { background:var(--navy); border-radius:16px; padding:40px 32px; display:flex; flex-direction:column; justify-content:center; }
+  .ath-label { font-size:11px; color:#8895AA; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .ath-pct { font-family:Georgia,serif; font-size:88px; line-height:0.9; color:var(--amber); letter-spacing:-4px; margin-bottom:24px; }
+  .ath-details { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .ath-details li { font-size:13px; color:#A8B8CC; display:flex; flex-direction:column; }
+  .detail-label { font-size:10px; color:#8895AA; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:1px; }
+  .technical-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 16px 16px 0; padding:32px; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .technical-card h3 { font-family:Georgia,serif; font-size:18px; font-weight:normal; color:var(--navy); margin-bottom:20px; }
+  .tech-bullets { list-style:none; display:flex; flex-direction:column; gap:14px; }
+  .tech-bullets li { padding-left:20px; position:relative; font-size:14px; color:#2C3E50; line-height:1.55; }
+  .tech-bullets li::before { content:'▸'; position:absolute; left:0; color:var(--accent-dark); font-size:12px; top:2px; }
+
+  /* G */
+  .chart-section { padding-bottom:56px; }
+  .chart-wrapper { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,0.08); }
+  .chart-wrapper iframe { width:100%; height:560px; border:none; display:block; }
+
+  /* H */
+  footer { background:var(--navy); color:#8895AA; padding:40px 56px; font-size:12.5px; line-height:1.8; }
+  footer .footer-date { color:var(--white); font-weight:600; margin-bottom:12px; font-size:13px; }
+  footer a { color:var(--accent-light); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+  .sources-title { color:#A8B8CC; font-weight:600; margin-bottom:8px; margin-top:16px; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+  .sources-list { display:flex; flex-direction:column; gap:4px; }
+
+  .warn-badge { display:inline-block; background:rgba(230,126,34,0.12); color:var(--amber); border:1px solid rgba(230,126,34,0.3); border-radius:8px; padding:10px 16px; font-size:12.5px; margin:12px 22px; line-height:1.6; }
+
+  @media(max-width:640px){
+    .hero{padding:32px 24px;border-left-width:8px;}
+    .hero-top{flex-wrap:wrap;}
+    .company-name{font-size:28px;}
+    .competitive-grid,.tables-grid,.technical-grid{grid-template-columns:1fr;}
+    .catalyst-grid,.kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .ath-pct{font-size:64px;}
+    .mcap-value{font-size:32px;}
+    footer{padding:32px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- A) HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <!-- MercadoLibre Logo SVG inline -->
+    <div class="logo-box">
+      <svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background yellow square -->
+        <rect x="6" y="6" width="80" height="80" rx="14" fill="#FFC400"/>
+        <!-- Stylized "ML" letterform / handshake motif -->
+        <!-- Simplified MELI logo: "m" shape with two arches -->
+        <path d="M18 62 L18 38 L32 55 L46 38 L46 62" stroke="#141C2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M46 62 L46 38 L60 55 L74 38 L74 62" stroke="#141C2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Small underline -->
+        <rect x="18" y="68" width="56" height="3" rx="1.5" fill="#141C2E" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="title-row">
+        <h1 class="company-name">MercadoLibre</h1>
+        <span class="ticker-badge">NASDAQ: MELI</span>
+      </div>
+      <p class="hero-subtitle">El Amazon + PayPal de América Latina &nbsp;·&nbsp; Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card"><div class="stat-label">Cotización</div><div class="stat-value">~$1,856</div></div>
+    <div class="stat-card"><div class="stat-label">Market Cap</div><div class="stat-value">~$94B</div></div>
+    <div class="stat-card"><div class="stat-label">Ingresos Q1'26 YoY</div><div class="stat-value green">+49%</div></div>
+    <div class="stat-card"><div class="stat-label">EPS Q1'26 YoY</div><div class="stat-value red-v">−15%</div></div>
+    <div class="stat-card"><div class="stat-label">Dist. a Máx. Histórico</div><div class="stat-value amber">−29%</div></div>
+  </div>
+</div>
+
+<!-- B) DESCRIPCIÓN -->
+<section>
+  <div class="container">
+    <div class="section-label">Descripción</div>
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="about-card">
+      <p>
+        MercadoLibre es la plataforma de <span class="accent-term">comercio electrónico</span> y
+        <span class="accent-term">fintech</span> líder en América Latina, operando en 18 países
+        con presencia dominante en <span class="accent-term">Brasil</span>, <span class="accent-term">México</span>
+        y <span class="accent-term">Argentina</span>. Fundada en 1999 en Buenos Aires, combina en un único
+        ecosistema lo que en EE.UU. serían Amazon, PayPal, eBay, Shopify y una entidad bancaria:
+        el marketplace <span class="accent-term">Mercado Libre</span> (ecommerce) y la plataforma financiera
+        <span class="accent-term">Mercado Pago</span> (pagos, crédito, inversión, seguros).
+      </p>
+      <br>
+      <p>
+        Su negocio de <span class="accent-term">crédito digital</span> ha crecido un +87% YoY
+        hasta $14.6B en cartera — convirtiéndolo en uno de los mayores prestamistas digitales de la región.
+        <span class="accent-term">Mercado Fondo</span> (AUM +77% YoY) compite con los fondos money market
+        bancarios. La combinación de logística propia (Mercado Envíos), publicidad digital y
+        <span class="accent-term">84.1 millones de compradores activos únicos</span> crea un ecosistema
+        difícil de replicar: el Q1 2026 fue el trimestre de mayor crecimiento de ingresos en casi
+        cuatro años (+49% YoY), liderado por Brasil (+55%) y México (+62%).
+      </p>
+      <div class="biz-tags">
+        <span class="biz-tag">Marketplace eCommerce</span>
+        <span class="biz-tag">Mercado Pago (pagos)</span>
+        <span class="biz-tag">Crédito Digital (+87% YoY)</span>
+        <span class="biz-tag">Mercado Fondo (AUM +77%)</span>
+        <span class="biz-tag">Mercado Envíos (logística)</span>
+        <span class="biz-tag">Publicidad digital</span>
+        <span class="biz-tag">Brasil · México · Argentina</span>
+        <span class="biz-tag">123.670 empleados</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- C) COMPETENCIA -->
+<section>
+  <div class="container">
+    <div class="section-label">Mercado</div>
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="competitive-grid">
+      <div class="subsector-cards">
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">eCommerce — América Latina</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">GMV $19.0B en Q1'26 (+42% YoY) · líder en Brasil y México</div>
+          <div class="subsector-note">Amazon LatAm crece en Brasil pero MELI tiene 25 años de ventaja en logística, confianza del consumidor, vendedores locales y red de entrega propia (Mercado Envíos). Shopee (Sea Ltd.) compite en moda y electrónica de bajo precio.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Pagos digitales — América Latina</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">TPV $87.2B en Q1'26 (+50% YoY) · 82.9M usuarios activos mensuales</div>
+          <div class="subsector-note">Nubank (NU) lidera en cuentas bancarias digitales en Brasil; MELI domina en pagos QR, punto de venta físico y billetera digital. La combinación commerce + pagos es imposible de replicar para un actor financiero puro.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Crédito digital — América Latina</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Cartera crediticia $14.6B (+87% YoY) · consumer + tarjetas + merchant</div>
+          <div class="subsector-note">MELI usa sus datos de transacciones de millones de compradores/vendedores para scoring crediticio superior. Nubank y bancos tradicionales (Bradesco, Itaú) compiten pero sin el mismo dataset propietario de comportamiento de compra.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Gestión de activos / Fintech investing</span>
+            <span class="position-badge">#2</span>
+          </div>
+          <div class="subsector-share">AUM Mercado Fondo: +77% YoY · alternativa a fondos bancarios</div>
+          <div class="subsector-note">Nubank (NU) tiene mayor base de usuarios bancarizados en Brasil y ofrece productos de inversión similares. MELI compensa con la ventaja de la integración total de cash-back de compras hacia inversión automática vía Mercado Pago.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <div class="rival-tag">Rival Principal</div>
+        <div class="rival-name">Amazon + Nubank</div>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul class="rival-bullets">
+          <li>Amazon expande agresivamente su marketplace y logística en Brasil — el mayor mercado de MELI — con precios agresivos y acceso a Prime Video como herramienta de retención. Su inversión en infraestructura en LatAm supera los $15B a largo plazo.</li>
+          <li>Nubank (NU), con 100M+ clientes en Brasil, México y Colombia, es el mayor banco digital del mundo por usuarios y amenaza directamente Mercado Pago, Mercado Fondo y la tarjeta de crédito MELI al competir por el mismo usuario bancarizable desatendido.</li>
+          <li>Shopee (Sea Ltd.) ataca el segmento de precio bajo en moda, electrónica y accesorios en Brasil y México — el mismo que impulsó el crecimiento inicial de MELI — con subsidios agresivos y un modelo de social commerce que capta a la Generación Z.</li>
+          <li>Shein ha penetrado fuertemente en el segmento de moda (el mayor GMV por categoría en LatAm) directamente desde fábricas chinas, sin intermediarios, a precios que ningún marketplace puede competir sin subsidiar envíos.</li>
+          <li>Los bancos tradicionales (Itaú, Bradesco, Bancolombia) contraatacan en pagos QR y cuentas digitales, ralentizando la expansión de Mercado Pago fuera del ecosistema de compradores frecuentes.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- D) POTENCIAL FUTURO -->
+<section>
+  <div class="container">
+    <div class="section-label">Perspectivas</div>
+    <h2 class="section-title">Potencial futuro del sector</h2>
+    <div class="catalyst-grid">
+      <div class="catalyst-card">
+        <span class="catalyst-icon">▲</span>
+        <div class="catalyst-title">eCommerce LatAm: menos del 15% de penetración</div>
+        <div class="catalyst-text">
+          El comercio electrónico en América Latina representa menos del 15% del retail total — versus ~25% en EE.UU. y ~35% en China. Con 670 millones de habitantes, una clase media creciente y una generación Z nativa digital, el runway de crecimiento es enorme. Brasil solo representa el mercado ecommerce de mayor crecimiento entre las 10 economías más grandes del mundo (+38% GMV FX-neutral en Q1'26). MELI captura la aceleración de forma asimétrica por su posición dominante.
+        </div>
+      </div>
+      <div class="catalyst-card">
+        <span class="catalyst-icon">●</span>
+        <div class="catalyst-title">Fintech: bancarizar a los no bancarizados de LatAm</div>
+        <div class="catalyst-text">
+          Más de 200 millones de personas en LatAm son sub-bancarizadas o no bancarizadas. Mercado Pago es para muchos su primer acceso a crédito, ahorro e inversión. La cartera crediticia de $14.6B (+87% YoY) y los 82.9M usuarios de Mercado Pago activos mensualmente son la base de un negocio financiero que puede rivalizar con los grandes bancos regionales en 5-10 años. El AUM +77% confirma que los usuarios migran hacia MELI como su banco principal.
+        </div>
+      </div>
+      <div class="catalyst-card">
+        <span class="catalyst-icon">■</span>
+        <div class="catalyst-title">Publicidad digital + logística: los próximos $10B</div>
+        <div class="catalyst-text">
+          El negocio de publicidad de MELI (Mercado Ads) crece a triple dígito y tiene el mismo diferencial competitivo que Amazon Advertising: datos de intención de compra real. Las marcas pagan una prima por anunciarse donde el usuario está a punto de comprar. Simultáneamente, Mercado Envíos se convierte en una red de logística de terceros — replicando el modelo FBA de Amazon — con costos decrecientes por escala. Ambos negocios tienen márgenes superiores al 50%.
+        </div>
+      </div>
+    </div>
+    <div class="risk-block">
+      <strong style="color:#C8D0DC;">Riesgos a vigilar:</strong>
+      &nbsp;<span class="risk-keyword">Compresión de márgenes</span> (op. margin cayó de 12.9% a 6.9% YoY · inversión intencional)
+      · <span class="risk-keyword">Tipo de cambio LatAm</span> (BRL, MXN, ARS vs USD)
+      · <span class="risk-keyword">Riesgo político Argentina</span> (mayor operación histórica)
+      · <span class="risk-keyword">Morosidad del crédito</span> (portfolio +87% — calidad de la cartera)
+      · <span class="risk-keyword">Competencia Amazon LatAm</span> (inversión creciente en Brasil)
+      · <span class="risk-keyword">Valuación</span> (P/E ~45× con EPS en caída por ciclo de inversión)
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- E) DATOS FUNDAMENTALES -->
+<section>
+  <div class="container">
+    <div class="section-label">Financials</div>
+    <h2 class="section-title">Datos fundamentales</h2>
+
+    <div class="market-cap-card">
+      <div class="mcap-big">
+        <div class="mcap-label">Market Capitalization</div>
+        <div class="mcap-value">~$94B</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">Líder indiscutido del ecommerce y fintech en América Latina · Fundada 1999 · NASDAQ</div>
+      </div>
+      <div class="mcap-metrics">
+        <div class="metric-item"><div class="metric-value">~45×</div><div class="metric-label">P/E ratio</div></div>
+        <div class="metric-item"><div class="metric-value">$8.23</div><div class="metric-label">EPS Q1'26</div></div>
+        <div class="metric-item"><div class="metric-value">6.9%</div><div class="metric-label">Op. Margin Q1</div></div>
+        <div class="metric-item"><div class="metric-value">$14.6B</div><div class="metric-label">Crédito portf.</div></div>
+        <div class="metric-item"><div class="metric-value">$2,598</div><div class="metric-label">PT analistas avg</div></div>
+      </div>
+    </div>
+
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">GMV Q1'26</div>
+        <div class="kpi-value">$19.0B</div>
+        <div class="kpi-sub">+42% YoY · +36% FX-neutral</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">TPV (Pago) Q1'26</div>
+        <div class="kpi-value">$87.2B</div>
+        <div class="kpi-sub">+50% YoY · +55% FX-neutral</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Compradores únicos</div>
+        <div class="kpi-value">84.1M</div>
+        <div class="kpi-sub">+26% YoY · Brasil: +17M récord</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Fintech MAU (Pago)</div>
+        <div class="kpi-value">82.9M</div>
+        <div class="kpi-sub">+29% YoY usuarios activos mensuales</div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+      <div class="data-table">
+        <div class="table-header dark">
+          Q1 2026 · Último trimestre reportado
+          <div class="th-sub">Publicado 7 mayo 2026 · Trimestre finalizado 31 marzo 2026</div>
+        </div>
+        <table>
+          <tr><td>Ingresos netos + fin.</td><td class="yoy-green">$8.85B &nbsp;(+49% YoY) ★ mejor en 4 años</td></tr>
+          <tr><td>EPS diluido (GAAP)</td><td class="yoy-red">$8.23 &nbsp;(−15% YoY vs $9.74)</td></tr>
+          <tr><td>Income from operations</td><td class="yoy-red">$611M &nbsp;(−20% YoY · margen 6.9%)</td></tr>
+          <tr><td>Net Income</td><td class="yoy-red">$417M &nbsp;(−16% YoY · margen 4.7%)</td></tr>
+          <tr><td>Brasil revenue</td><td class="yoy-green">~$4.6B &nbsp;(+55% YoY)</td></tr>
+          <tr><td>México revenue</td><td class="yoy-green">~$2.2B &nbsp;(+62% YoY)</td></tr>
+          <tr><td>Argentina revenue</td><td class="yoy-green">~$1.7B &nbsp;(+23% YoY)</td></tr>
+          <tr><td>Cartera crédito</td><td class="yoy-green">$14.6B &nbsp;(+87% YoY)</td></tr>
+          <tr><td>AUM Mercado Fondo</td><td class="yoy-green">+77% YoY (récord absoluto)</td></tr>
+        </table>
+        <div class="warn-badge">
+          ⚠ La caída del EPS (−15% YoY) y del margen operativo (6.9% vs 12.9% Q1'25) es <strong>intencional</strong>: MELI está invirtiendo agresivamente en logística, crédito y tecnología. El revenue +49% es la métrica clave del momentum real.
+        </div>
+      </div>
+
+      <div class="data-table">
+        <div class="table-header accent">
+          Q2 2026 · Previsión próximo trimestre
+          <div class="th-sub">Reporta 5 agosto 2026 · Trim. finaliza junio 2026</div>
+        </div>
+        <table>
+          <tr><td>EPS consensus</td><td class="yoy-green">~$11.04 (vs $8.23 Q1'26)</td></tr>
+          <tr><td>EPS Q2'25 (base comp.)</td><td>$10.48 (base exigente)</td></tr>
+          <tr><td>Revenue growth est.</td><td class="yoy-green">~+34% YoY anualizado</td></tr>
+          <tr><td>GMV crecimiento est.</td><td class="yoy-green">~+35–42% YoY</td></tr>
+          <tr><td>Brasil crecimiento est.</td><td class="yoy-green">+40%+ YoY (aceleración)</td></tr>
+          <tr><td>Mexico crecimiento est.</td><td class="yoy-green">+55–60% YoY (sostenido)</td></tr>
+          <tr><td>Margen operativo est.</td><td class="yoy-amber">~8–10% (recuperación grad.)</td></tr>
+          <tr><td>PT analista avg.</td><td class="yoy-green">$2,598 (+40% upside vs hoy)</td></tr>
+          <tr><td>PT más alto (BofA)</td><td class="yoy-green">$3,000 (+62% upside)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- F) TÉCNICO -->
+<section>
+  <div class="container">
+    <div class="section-label">Técnico</div>
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+    <div class="technical-grid">
+      <div class="ath-block">
+        <div class="ath-label">Dist. al ATH de cierre</div>
+        <div class="ath-pct">−29%</div>
+        <ul class="ath-details">
+          <li><span class="detail-label">Precio actual (post-earnings)</span>~$1,856 (aftermarket 7 mayo 2026)</li>
+          <li><span class="detail-label">ATH de cierre</span>$2,613.63 — 30 junio 2025</li>
+          <li><span class="detail-label">ATH intradía (52 sem.)</span>$2,645.22 — enero 2025</li>
+          <li><span class="detail-label">Mín. 52 semanas</span>$1,593.21 (recuperó +16.5%)</li>
+          <li><span class="detail-label">PT promedio analistas</span>$2,598.08 (+40% upside)</li>
+          <li><span class="detail-label">Beta</span>1.23 — alta volatilidad vs mercado</li>
+        </ul>
+      </div>
+      <div class="technical-card">
+        <h3>Lectura técnica · Mayo 2026</h3>
+        <ul class="tech-bullets">
+          <li><strong>En modo corrección desde ATH:</strong> MELI cayó desde el ATH de cierre ($2,613.63 en junio 2025) hasta mínimos de $1,593 — una corrección del −39%. La recuperación hasta $1,856 post-earnings de Q1 representa solo un rebote del +16.5% desde el piso, dejando un gap de −29% hasta recuperar los máximos.</li>
+          <li><strong>El earnings de Q1'26 fue un catalizador moderado:</strong> La acción subió apenas +0.81% en aftermarket tras el reporte a pesar del +49% en revenue — el mercado ya esperaba un número fuerte y el EPS miss (-15% YoY) generó cautela. El foco está ahora en cuándo se recupera el margen operativo.</li>
+          <li><strong>Resistencias clave:</strong> $1,950–$2,000 (zona de rechazo previo y media de 200 días estimada). $2,200 (zona de soporte previo transformada en resistencia). $2,600–$2,650 (ATH histórico — primer objetivo de largo plazo).</li>
+          <li><strong>Soporte primario:</strong> $1,750–$1,800 (zona de consolidación reciente, base del rebote post-ATH). $1,593 es el piso de 52 semanas y soporte estructural crítico — perderlo sería una señal muy negativa.</li>
+          <li><strong>Tesis de recuperación al ATH:</strong> Con PT analistas en $2,598 promedio ($3,000 BofA) y revenue acelerando al +49%, el mercado descuenta que los márgenes se recuperarán en 2H 2026 cuando el ciclo de inversión madure. Si Q2 muestra recuperación de margen + revenue +40%+ → el camino a $2,600 se reabre.</li>
+          <li><strong>Catalizador técnico Q2:</strong> Earnings del 5 agosto 2026. El mercado buscará: (a) EPS sobre $11.04, (b) margen operativo >9%, (c) aceleración de GMV Brasil/México, (d) calidad del crédito (morosidad estable en el portfolio de $14.6B).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- G) GRÁFICO -->
+<section class="chart-section">
+  <div class="container">
+    <div class="section-label">Precio</div>
+    <h2 class="section-title">Gráfico de cotización · Últimos 24 meses (semanal)</h2>
+    <div class="chart-wrapper">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3AMELI&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        scrolling="no"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- H) FOOTER -->
+<footer>
+  <div class="footer-date">📊 Análisis generado el 8 de mayo de 2026</div>
+  <div>Precio indicativo post-earnings aftermarket ~$1,856 (7 mayo 2026). Market cap estimado ~$94B. EPS y revenue de Q1 2026 publicados el 7 mayo 2026 tras el cierre de mercado. Este análisis es de carácter informativo y no constituye asesoramiento de inversión. Inversión en mercados emergentes conlleva riesgos de tipo de cambio y riesgo político adicionales.</div>
+  <div class="sources-title">Fuentes consultadas</div>
+  <div class="sources-list">
+    <div>· <a href="https://www.sec.gov/Archives/edgar/data/0001099590/000109959026000014/meli-20260507xex991.htm" target="_blank">SEC EDGAR — MercadoLibre Form 8-K Q1 2026 (Resultados oficiales)</a></div>
+    <div>· <a href="https://www.businesswire.com/news/home/20260507262226/en/MercadoLibre-Inc.-Reports-First-Quarter-2026-Financial-Results" target="_blank">BusinessWire — MELI Q1 2026 Earnings Release oficial</a></div>
+    <div>· <a href="https://www.fool.com/earnings/call-transcripts/2026/05/07/mercadolibre-meli-q1-2026-earnings-transcript/" target="_blank">Motley Fool — MELI Q1 2026 Earnings Call Transcript</a></div>
+    <div>· <a href="https://www.macrotrends.net/stocks/charts/MELI/mercadolibre/stock-price-history" target="_blank">MacroTrends — MELI ATH $2,613.63 cierre (30 jun 2025)</a></div>
+    <div>· <a href="https://www.macrotrends.net/stocks/charts/MELI/mercadolibre/market-cap" target="_blank">MacroTrends — MELI Market Cap ~$89.93B (6 mayo 2026)</a></div>
+    <div>· <a href="https://www.investing.com/news/transcripts/earnings-call-transcript-mercadolibre-q1-2026-shows-strong-revenue-growth-93CH-4670845" target="_blank">Investing.com — MELI Q1 2026 Earnings Transcript &amp; Slides</a></div>
+    <div>· <a href="https://www.chartmill.com/stock/quote/MELI/profile" target="_blank">ChartMill — PT analistas avg $2,598 · EPS growth +35% YoY estimado</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
