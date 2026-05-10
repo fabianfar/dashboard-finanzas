@@ -45,6 +45,13 @@ h3{font-size:15px;font-weight:500;margin-bottom:12px}
 @media(max-width:600px){.chart-grid{grid-template-columns:1fr}.form-row.four{grid-template-columns:1fr 1fr}}
 @media(max-width:768px){#analisis-layout{grid-template-columns:1fr!important;height:auto!important}}
 .an-item:hover{background:#1a2a3a!important;border-color:#378ADD44!important}
+/* Prestamo Auto */
+.pa-input{width:110px;padding:3px 8px;font-size:12px;text-align:right;background:transparent;border:none;border-bottom:0.5px solid #2a2a2a;border-radius:0;color:#e0e0e0;font-family:'Courier New',monospace;display:block;box-sizing:border-box}
+.pa-input:hover{border-bottom-color:#444}
+.pa-input:focus{outline:none;border-bottom-color:#378ADD;background:#0c1a28;color:#fff}
+#pa-table th{padding:7px 10px;font-size:11px;color:#aaa;font-weight:400;white-space:nowrap;border-bottom:0.5px solid #333}
+#pa-table td{padding:5px 10px;border-bottom:0.5px solid #1e1e1e;vertical-align:middle}
+#pa-table tr:hover td{background:rgba(255,255,255,0.03)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .form-row.three{grid-template-columns:1fr 1fr 1fr}
 .form-row.four{grid-template-columns:1fr 1fr 1fr 1fr}
@@ -271,7 +278,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
         </div>
       </div>
       <table id="co-table">
-        <thead><tr><th>Fecha</th><th>Descripcion</th><th>Categoria</th><th style="text-align:right">Total</th><th style="text-align:right">Cuota</th><th style="text-align:center">Cuotas</th><th style="text-align:right">Pendiente</th><th></th></tr></thead>
+        <thead><tr><th>Fecha</th><th>Descripcion</th><th>Categoria</th><th>Resumen</th><th style="text-align:right">Total</th><th style="text-align:right">Cuota</th><th style="text-align:center">Cuotas</th><th style="text-align:right">Pendiente</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -748,6 +755,21 @@ function editTarjetaFechas(id){
   document.getElementById('edtc-save-'+id).addEventListener('click',function(){var c=document.getElementById('edtc-c-'+id).value;var v=document.getElementById('edtc-v-'+id).value;if(!c||!v){alert('Completa ambas fechas');return;}tc.fechaCierre=c;tc.fechaVenc=v;saveState();renderTarjetas();});
   document.getElementById('edtc-cancel-'+id).addEventListener('click',function(){renderTarjetas();});
 }
+function cierrePrevioAVenc(proxVenc,diaOriginalCierre){
+  var vd=new Date(proxVenc+'T00:00:00');
+  var cp=new Date(vd.getFullYear(),vd.getMonth()-1,diaOriginalCierre);
+  return cp.getFullYear()+'-'+pad(cp.getMonth()+1)+'-'+pad(cp.getDate());
+}
+function getPeriodoConsumo(co,tc){
+  if(!tc||!tc.fechaCierre||!tc.fechaVenc||!co.fecha)return'';
+  var dC=new Date(tc.fechaCierre+'T00:00:00').getDate();
+  var dV=new Date(tc.fechaVenc+'T00:00:00').getDate();
+  var fc=new Date(co.fecha+'T00:00:00');
+  var proxC=new Date(fc.getFullYear(),fc.getMonth(),dC);
+  if(proxC<=fc)proxC=new Date(fc.getFullYear(),fc.getMonth()+1,dC);
+  var primerV=new Date(proxC.getFullYear(),proxC.getMonth()+1,dV);
+  return primerV.getFullYear()+'-'+pad(primerV.getMonth()+1)+'-'+pad(primerV.getDate());
+}
 function cierrePeriodo(tcId,esAuto){
   var tc=null;for(var i=0;i<state.tarjetas.length;i++)if(state.tarjetas[i].id===tcId){tc=state.tarjetas[i];break;}if(!tc)return;
   var proxVenc=nextDate(tc.fechaVenc);var hoy=todayStr();
@@ -818,7 +840,7 @@ function startEditConsumo(id){
   var tbody=document.querySelector('#co-table tbody');var row=tbody.querySelector('tr[data-coid="'+id+'"]');if(!row)return;
   row.classList.add('edit-row');
   var catOpts='';for(var k=0;k<ALL_CATS.length;k++)catOpts+='<option'+(ALL_CATS[k]===cObj.cat?' selected':'')+'>'+ALL_CATS[k]+'</option>';
-  row.innerHTML='<td colspan="8" style="padding:10px"><div class="form-row four" style="margin-bottom:8px"><div><label>Descripcion</label><input id="ed-desc-'+id+'" value="'+cObj.desc+'"></div><div><label>Fecha</label><input type="date" id="ed-fecha-'+id+'" value="'+cObj.fecha+'"></div><div><label>Categoria</label><select id="ed-cat-'+id+'">'+catOpts+'</select></div><div><label>Monto total</label><input type="number" id="ed-monto-'+id+'" value="'+cObj.monto+'" min="0" step="0.01"></div></div><div class="form-row three" style="margin-bottom:8px"><div><label>Cuotas</label><input type="number" id="ed-cuotas-'+id+'" value="'+cObj.cuotas+'" min="1" max="60"></div><div><label>Cuotas pagadas</label><input type="number" id="ed-pagadas-'+id+'" value="'+cObj.pagadas+'" min="0"></div></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-sm primary" id="ed-save-'+id+'">Guardar</button><button class="btn btn-sm" id="ed-cancel-'+id+'">Cancelar</button></div></td>';
+  row.innerHTML='<td colspan="9" style="padding:10px"><div class="form-row four" style="margin-bottom:8px"><div><label>Descripcion</label><input id="ed-desc-'+id+'" value="'+cObj.desc+'"></div><div><label>Fecha</label><input type="date" id="ed-fecha-'+id+'" value="'+cObj.fecha+'"></div><div><label>Categoria</label><select id="ed-cat-'+id+'">'+catOpts+'</select></div><div><label>Monto total</label><input type="number" id="ed-monto-'+id+'" value="'+cObj.monto+'" min="0" step="0.01"></div></div><div class="form-row three" style="margin-bottom:8px"><div><label>Cuotas</label><input type="number" id="ed-cuotas-'+id+'" value="'+cObj.cuotas+'" min="1" max="60"></div><div><label>Cuotas pagadas</label><input type="number" id="ed-pagadas-'+id+'" value="'+cObj.pagadas+'" min="0"></div></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-sm primary" id="ed-save-'+id+'">Guardar</button><button class="btn btn-sm" id="ed-cancel-'+id+'">Cancelar</button></div></td>';
   document.getElementById('ed-save-'+id).addEventListener('click',function(){cObj.desc=document.getElementById('ed-desc-'+id).value.trim()||cObj.desc;cObj.fecha=document.getElementById('ed-fecha-'+id).value||cObj.fecha;cObj.cat=document.getElementById('ed-cat-'+id).value;cObj.monto=parseFloat(document.getElementById('ed-monto-'+id).value)||cObj.monto;cObj.cuotas=parseInt(document.getElementById('ed-cuotas-'+id).value)||cObj.cuotas;cObj.pagadas=Math.min(parseInt(document.getElementById('ed-pagadas-'+id).value)||0,cObj.cuotas);saveState();renderTarjetas();renderConsumos();renderTCStats();});
   document.getElementById('ed-cancel-'+id).addEventListener('click',function(){renderConsumos();});
 }
@@ -838,14 +860,27 @@ function renderConsumos(){
   var saldo=saldoPendiente(+selectedTC);var proxV=nextDate(tc.fechaVenc);var proxC=nextDate(tc.fechaCierre);var dV=daysUntil(proxV);var dC=daysUntil(proxC);
   document.getElementById('tc-metrics').innerHTML='<div class="metric"><div class="metric-label">Saldo pendiente</div><div class="metric-value expense">'+fmtS(saldo)+'</div></div><div class="metric"><div class="metric-label">Consumos activos</div><div class="metric-value">'+activos+'</div></div><div class="metric"><div class="metric-label">Dias al cierre</div><div class="metric-value '+(dC<=5?'warn':'savings')+'">'+dC+'</div></div><div class="metric"><div class="metric-label">Dias al vencimiento</div><div class="metric-value '+(dV<=5?'warn':'savings')+'">'+dV+'</div></div>';
   var tbody=document.querySelector('#co-table tbody');
-  if(!consumos.length){tbody.innerHTML='<tr><td colspan="8" class="empty">No hay consumos en esta vista</td></tr>';return;}
+  if(!consumos.length){tbody.innerHTML='<tr><td colspan="9" class="empty">No hay consumos en esta vista</td></tr>';return;}
   var hRows='';
   for(var ci=0;ci<consumos.length;ci++){
     var co=consumos[ci];var pend=Math.max(0,co.cuotas-co.pagadas);var mc=co.monto/co.cuotas;
     var dots='';var maxDots=Math.min(co.cuotas,20);for(var di=0;di<maxDots;di++)dots+='<div class="cuota-dot" style="background:'+(di<co.pagadas?'#1D9E75':'#444')+'"></div>';
     var isCan=!!co.cancelado;
+    // Periodo de vencimiento
+    var periodoVenc=getPeriodoConsumo(co,tc);
+    var periodoLbl='';var periodoColor='#555';
+    if(periodoVenc){
+      var hoyStr=todayStr();var proxVencStr=nextDate(tc.fechaVenc);
+      if(isCan){periodoLbl='Pagado';periodoColor='#1D9E75';}
+      else if(periodoVenc<hoyStr){periodoLbl='Vencido';periodoColor='#D85A30';}
+      else if(periodoVenc===proxVencStr){periodoLbl='Próx. ('+fmtDate(periodoVenc)+')';periodoColor='#EF9F27';}
+      else{periodoLbl=fmtDate(periodoVenc);periodoColor='#888';}
+    }
     hRows+='<tr data-coid="'+co.id+'" style="'+(isCan?'opacity:0.5;':'')+'">'
-      +'<td>'+fmtDate(co.fecha)+'</td><td>'+co.desc+(isCan?' <span class="badge" style="background:#333;color:#888">cancelado</span>':'')+'</td><td>'+co.cat+'</td>'
+      +'<td>'+fmtDate(co.fecha)+'</td>'
+      +'<td>'+co.desc+(isCan?' <span class="badge" style="background:#333;color:#888">cancelado</span>':'')+'</td>'
+      +'<td>'+co.cat+'</td>'
+      +'<td style="font-size:12px;color:'+periodoColor+';white-space:nowrap">'+periodoLbl+'</td>'
       +'<td style="text-align:right">'+fmtS(co.monto)+'</td><td style="text-align:right">'+fmtS(mc)+'</td>'
       +'<td style="text-align:center"><div style="font-size:12px;margin-bottom:2px">'+co.pagadas+'/'+co.cuotas+'</div><div class="cuota-progress" style="justify-content:center">'+dots+'</div></td>'
       +'<td style="text-align:right" class="'+(pend>0&&!isCan?'amount-negative':'amount-positive')+'">'+fmtS(isCan?0:pend*mc)+'</td>'
