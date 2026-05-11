@@ -623,7 +623,32 @@ function getPrecioPromedio(invId){
   return{cant:cantTotal,promedio:cantTotal>0?costoTotal/cantTotal:0};
 }
 function getValorCartera(){
-  var tot=0;for(var i=0;i<state.instrumentos.length;i++){var pos=getPrecioPromedio(state.instrumentos[i].id);tot+=pos.cant*pos.promedio;}return tot;
+  var tot=0;
+  for(var i=0;i<state.instrumentos.length;i++){
+    var inv=state.instrumentos[i];var pos=getPrecioPromedio(inv.id);
+    var cotz=parseFloat(inv.cotizacion)||0;
+    tot+=pos.cant*(cotz>0?cotz:pos.promedio);
+  }
+  return tot;
+}
+function renderInvResumen(){
+  var el=document.getElementById('inv-resumen-financiero');if(!el)return;
+  var cm=getCurMonth();var income=0,expense=0;
+  for(var i=0;i<state.transactions.length;i++){var t=state.transactions[i];if(!t.date.startsWith(cm))continue;if(t.type==='ingreso')income+=t.amount;else expense+=t.amount;}
+  var totalAh=0;for(var k=0;k<state.goals.length;k++)totalAh+=state.goals[k].saved;
+  var totalDe=0;for(var l=0;l<state.debts.length;l++)totalDe+=Math.max(0,state.debts[l].total-state.debts[l].paid);
+  var sTC=0;for(var m=0;m<state.tarjetas.length;m++)sTC+=saldoPendiente(state.tarjetas[m].id);
+  var bal=income-expense;var disp=Math.max(0,bal);
+  var alertC=bal>=0?'#0a2a0a':'#2a0a0a';var alertB=bal>=0?'#1D9E75':'#D85A30';
+  var alertM=bal>=0?('Tenes aprox. '+fmtS(disp)+' disponibles este mes.'):'Los gastos superan los ingresos este mes.';
+  var tcM=sTC>0?' Recorda cubrir '+fmtS(sTC)+' en tarjetas.':'';
+  el.innerHTML='<h3 style="margin-bottom:14px">Panorama financiero actual</h3><div class="metric-grid">'
+    +'<div class="metric"><div class="metric-label">Balance del mes</div><div class="metric-value '+(bal>=0?'income':'expense')+'">'+fmtS(bal)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total ahorrado</div><div class="metric-value savings">'+fmtS(totalAh)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Deudas pendientes</div><div class="metric-value expense">'+fmtS(totalDe)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Venc. tarjetas</div><div class="metric-value warn">'+fmtS(sTC)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total cartera</div><div class="metric-value savings">'+fmtS(getValorCartera())+'</div></div>'
+    +'</div><div style="background:'+alertC+';border:0.5px solid '+alertB+';border-radius:8px;padding:12px;margin-top:4px;font-size:13px"><strong style="color:'+alertB+'">'+alertM+'</strong>'+(tcM?'<br><span style="color:#EF9F27">'+tcM+'</span>':'')+'</div>';
 }
 function getCartActual(){
   var cartActual={};var totalCart=0;
@@ -1134,9 +1159,23 @@ function renderListaInstrumentos(){
     el.innerHTML='<div class="empty">No hay instrumentos cargados. Agrega el primero arriba.</div>';
     document.getElementById('inv-movimientos-section').style.display='none';return;
   }
-  var h='<table style="margin-bottom:8px"><thead><tr><th>Ticker</th><th>Nombre</th><th>Categoria</th><th>Moneda</th><th>Vencimiento</th><th>Tasa</th><th style="text-align:right">Posicion</th><th style="text-align:right">P. Promedio</th><th style="text-align:right">Invertido</th><th></th></tr></thead><tbody>';
+  var h='<div style="overflow-x:auto"><table style="margin-bottom:8px;min-width:960px"><thead><tr>'
+    +'<th>Ticker</th><th>Nombre</th><th>Categoria</th><th>Moneda</th><th>Vencimiento</th><th>Tasa</th>'
+    +'<th style="text-align:right">Posicion</th><th style="text-align:right">P. Promedio</th>'
+    +'<th style="text-align:right">Costo total</th>'
+    +'<th style="text-align:right">Cotizacion</th>'
+    +'<th style="text-align:right">Valor actual</th>'
+    +'<th style="text-align:right">Dif. $</th>'
+    +'<th style="text-align:right">Dif. %</th>'
+    +'<th></th></tr></thead><tbody>';
   for(var i=0;i<state.instrumentos.length;i++){
     var inv=state.instrumentos[i];var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
+    var cotz=parseFloat(inv.cotizacion)||0;
+    var costoTotal=pos.cant*pos.promedio;
+    var valorActual=cotz>0?pos.cant*cotz:0;
+    var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
+    var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
+    var difColor=difMonto!==null?(difMonto>=0?'#1D9E75':'#D85A30'):'#555';
     h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
       +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
       +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
@@ -1145,11 +1184,47 @@ function renderListaInstrumentos(){
       +'<td style="font-size:12px;color:#aaa">'+(inv.tasa||'-')+'</td>'
       +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
       +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
-      +'<td style="text-align:right" class="amount-positive">'+fmtN(pos.cant*pos.promedio,smb)+'</td>'
+      +'<td style="text-align:right;color:#9FE1CB">'+fmtN(costoTotal,smb)+'</td>'
+      // Cotizacion: input editable con focus/blur
+      +'<td style="text-align:right;padding:4px 8px">'
+      +'<input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—"'
+      +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
+      // Valor actual
+      +'<td style="text-align:right;color:'+(cotz>0?'#9FE1CB':'#555')+'">'+(cotz>0?fmtN(valorActual,smb):'-')+'</td>'
+      // Dif $
+      +'<td style="text-align:right;font-weight:500;color:'+difColor+'">'
+      +(difMonto!==null?(difMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
+      // Dif %
+      +'<td style="text-align:right;font-weight:600;color:'+difColor+'">'
+      +(difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
       +'<td style="white-space:nowrap"><button class="btn btn-sm primary" data-selinv="'+inv.id+'">Ver mov.</button> <button class="btn btn-sm btn-danger" data-delinv="'+inv.id+'">x</button></td>'
       +'</tr>';
   }
-  h+='</tbody></table>';el.innerHTML=h;
+  h+='</tbody></table></div>';el.innerHTML=h;
+  // Cotizacion: focus → crudo, blur → formateado
+  var cotzInputs=el.querySelectorAll('[data-cotzid]');
+  for(var ci=0;ci<cotzInputs.length;ci++){(function(inp){
+    inp.addEventListener('focus',function(){
+      var raw=parseFloat(inp.dataset.cotzraw)||0;
+      inp.value=raw>0?raw:'';inp.select();
+    });
+    function guardarCotz(){
+      var val=parseFloat(inp.value.replace(/[^0-9.-]/g,''));
+      var smb2='$ ';
+      for(var k=0;k<state.instrumentos.length;k++){
+        if(state.instrumentos[k].id===+inp.dataset.cotzid){
+          state.instrumentos[k].cotizacion=isNaN(val)?0:val;
+          smb2=simbol(state.instrumentos[k].moneda);break;
+        }
+      }
+      var v=isNaN(val)?0:val;
+      inp.dataset.cotzraw=v;
+      inp.value=v>0?fmtN(v,smb2):'—';
+      saveState();renderListaInstrumentos();if(selectedInv)renderMovimientos();renderInvResumen();
+    }
+    inp.addEventListener('blur',guardarCotz);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();});
+  })(cotzInputs[ci]);}
   var bSel=el.querySelectorAll('[data-selinv]');for(var s=0;s<bSel.length;s++){(function(b){b.addEventListener('click',function(){selectedInv=+b.dataset.selinv;renderMovimientosSection();renderListaInstrumentos();});})(bSel[s]);}
   var bDel=el.querySelectorAll('[data-delinv]');for(var d=0;d<bDel.length;d++){(function(b){b.addEventListener('click',function(){deleteInstrumento(+b.dataset.delinv);});})(bDel[d]);}
 }
@@ -1370,13 +1445,123 @@ function addGoal(){
   document.getElementById('goal-name').value='';document.getElementById('goal-target').value='';document.getElementById('goal-saved').value='';
   saveState();renderGoals();
 }
+// ---- CONFETTI ENGINE ----
+var _confettiAnim=null;
+function launchConfetti(){
+  var canvas=document.getElementById('goal-confetti-canvas');
+  if(!canvas){canvas=document.createElement('canvas');canvas.id='goal-confetti-canvas';document.body.appendChild(canvas);}
+  canvas.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  var ctx=canvas.getContext('2d');
+  var COLORS=['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FF8C00','#00FA9A','#FF69B4'];
+  var SHAPES=['circle','rect','triangle'];
+  var pieces=[];
+  for(var i=0;i<220;i++){
+    pieces.push({
+      x:window.innerWidth*(0.3+Math.random()*0.4),y:-10-Math.random()*200,
+      vx:(Math.random()-0.5)*9,vy:Math.random()*4+3,
+      rot:Math.random()*360,rotV:(Math.random()-0.5)*8,
+      w:6+Math.random()*10,h:4+Math.random()*6,
+      color:COLORS[Math.floor(Math.random()*COLORS.length)],
+      shape:SHAPES[Math.floor(Math.random()*SHAPES.length)],
+      alpha:1,gravity:0.12+Math.random()*0.08,wobble:Math.random()*0.3,wobbleT:Math.random()*Math.PI*2
+    });
+  }
+  if(_confettiAnim)cancelAnimationFrame(_confettiAnim);
+  var frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);var alive=false;
+    for(var j=0;j<pieces.length;j++){
+      var p=pieces[j];
+      p.vy+=p.gravity;p.vx+=Math.sin(p.wobbleT)*p.wobble;p.wobbleT+=0.05;
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.rotV;
+      if(frame>80)p.alpha=Math.max(0,p.alpha-0.018);
+      if(p.alpha<=0||p.y>canvas.height+20)continue;
+      alive=true;
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;
+      if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}
+      else if(p.shape==='rect'){ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);}
+      else{ctx.beginPath();ctx.moveTo(0,-p.h);ctx.lineTo(p.w/2,p.h/2);ctx.lineTo(-p.w/2,p.h/2);ctx.closePath();ctx.fill();}
+      ctx.restore();
+    }
+    frame++;
+    if(alive&&frame<200){_confettiAnim=requestAnimationFrame(draw);}
+    else{ctx.clearRect(0,0,canvas.width,canvas.height);}
+  }
+  draw();
+}
+var _celebratedGoals={};
 function renderGoals(){
-  var el=document.getElementById('goals-list');if(!state.goals.length){el.innerHTML='<div class="empty">No hay metas registradas</div>';return;}
-  var h='';
-  for(var i=0;i<state.goals.length;i++){var g=state.goals[i];var pct=Math.min(100,Math.round(g.saved/g.target*100));h+='<div class="goal-card"><div class="goal-header"><span class="goal-name">'+g.name+'</span><button class="btn btn-sm btn-danger" data-delgoal="'+g.id+'">x</button></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+(pct>=100?'#1D9E75':'#378ADD')+'"></div></div><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span style="font-size:12px;color:#aaa">'+fmtS(g.saved)+' de '+fmtS(g.target)+' ('+pct+'%)</span><div style="display:flex;gap:6px;align-items:center"><label style="font-size:12px;margin:0">Actualizar:</label><input type="number" value="'+g.saved+'" min="0" style="width:100px;padding:4px 8px;font-size:12px" data-goalid="'+g.id+'"></div></div></div>';}
+  var el=document.getElementById('goals-list');
+  if(!state.goals.length){el.innerHTML='<div class="empty">No hay metas registradas</div>';return;}
+  var h='';var newlyCompleted=[];
+  for(var i=0;i<state.goals.length;i++){
+    var g=state.goals[i];var pct=Math.min(100,Math.round(g.saved/g.target*100));var complete=pct>=100;
+    if(complete){
+      if(!_celebratedGoals[g.id])newlyCompleted.push(g.id);
+      h+='<div class="goal-card goal-card-complete" style="padding:16px 18px">'
+        +'<div class="goal-ribbon" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+        +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<span class="goal-trophy">🏆</span>'
+        +'<div><div class="goal-complete-label">¡META ALCANZADA!</div>'
+        +'<div style="font-size:16px;font-weight:600;color:#FFD700;margin-top:2px">'+g.name+'</div></div></div>'
+        +'<button class="btn btn-sm btn-danger" data-delgoal="'+g.id+'">x</button></div>'
+        +'<div style="font-size:22px;letter-spacing:4px;margin-bottom:8px">⭐⭐⭐</div>'
+        +'<div class="progress-bar" style="height:10px;margin-bottom:8px"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#FFD700,#FFA500,#FFD700);background-size:200% auto;animation:shimmer 2s linear infinite"></div></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+        +'<span style="font-size:13px;color:#FFD700;font-weight:500">'+fmtS(g.saved)+' / '+fmtS(g.target)+' — 100% 🎉</span>'
+        +'<div style="display:flex;gap:6px;align-items:center">'
+        +'<input type="number" value="'+g.saved+'" min="0" placeholder="Monto ahorrado" style="width:130px;padding:4px 8px;font-size:12px;background:#1a1400;border:1px solid #FFD70066;color:#FFD700;border-radius:6px" data-goalid="'+g.id+'">'
+        +'<button class="btn btn-sm" style="border-color:#FFD700;color:#FFD700" data-savgoal="'+g.id+'">✓</button>'
+        +'</div></div></div>';
+    } else {
+      h+='<div class="goal-card"><div class="goal-header"><span class="goal-name">'+g.name+'</span><button class="btn btn-sm btn-danger" data-delgoal="'+g.id+'">x</button></div>'
+        +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+(pct>=80?'#EF9F27':'#378ADD')+'"></div></div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+        +'<span style="font-size:12px;color:#aaa">'+fmtS(g.saved)+' de '+fmtS(g.target)+' ('+pct+'%)'
+        +(pct>=80?' <span style="color:#EF9F27;font-weight:600">— ¡Casi!</span>':'')+'</span>'
+        +'<div style="display:flex;gap:6px;align-items:center">'
+        +'<input type="number" value="'+g.saved+'" min="0" placeholder="Monto ahorrado" style="width:120px;padding:4px 8px;font-size:12px" data-goalid="'+g.id+'">'
+        +'<button class="btn btn-sm primary" data-savgoal="'+g.id+'">✓</button>'
+        +'</div></div></div>';
+    }
+  }
   el.innerHTML=h;
-  var bDel=el.querySelectorAll('[data-delgoal]');for(var d=0;d<bDel.length;d++){(function(b){b.addEventListener('click',function(){var n=[];for(var i=0;i<state.goals.length;i++)if(state.goals[i].id!==+b.dataset.delgoal)n.push(state.goals[i]);state.goals=n;saveState();renderGoals();});})(bDel[d]);}
-  var bInp=el.querySelectorAll('[data-goalid]');for(var gi=0;gi<bInp.length;gi++){(function(inp){inp.addEventListener('change',function(){for(var i=0;i<state.goals.length;i++)if(state.goals[i].id===+inp.dataset.goalid){state.goals[i].saved=parseFloat(inp.value)||0;break;}saveState();renderGoals();});})(bInp[gi]);}
+  if(newlyCompleted.length>0){
+    for(var ni=0;ni<newlyCompleted.length;ni++)_celebratedGoals[newlyCompleted[ni]]=true;
+    setTimeout(launchConfetti,120);
+  }
+  // Botones guardar (click explícito)
+  var bSav=el.querySelectorAll('[data-savgoal]');
+  for(var gs=0;gs<bSav.length;gs++){(function(btn){
+    btn.addEventListener('click',function(){
+      var id=+btn.dataset.savgoal;
+      var inp=el.querySelector('input[data-goalid="'+id+'"]');
+      if(!inp)return;
+      var val=parseFloat(inp.value)||0;
+      for(var i=0;i<state.goals.length;i++)if(state.goals[i].id===id){state.goals[i].saved=val;break;}
+      saveState();renderGoals();
+    });
+  })(bSav[gs]);}
+  // También guardar con Enter en el input
+  var bInp=el.querySelectorAll('[data-goalid]');
+  for(var gi=0;gi<bInp.length;gi++){(function(inp){
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){
+        var id=+inp.dataset.goalid;var val=parseFloat(inp.value)||0;
+        for(var i=0;i<state.goals.length;i++)if(state.goals[i].id===id){state.goals[i].saved=val;break;}
+        saveState();renderGoals();
+      }
+    });
+  })(bInp[gi]);}
+  // Eliminar meta
+  var bDel=el.querySelectorAll('[data-delgoal]');
+  for(var d=0;d<bDel.length;d++){(function(b){
+    b.addEventListener('click',function(){
+      var n=[];for(var i=0;i<state.goals.length;i++)if(state.goals[i].id!==+b.dataset.delgoal)n.push(state.goals[i]);
+      state.goals=n;saveState();renderGoals();
+    });
+  })(bDel[d]);}
 }
 
 // DEUDAS
