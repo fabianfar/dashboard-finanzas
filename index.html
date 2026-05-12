@@ -633,6 +633,8 @@ function getValorCartera(){
 }
 function renderInvResumen(){
   var el=document.getElementById('inv-resumen-financiero');if(!el)return;
+
+  // --- Panorama financiero ---
   var cm=getCurMonth();var income=0,expense=0;
   for(var i=0;i<state.transactions.length;i++){var t=state.transactions[i];if(!t.date.startsWith(cm))continue;if(t.type==='ingreso')income+=t.amount;else expense+=t.amount;}
   var totalAh=0;for(var k=0;k<state.goals.length;k++)totalAh+=state.goals[k].saved;
@@ -642,13 +644,87 @@ function renderInvResumen(){
   var alertC=bal>=0?'#0a2a0a':'#2a0a0a';var alertB=bal>=0?'#1D9E75':'#D85A30';
   var alertM=bal>=0?('Tenes aprox. '+fmtS(disp)+' disponibles este mes.'):'Los gastos superan los ingresos este mes.';
   var tcM=sTC>0?' Recorda cubrir '+fmtS(sTC)+' en tarjetas.':'';
-  el.innerHTML='<h3 style="margin-bottom:14px">Panorama financiero actual</h3><div class="metric-grid">'
+
+  // --- Resumen de cartera ---
+  var RENTA_FIJA_CATS={'Letra (LECAP)':1,'BONCAP':1,'Bono CER':1,'Bono Soberano':1,'Bono Linked':1,'Obligacion Negociable':1,'FCI':1};
+  var RENTA_VAR_CATS={'CEDEAR':1,'Accion':1};
+  var totalCosto=0,totalMercado=0,costoConCotz=0,mercadoConCotz=0;
+  var rfCosto=0,rfMercado=0,rvCosto=0,rvMercado=0;
+  var instConCotz=0,instTotal=state.instrumentos.length;
+
+  for(var ii=0;ii<state.instrumentos.length;ii++){
+    var inv=state.instrumentos[ii];var pos=getPrecioPromedio(inv.id);
+    var costo=pos.cant*pos.promedio;var cotz=parseFloat(inv.cotizacion)||0;
+    var mercado=cotz>0?pos.cant*cotz:costo; // sin cotiz, usar costo
+    totalCosto+=costo;totalMercado+=mercado;
+    if(cotz>0){costoConCotz+=costo;mercadoConCotz+=mercado;instConCotz++;}
+    if(RENTA_FIJA_CATS[inv.cat]){rfCosto+=costo;rfMercado+=mercado;}
+    else if(RENTA_VAR_CATS[inv.cat]){rvCosto+=costo;rvMercado+=mercado;}
+  }
+  var resultado=mercadoConCotz-costoConCotz;
+  var resultadoPct=costoConCotz>0?(resultado/costoConCotz*100):0;
+  var resColor=resultado>=0?'#1D9E75':'#D85A30';
+  var resIcon=resultado>=0?'▲':'▼';
+  var rfPct=totalCosto>0?Math.round(rfCosto/totalCosto*100):0;
+  var rvPct=totalCosto>0?Math.round(rvCosto/totalCosto*100):0;
+
+  el.innerHTML=
+    // Fila 1: Panorama financiero
+    '<h3 style="margin-bottom:12px">Panorama financiero actual</h3>'
+    +'<div class="metric-grid" style="margin-bottom:10px">'
     +'<div class="metric"><div class="metric-label">Balance del mes</div><div class="metric-value '+(bal>=0?'income':'expense')+'">'+fmtS(bal)+'</div></div>'
     +'<div class="metric"><div class="metric-label">Total ahorrado</div><div class="metric-value savings">'+fmtS(totalAh)+'</div></div>'
     +'<div class="metric"><div class="metric-label">Deudas pendientes</div><div class="metric-value expense">'+fmtS(totalDe)+'</div></div>'
     +'<div class="metric"><div class="metric-label">Venc. tarjetas</div><div class="metric-value warn">'+fmtS(sTC)+'</div></div>'
     +'<div class="metric"><div class="metric-label">Total cartera</div><div class="metric-value savings">'+fmtS(getValorCartera())+'</div></div>'
-    +'</div><div style="background:'+alertC+';border:0.5px solid '+alertB+';border-radius:8px;padding:12px;margin-top:4px;font-size:13px"><strong style="color:'+alertB+'">'+alertM+'</strong>'+(tcM?'<br><span style="color:#EF9F27">'+tcM+'</span>':'')+'</div>';
+    +'</div>'
+    +'<div style="background:'+alertC+';border:0.5px solid '+alertB+';border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:16px">'
+    +'<strong style="color:'+alertB+'">'+alertM+'</strong>'+(tcM?'<br><span style="color:#EF9F27">'+tcM+'</span>':'')+'</div>'
+
+    // Separador Resumen de Inversiones
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+    +'<h3 style="margin:0">Resumen de inversiones</h3>'
+    +(instConCotz<instTotal?'<span style="font-size:11px;color:#666;background:#1a1a1a;padding:3px 8px;border-radius:20px">'+instConCotz+'/'+instTotal+' con cotizacion</span>':'')
+    +'</div>'
+    +'<div class="metric-grid">'
+    // Total invertido (costo)
+    +'<div class="metric"><div class="metric-label">Total invertido</div><div class="metric-value savings">'+fmtS(totalCosto)+'</div></div>'
+    // Valor a mercado
+    +(instConCotz>0
+      ?'<div class="metric"><div class="metric-label">Valor a mercado</div><div class="metric-value savings">'+fmtS(totalMercado)+'</div></div>'
+      :'')
+    // Resultado $
+    +(instConCotz>0
+      ?'<div class="metric"><div class="metric-label">Resultado inversión</div>'
+      +'<div class="metric-value" style="color:'+resColor+';font-size:16px">'
+      +resIcon+' '+fmtS(Math.abs(resultado))
+      +'<div style="font-size:12px;font-weight:400;margin-top:2px;color:'+resColor+'">'+(resultadoPct>=0?'+':'')+resultadoPct.toFixed(2)+'% sobre costo</div>'
+      +'</div></div>'
+      :'<div class="metric"><div class="metric-label">Resultado inversión</div><div class="metric-value" style="color:#555">Cargá cotizaciones</div></div>')
+    // Renta Fija
+    +'<div class="metric"><div class="metric-label">Renta fija</div>'
+    +'<div class="metric-value savings">'+fmtS(rfCosto)
+    +(rfPct>0?'<div style="font-size:11px;font-weight:400;margin-top:2px;color:#5DCAA5">'+rfPct+'% de la cartera</div>':'')
+    +'</div></div>'
+    // Renta Variable
+    +'<div class="metric"><div class="metric-label">Renta variable</div>'
+    +'<div class="metric-value warn">'+fmtS(rvCosto)
+    +(rvPct>0?'<div style="font-size:11px;font-weight:400;margin-top:2px;color:#EF9F27">'+rvPct+'% de la cartera</div>':'')
+    +'</div></div>'
+    +'</div>'
+
+    // Mini barra RF vs RV
+    +(instTotal>0&&(rfCosto+rvCosto)>0
+      ?'<div style="margin-top:10px">'
+      +'<div style="display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:4px">'
+      +'<span style="color:#5DCAA5">■ Renta Fija '+rfPct+'%</span>'
+      +'<span style="color:#EF9F27">Renta Variable '+rvPct+'% ■</span>'
+      +'</div>'
+      +'<div style="height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;display:flex">'
+      +'<div style="width:'+rfPct+'%;background:#5DCAA5;transition:width 0.4s"></div>'
+      +'<div style="width:'+rvPct+'%;background:#EF9F27;transition:width 0.4s"></div>'
+      +'</div></div>'
+      :'');
 }
 function getCartActual(){
   var cartActual={};var totalCart=0;
@@ -1294,23 +1370,7 @@ function renderCarteraComparacion(){
 }
 
 function renderInversiones(){
-  var cm=getCurMonth();var mt=[];for(var i=0;i<state.transactions.length;i++)if(state.transactions[i].date.startsWith(cm))mt.push(state.transactions[i]);
-  var income=0,expense=0;for(var j=0;j<mt.length;j++){if(mt[j].type==='ingreso')income+=mt[j].amount;else expense+=mt[j].amount;}
-  var totalAh=0;for(var k=0;k<state.goals.length;k++)totalAh+=state.goals[k].saved;
-  var totalDe=0;for(var l=0;l<state.debts.length;l++)totalDe+=Math.max(0,state.debts[l].total-state.debts[l].paid);
-  var sTC=0;for(var m=0;m<state.tarjetas.length;m++)sTC+=saldoPendiente(state.tarjetas[m].id);
-  var bal=income-expense;var disp=Math.max(0,bal);
-  var alertC=bal>=0?'#0a2a0a':'#2a0a0a';var alertB=bal>=0?'#1D9E75':'#D85A30';
-  var alertM=bal>=0?('Tenes aprox. '+fmtS(disp)+' disponibles este mes.'):'Los gastos superan los ingresos este mes.';
-  var tcM=sTC>0?' Recorda cubrir '+fmtS(sTC)+' en tarjetas.':'';
-  document.getElementById('inv-resumen-financiero').innerHTML=
-    '<h3 style="margin-bottom:14px">Panorama financiero actual</h3><div class="metric-grid">'
-    +'<div class="metric"><div class="metric-label">Balance del mes</div><div class="metric-value '+(bal>=0?'income':'expense')+'">'+fmtS(bal)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Total ahorrado</div><div class="metric-value savings">'+fmtS(totalAh)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Deudas pendientes</div><div class="metric-value expense">'+fmtS(totalDe)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Venc. tarjetas</div><div class="metric-value warn">'+fmtS(sTC)+'</div></div>'
-    +'<div class="metric"><div class="metric-label">Total cartera</div><div class="metric-value savings">'+fmtS(getValorCartera())+'</div></div>'
-    +'</div><div style="background:'+alertC+';border:0.5px solid '+alertB+';border-radius:8px;padding:12px;margin-top:4px;font-size:13px"><strong style="color:'+alertB+'">'+alertM+'</strong>'+(tcM?'<br><span style="color:#EF9F27">'+tcM+'</span>':'')+'</div>';
+  renderInvResumen();
   renderListaInstrumentos();
   if(selectedInv)renderMovimientosSection();
   document.getElementById('inv-cartera-comparacion').innerHTML=renderCarteraComparacion();
