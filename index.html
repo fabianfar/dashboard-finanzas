@@ -43,8 +43,13 @@ h3{font-size:15px;font-weight:500;margin-bottom:12px}
 .card{background:#222;border:0.5px solid #333;border-radius:12px;padding:16px;margin-bottom:14px}
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 @media(max-width:600px){.chart-grid{grid-template-columns:1fr}.form-row.four{grid-template-columns:1fr 1fr}}
-@media(max-width:768px){#analisis-layout{grid-template-columns:1fr!important;height:auto!important}}
+@media(max-width:768px){#analisis-layout{grid-template-columns:1fr!important;height:auto!important}#ag-layout{grid-template-columns:1fr!important}}
 .an-item:hover{background:#1a2a3a!important;border-color:#378ADD44!important}
+/* Agenda */
+#ag-tabla th{padding:10px 12px;font-size:11px;color:#aaa;font-weight:500;border-bottom:0.5px solid #333;white-space:nowrap;text-align:left}
+#ag-tabla td{padding:10px 12px;border-bottom:0.5px solid #1e1e1e;vertical-align:middle}
+#ag-tabla tr:last-child td{border-bottom:none}
+#ag-tabla tr:hover td{background:rgba(255,255,255,0.025)}
 /* Prestamo Auto */
 .pa-input{width:110px;padding:3px 8px;font-size:12px;text-align:right;background:transparent;border:none;border-bottom:0.5px solid #2a2a2a;border-radius:0;color:#e0e0e0;font-family:'Courier New',monospace;display:block;box-sizing:border-box}
 .pa-input:hover{border-bottom-color:#444}
@@ -149,6 +154,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
     if (saved.movimientos)   state.movimientos   = saved.movimientos;
     if (saved.prestamoAuto)  state.prestamoAuto  = saved.prestamoAuto;
     if (saved.analisis)      state.analisis      = saved.analisis;
+    if (saved.agenda)        state.agenda        = saved.agenda;
     if (saved.transactions && saved.transactions.length > 0) {
       state.transactions = saved.transactions;
     }
@@ -449,6 +455,139 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   </div>
 </div>
 
+<!-- AGENDA DE PAGOS -->
+<div class="section" id="tab-agenda">
+
+  <!-- Fila superior: selector mes + botón agregar -->
+  <div class="card" style="padding:12px 16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <h3 style="margin:0">Agenda de Pagos</h3>
+        <select id="ag-mes-sel" style="width:160px"></select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn primary" id="btn-ag-add-item">+ Agregar pago</button>
+        <button class="btn" id="btn-ag-cuentas" style="border-color:#378ADD;color:#378ADD">⚙ Cuentas</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:16px" id="ag-layout">
+
+    <!-- Panel principal: lista de pagos -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <!-- Resumen del mes -->
+      <div class="card" style="padding:14px">
+        <div class="metric-grid" id="ag-resumen-mes"></div>
+      </div>
+
+      <!-- Tabla de pagos -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="ag-tabla-wrap" style="overflow-x:auto">
+          <table id="ag-tabla" style="min-width:700px">
+            <thead>
+              <tr style="background:#1a1a1a">
+                <th style="width:36px;text-align:center">✓</th>
+                <th>Descripción</th>
+                <th style="text-align:right">Monto</th>
+                <th>Vencimiento</th>
+                <th>Fecha de pago</th>
+                <th>Cuenta</th>
+                <th style="width:60px"></th>
+              </tr>
+            </thead>
+            <tbody id="ag-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel derecho: cuentas -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:14px">
+        <h3 style="margin-bottom:12px;font-size:14px">Saldo de cuentas</h3>
+        <div id="ag-cuentas-list"></div>
+        <div id="ag-cobertura" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal agregar/editar pago -->
+  <div id="ag-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+    <div style="background:#1e1e1e;border:0.5px solid #333;border-radius:12px;padding:20px;width:400px;max-width:95vw">
+      <h3 style="margin-bottom:16px" id="ag-modal-title">Agregar pago</h3>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label style="font-size:11px;color:#aaa;display:block;margin-bottom:3px">Descripción</label>
+          <input id="ag-desc" list="ag-desc-list" placeholder="Visa Hipotecario, Monotributo…" style="width:100%">
+          <datalist id="ag-desc-list">
+            <option value="Visa Hipotecario"><option value="Mastercard MercadoPago">
+            <option value="Tarjeta Tuya"><option value="Personal (celular)">
+            <option value="Monotributo"><option value="AFIP / Impuestos">
+            <option value="Patente Auto"><option value="Patente Moto">
+            <option value="SECHEEP"><option value="SAMEEP">
+            <option value="Seguro Moto"><option value="Seguro Auto">
+            <option value="Expensas"><option value="Alquiler">
+            <option value="Internet / Cablevision"><option value="Netflix">
+            <option value="Spotify"><option value="AWS / Hosting">
+          </datalist>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label style="font-size:11px;color:#aaa;display:block;margin-bottom:3px">Monto</label>
+            <input type="number" id="ag-monto" placeholder="0.00" min="0" step="0.01" style="width:100%"></div>
+          <div><label style="font-size:11px;color:#aaa;display:block;margin-bottom:3px">Vencimiento</label>
+            <input type="date" id="ag-venc" style="width:100%"></div>
+        </div>
+        <div><label style="font-size:11px;color:#aaa;display:block;margin-bottom:3px">Cuenta de pago</label>
+          <select id="ag-cuenta" style="width:100%"></select></div>
+        <div><label style="font-size:11px;color:#aaa;display:block;margin-bottom:3px">Notas (opcional)</label>
+          <input id="ag-nota" placeholder="Aclaración…" style="width:100%"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+        <button class="btn" id="ag-modal-cancel">Cancelar</button>
+        <button class="btn primary" id="ag-modal-save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal cuentas -->
+  <div id="ag-modal-cuentas" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+    <div style="background:#1e1e1e;border:0.5px solid #333;border-radius:12px;padding:20px;width:440px;max-width:95vw;max-height:85vh;overflow-y:auto">
+      <h3 style="margin-bottom:16px">Mis cuentas y billeteras</h3>
+      <div id="ag-cuentas-form-list"></div>
+      <div style="margin-top:14px;padding-top:12px;border-top:0.5px solid #333">
+        <div style="font-size:12px;color:#aaa;margin-bottom:8px">Agregar cuenta / billetera</div>
+        <div style="display:grid;grid-template-columns:1fr auto 80px;gap:8px;align-items:end">
+          <div>
+            <input id="ag-nueva-cuenta" list="ag-cuentas-list" placeholder="Nombre" style="width:100%">
+            <datalist id="ag-cuentas-list">
+              <option value="Banco Hipotecario"><option value="Banco Galicia">
+              <option value="NBCH"><option value="Personal Pay">
+              <option value="Uala"><option value="MercadoPago">
+              <option value="NaranjaX"><option value="Billetera Cocos">
+            </datalist>
+          </div>
+          <div>
+            <select id="ag-nueva-tipo" style="width:110px">
+              <option value="banco">Banco</option>
+              <option value="billetera">Billetera</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <button class="btn primary" id="btn-ag-add-cuenta" style="white-space:nowrap">+ Agregar</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn primary" id="ag-cuentas-close">Listo</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- cierre main wrapper -->
+
 <!-- ANÁLISIS BURSÁTIL -->
 <div class="section" id="tab-analisis">
   <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;height:calc(100vh - 120px);min-height:600px" id="analisis-layout">
@@ -522,7 +661,7 @@ var CAT_TO_CARTERA={'Letra (LECAP)':'LECAP/BONCAP pesos','BONCAP':'LECAP/BONCAP 
 var CARTERA_SUG=[{nombre:'LECAP/BONCAP pesos',pctSug:25,color:'#378ADD'},{nombre:'Bonos CER',pctSug:15,color:'#5DCAA5'},{nombre:'ON Hard Dollar AAA',pctSug:25,color:'#7F77DD'},{nombre:'Dolar MEP',pctSug:15,color:'#BA7517'},{nombre:'FCI/Acciones AR',pctSug:10,color:'#D4537E'},{nombre:'Oro CEDEAR',pctSug:10,color:'#EF9F27'}];
 var RAW=[{f:'2026-01-01',d:'Transporte Balance anio anterior',cr:0,db:5000000},{f:'2026-01-02',d:'Sueldo Telecom',cr:1758915,db:0},{f:'2026-01-02',d:'SECHEEP',cr:0,db:81709.22},{f:'2026-01-02',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-01-02',d:'Kiosko',cr:0,db:21220},{f:'2026-01-03',d:'Familia',cr:300000,db:0},{f:'2026-01-05',d:'Personal',cr:0,db:110076},{f:'2026-01-06',d:'Varios Mio',cr:0,db:17800},{f:'2026-01-06',d:'Sueldo Andrea',cr:1423249.56,db:0},{f:'2026-01-06',d:'Tarjeta Tuya',cr:0,db:149559.10},{f:'2026-01-07',d:'Sueldo Telecom',cr:1150000,db:0},{f:'2026-01-08',d:'Panaderia',cr:0,db:1000},{f:'2026-01-08',d:'Visa Hipotecario',cr:0,db:2947735.39},{f:'2026-01-09',d:'Sueldo Telecom',cr:1533378,db:0},{f:'2026-01-11',d:'Mastercard MercadoPago',cr:0,db:236743.31},{f:'2026-01-11',d:'Viajes',cr:0,db:114047.79},{f:'2026-01-12',d:'Viajes',cr:0,db:205765.29},{f:'2026-01-12',d:'Seguro Moto',cr:0,db:4280},{f:'2026-01-13',d:'Viajes',cr:0,db:1323771.21},{f:'2026-01-14',d:'Viajes',cr:0,db:1360635.65},{f:'2026-01-15',d:'Ingresos Varios',cr:118402,db:0},{f:'2026-01-18',d:'Viajes',cr:0,db:24145.74},{f:'2026-01-19',d:'Impuestos',cr:0,db:11192.60},{f:'2026-01-19',d:'Viajes',cr:0,db:5677.85},{f:'2026-01-19',d:'Patente Moto',cr:0,db:933.31},{f:'2026-01-23',d:'Kiosko',cr:0,db:5890},{f:'2026-01-24',d:'Panaderia',cr:0,db:3100},{f:'2026-01-28',d:'Panaderia',cr:0,db:1000},{f:'2026-01-29',d:'Panaderia',cr:0,db:1000},{f:'2026-01-30',d:'Prestamo HSBC',cr:0,db:1441738.05},{f:'2026-02-01',d:'Sueldo Telecom',cr:1178599,db:0},{f:'2026-02-02',d:'SECHEEP',cr:0,db:65341.12},{f:'2026-02-02',d:'Panaderia',cr:0,db:1000},{f:'2026-02-03',d:'Familia',cr:300000,db:0},{f:'2026-02-03',d:'Sueldo Andrea',cr:1356610.89,db:0},{f:'2026-02-03',d:'Tarjeta Tuya',cr:0,db:70246.47},{f:'2026-02-04',d:'Personal',cr:0,db:113828.12},{f:'2026-02-04',d:'Gas',cr:0,db:15000},{f:'2026-02-05',d:'Kiosko',cr:0,db:1000},{f:'2026-02-05',d:'Sueldo Telecom',cr:1230000,db:0},{f:'2026-02-06',d:'Visa Hipotecario',cr:0,db:2590143.47},{f:'2026-02-06',d:'Varios Mio',cr:0,db:1440},{f:'2026-02-07',d:'Kiosko',cr:0,db:23850},{f:'2026-02-09',d:'Panaderia',cr:0,db:1000},{f:'2026-02-09',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-02-10',d:'Mastercard MercadoPago',cr:0,db:171655},{f:'2026-02-10',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-02-10',d:'Panaderia',cr:0,db:1000},{f:'2026-02-13',d:'Ingresos Varios',cr:92724,db:0},{f:'2026-02-13',d:'Kiosko',cr:0,db:3000},{f:'2026-02-17',d:'Panaderia',cr:0,db:1000},{f:'2026-02-17',d:'Familia',cr:200000,db:0},{f:'2026-02-18',d:'Impuestos',cr:0,db:12792.46},{f:'2026-02-19',d:'Mantenimiento',cr:0,db:7800},{f:'2026-02-19',d:'Varios',cr:0,db:8000},{f:'2026-02-20',d:'Panaderia',cr:0,db:1000},{f:'2026-02-21',d:'Kiosko',cr:0,db:11625},{f:'2026-02-21',d:'Salidas',cr:0,db:24400},{f:'2026-02-25',d:'Martina',cr:0,db:8900},{f:'2026-02-26',d:'Panaderia',cr:0,db:1000},{f:'2026-02-28',d:'Prestamo HSBC',cr:0,db:1429552.80},{f:'2026-03-02',d:'Sueldo Telecom',cr:975325,db:0},{f:'2026-03-02',d:'Panaderia',cr:0,db:1000},{f:'2026-03-03',d:'Sueldo Andrea',cr:1452907.03,db:0},{f:'2026-03-03',d:'Tarjeta Tuya',cr:0,db:83909.13},{f:'2026-03-03',d:'Kiosko',cr:0,db:13870},{f:'2026-03-05',d:'SECHEEP',cr:0,db:98553.94},{f:'2026-03-05',d:'Salidas',cr:0,db:34900},{f:'2026-03-05',d:'Sueldo Telecom',cr:1300000,db:0},{f:'2026-03-05',d:'Familia',cr:300000,db:0},{f:'2026-03-06',d:'Visa Hipotecario',cr:0,db:2231951.61},{f:'2026-03-07',d:'Panaderia',cr:0,db:1000},{f:'2026-03-09',d:'Personal',cr:0,db:116168.98},{f:'2026-03-09',d:'Panaderia',cr:0,db:1100},{f:'2026-03-10',d:'Mastercard MercadoPago',cr:0,db:334048.46},{f:'2026-03-10',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-03-10',d:'Seguro Moto',cr:0,db:6420},{f:'2026-03-11',d:'Panaderia',cr:0,db:1000},{f:'2026-03-12',d:'Ingresos Varios',cr:53025,db:0},{f:'2026-03-12',d:'Varios Mio',cr:0,db:20000},{f:'2026-03-13',d:'Panaderia',cr:0,db:2000},{f:'2026-03-14',d:'Kiosko',cr:0,db:12280},{f:'2026-03-16',d:'Panaderia',cr:0,db:1100},{f:'2026-03-18',d:'Impuestos',cr:0,db:12792.46},{f:'2026-03-18',d:'Panaderia',cr:0,db:2000},{f:'2026-03-22',d:'Kiosko',cr:0,db:4000},{f:'2026-03-23',d:'Panaderia',cr:0,db:1000},{f:'2026-03-25',d:'Moto',cr:0,db:4000},{f:'2026-03-28',d:'Varios',cr:0,db:4000},{f:'2026-03-30',d:'Prestamo HSBC',cr:0,db:1440599.90},{f:'2026-03-30',d:'Panaderia',cr:0,db:1100},{f:'2026-04-01',d:'Sueldo Telecom',cr:1701859,db:0},{f:'2026-04-01',d:'Sueldo Andrea',cr:1452907.03,db:0},{f:'2026-04-01',d:'Tarjeta Tuya',cr:0,db:192148.90},{f:'2026-04-03',d:'Kiosko',cr:0,db:12900},{f:'2026-04-04',d:'Familia',cr:300000,db:0},{f:'2026-04-06',d:'SECHEEP',cr:0,db:115661.12},{f:'2026-04-06',d:'Visa Hipotecario',cr:0,db:2076827.87},{f:'2026-04-06',d:'Varios Mio',cr:0,db:5777},{f:'2026-04-07',d:'Personal',cr:0,db:120218.32},{f:'2026-04-07',d:'Sueldo Telecom',cr:1000000,db:0},{f:'2026-04-07',d:'Varios Mio',cr:0,db:12146.28},{f:'2026-04-09',d:'Varios Andrea',cr:0,db:8000},{f:'2026-04-09',d:'Panaderia',cr:0,db:5000},{f:'2026-04-09',d:'Seguro Moto',cr:0,db:6420},{f:'2026-04-10',d:'Mastercard MercadoPago',cr:0,db:250673.91}];
 
-var state={transactions:[],budget:{},goals:[],debts:[],tarjetas:[],consumos:[],recurrentes:[],instrumentos:[],movimientos:[],prestamoAuto:[],analisis:[]};
+var state={transactions:[],budget:{},goals:[],debts:[],tarjetas:[],consumos:[],recurrentes:[],instrumentos:[],movimientos:[],prestamoAuto:[],analisis:[],agenda:{cuentas:[],items:[]}};
 var charts={};
 var activeTab='resumen';
 var selectedTC=null;
@@ -758,7 +897,7 @@ function bootstrapApp() {
 
 
 // TABS
-var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'}];
+var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'agenda',label:'Agenda de Pagos'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'}];
 function buildTabs(){
   var c=document.getElementById('tabs-container');var h='';
   for(var i=0;i<TABS.length;i++)h+='<button class="tab'+(TABS[i].id===activeTab?' active':'')+'" data-tab="'+TABS[i].id+'">'+TABS[i].label+'</button>';
@@ -775,6 +914,7 @@ function showTab(t){
   if(t==='tarjetas')renderTarjetas();
   if(t==='inversiones')renderInversiones();
   if(t==='analisis')renderAnalisis();
+  if(t==='agenda')renderAgenda();
   if(t==='presupuesto')renderBudgetProgress();
 }
 
@@ -982,9 +1122,9 @@ function renderConsumos(){
       +'<td>'+co.desc+(isCan?' <span class="badge" style="background:#333;color:#888">cancelado</span>':'')+'</td>'
       +'<td>'+co.cat+'</td>'
       +'<td style="font-size:12px;color:'+periodoColor+';white-space:nowrap">'+periodoLbl+'</td>'
-      +'<td style="text-align:right">'+fmtS(co.monto)+'</td><td style="text-align:right">'+fmtS(mc)+'</td>'
+      +'<td style="text-align:right">'+fmt(co.monto)+'</td><td style="text-align:right">'+fmt(mc)+'</td>'
       +'<td style="text-align:center"><div style="font-size:12px;margin-bottom:2px">'+co.pagadas+'/'+co.cuotas+'</div><div class="cuota-progress" style="justify-content:center">'+dots+'</div></td>'
-      +'<td style="text-align:right" class="'+(pend>0&&!isCan?'amount-negative':'amount-positive')+'">'+fmtS(isCan?0:pend*mc)+'</td>'
+      +'<td style="text-align:right" class="'+(pend>0&&!isCan?'amount-negative':'amount-positive')+'">'+fmt(isCan?0:pend*mc)+'</td>'
       +'<td style="white-space:nowrap"><button class="btn btn-sm btn-info" data-edit="'+co.id+'">Ed</button>'
       +(!isCan&&pend>0?'<button class="btn btn-sm btn-warn" data-pagar="'+co.id+'">+1</button>':'')
       +'<button class="btn btn-sm" style="font-size:11px;border-color:'+(isCan?'#1D9E75':'#854F0B')+';color:'+(isCan?'#9FE1CB':'#FAC775')+'" data-cancelar="'+co.id+'">'+(isCan?'Reactivar':'Cancelar')+'</button>'
@@ -1891,6 +2031,297 @@ function resetViewer(){
   if(empty)empty.style.display='flex';
   if(title)title.textContent='Seleccioná un análisis para ver';
   if(link)link.style.display='none';
+}
+
+// ========== AGENDA DE PAGOS ==========
+var AG_CUENTA_ICONS={banco:'🏦',billetera:'💳',otro:'💰'};
+var _agEditId=null;
+
+function agInitDefaults(){
+  if(!state.agenda)state.agenda={cuentas:[],items:[]};
+  if(!state.agenda.cuentas)state.agenda.cuentas=[];
+  if(!state.agenda.items)state.agenda.items=[];
+  // Cargar cuentas por defecto si está vacío
+  if(state.agenda.cuentas.length===0){
+    var DEF_CUENTAS=[
+      {nombre:'Banco Hipotecario',tipo:'banco'},{nombre:'Banco Galicia',tipo:'banco'},
+      {nombre:'NBCH',tipo:'banco'},{nombre:'Personal Pay',tipo:'billetera'},
+      {nombre:'Uala',tipo:'billetera'},{nombre:'MercadoPago',tipo:'billetera'},
+      {nombre:'NaranjaX',tipo:'billetera'},{nombre:'Billetera Cocos',tipo:'billetera'}
+    ];
+    for(var i=0;i<DEF_CUENTAS.length;i++)state.agenda.cuentas.push({id:Date.now()+i,nombre:DEF_CUENTAS[i].nombre,tipo:DEF_CUENTAS[i].tipo,saldo:0});
+    saveState();
+  }
+}
+
+function agGetMesOpts(){
+  // Genera 12 meses: 3 anteriores, actual, 8 siguientes
+  var hoy=new Date();var meses=[];
+  for(var i=-3;i<=8;i++){
+    var d=new Date(hoy.getFullYear(),hoy.getMonth()+i,1);
+    var val=d.getFullYear()+'-'+pad(d.getMonth()+1);
+    var label=d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+    meses.push({val:val,label:label.charAt(0).toUpperCase()+label.slice(1)});
+  }
+  return meses;
+}
+
+function agGetMesActual(){
+  var sel=document.getElementById('ag-mes-sel');
+  return sel?sel.value:(new Date().getFullYear()+'-'+pad(new Date().getMonth()+1));
+}
+
+function agItemsDelMes(mes){
+  return state.agenda.items.filter(function(it){return it.mes===mes;}).sort(function(a,b){return a.venc<b.venc?-1:1;});
+}
+
+function agCuentaNombre(id){
+  for(var i=0;i<state.agenda.cuentas.length;i++)if(state.agenda.cuentas[i].id===id)return state.agenda.cuentas[i].nombre;
+  return '—';
+}
+
+function agFillCuentasSel(selId,selectedId){
+  var sel=document.getElementById(selId);if(!sel)return;
+  sel.innerHTML='<option value="">Sin asignar</option>';
+  for(var i=0;i<state.agenda.cuentas.length;i++){
+    var c=state.agenda.cuentas[i];
+    var ico=AG_CUENTA_ICONS[c.tipo]||'💰';
+    sel.innerHTML+='<option value="'+c.id+'"'+(c.id===selectedId?' selected':'')+'>'+ico+' '+c.nombre+'</option>';
+  }
+}
+
+function renderAgenda(){
+  agInitDefaults();
+  var mes=agGetMesActual();
+  // Poblar selector de mes
+  var mesSel=document.getElementById('ag-mes-sel');
+  if(mesSel&&!mesSel.dataset.init){
+    var opts=agGetMesOpts();var hoyMes=new Date().getFullYear()+'-'+pad(new Date().getMonth()+1);
+    mesSel.innerHTML='';
+    for(var oi=0;oi<opts.length;oi++){mesSel.innerHTML+='<option value="'+opts[oi].val+'"'+(opts[oi].val===hoyMes?' selected':'')+'>'+opts[oi].label+'</option>';}
+    mesSel.dataset.init='1';
+    mesSel.addEventListener('change',function(){renderAgendaMes();});
+  }
+  renderAgendaMes();
+  renderAgendaCuentas();
+  agBindEvents();
+}
+
+function renderAgendaMes(){
+  var mes=agGetMesActual();
+  var items=agItemsDelMes(mes);
+  var tbody=document.getElementById('ag-tbody');if(!tbody)return;
+  // Resumen
+  var totalPend=0,totalPag=0,totalMes=0;
+  for(var i=0;i<items.length;i++){
+    totalMes+=items[i].monto||0;
+    if(items[i].pagado)totalPag+=items[i].monto||0;
+    else totalPend+=items[i].monto||0;
+  }
+  var hoy=todayStr();
+  var vencHoy=items.filter(function(it){return!it.pagado&&it.venc===hoy;}).length;
+  var vencidos=items.filter(function(it){return!it.pagado&&it.venc<hoy;}).length;
+  var resEl=document.getElementById('ag-resumen-mes');
+  if(resEl)resEl.innerHTML=
+    '<div class="metric"><div class="metric-label">Total del mes</div><div class="metric-value">'+fmt(totalMes)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Pagado</div><div class="metric-value income">'+fmt(totalPag)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Pendiente</div><div class="metric-value expense">'+fmt(totalPend)+'</div></div>'
+    +(vencHoy>0?'<div class="metric"><div class="metric-label">Vence hoy</div><div class="metric-value warn">'+vencHoy+' pago'+(vencHoy>1?'s':'')+'</div></div>':'')
+    +(vencidos>0?'<div class="metric"><div class="metric-label">Vencidos</div><div class="metric-value expense">'+vencidos+' sin pagar</div></div>':'');
+  // Tabla
+  if(!items.length){tbody.innerHTML='<tr><td colspan="7" class="empty" style="padding:24px">No hay pagos registrados para este mes. Hacé clic en "+ Agregar pago".</td></tr>';return;}
+  var h='';
+  for(var j=0;j<items.length;j++){
+    var it=items[j];
+    var isVenc=!it.pagado&&it.venc<hoy;var isHoy=!it.pagado&&it.venc===hoy;
+    var rowBg=it.pagado?'#0d1f0d':isVenc?'#2a0a0a':isHoy?'#1a1400':'';
+    var cuentaN=it.cuentaId?agCuentaNombre(+it.cuentaId):'—';
+    var cuentaColor='#666';
+    for(var ci=0;ci<state.agenda.cuentas.length;ci++)if(state.agenda.cuentas[ci].id===+it.cuentaId){cuentaColor=state.agenda.cuentas[ci].tipo==='banco'?'#378ADD':'#9B6EDB';break;}
+    h+='<tr style="background:'+rowBg+'" data-agid="'+it.id+'">'
+      // Check pagado
+      +'<td style="text-align:center"><button class="btn btn-sm" style="padding:3px 8px;font-size:14px;border-color:'+(it.pagado?'#1D9E75':'#444')+';color:'+(it.pagado?'#1D9E75':'#666')+'" data-ag-check="'+it.id+'">'+(it.pagado?'✓':'○')+'</button></td>'
+      // Descripción
+      +'<td style="'+(it.pagado?'text-decoration:line-through;color:#555':'')+'"><strong>'+it.desc+'</strong>'+(it.nota?'<div style="font-size:11px;color:#555">'+it.nota+'</div>':'')+'</td>'
+      // Monto
+      +'<td style="text-align:right;font-weight:600;color:'+(it.pagado?'#555':isVenc?'#D85A30':isHoy?'#EF9F27':'#e0e0e0')+'">'+fmt(it.monto||0)+'</td>'
+      // Vencimiento
+      +'<td style="font-size:12px;color:'+(isVenc?'#D85A30':isHoy?'#EF9F27':'#aaa')+'">'
+      +(isVenc?'⚠ ':isHoy?'⏰ ':'')+fmtDate(it.venc)+'</td>'
+      // Fecha pago
+      +'<td style="font-size:12px;color:#1D9E75">'+(it.fechaPago?fmtDate(it.fechaPago):'—')+'</td>'
+      // Cuenta
+      +'<td style="font-size:12px;color:'+cuentaColor+'">'+cuentaN+'</td>'
+      // Acciones
+      +'<td style="white-space:nowrap"><button class="btn btn-sm btn-info" data-ag-edit="'+it.id+'">Ed</button>'
+      +'<button class="btn btn-sm btn-danger" data-ag-del="'+it.id+'">x</button></td>'
+      +'</tr>';
+  }
+  tbody.innerHTML=h;
+  // Bind check buttons
+  var checks=tbody.querySelectorAll('[data-ag-check]');
+  for(var k=0;k<checks.length;k++){(function(btn){btn.addEventListener('click',function(){
+    var id=+btn.dataset.agCheck;
+    for(var x=0;x<state.agenda.items.length;x++)if(state.agenda.items[x].id===id){
+      state.agenda.items[x].pagado=!state.agenda.items[x].pagado;
+      state.agenda.items[x].fechaPago=state.agenda.items[x].pagado?todayStr():'';
+      break;
+    }
+    saveState();renderAgendaMes();renderAgendaCuentas();
+  });})(checks[k]);}
+  // Edit buttons
+  var edits=tbody.querySelectorAll('[data-ag-edit]');
+  for(var e=0;e<edits.length;e++){(function(btn){btn.addEventListener('click',function(){agOpenModal(+btn.dataset.agEdit);});})(edits[e]);}
+  // Delete buttons
+  var dels=tbody.querySelectorAll('[data-ag-del]');
+  for(var de=0;de<dels.length;de++){(function(btn){btn.addEventListener('click',function(){
+    if(!confirm('Eliminar este pago?'))return;
+    state.agenda.items=state.agenda.items.filter(function(it){return it.id!==+btn.dataset.agDel;});
+    saveState();renderAgendaMes();renderAgendaCuentas();
+  });})(dels[de]);}
+}
+
+function renderAgendaCuentas(){
+  var mes=agGetMesActual();var items=agItemsDelMes(mes);
+  // Calcular compromisos por cuenta
+  var compromisosPorCuenta={};
+  for(var i=0;i<items.length;i++){
+    if(items[i].cuentaId&&!items[i].pagado){
+      var cid=+items[i].cuentaId;
+      compromisosPorCuenta[cid]=(compromisosPorCuenta[cid]||0)+(items[i].monto||0);
+    }
+  }
+  var el=document.getElementById('ag-cuentas-list');if(!el)return;
+  if(!state.agenda.cuentas.length){el.innerHTML='<div class="empty" style="font-size:12px">No hay cuentas. Configurá con ⚙ Cuentas</div>';return;}
+  var h='';var totalSaldo=0;var totalCompromisos=0;
+  for(var j=0;j<state.agenda.cuentas.length;j++){
+    var c=state.agenda.cuentas[j];var ico=AG_CUENTA_ICONS[c.tipo]||'💰';
+    var saldo=parseFloat(c.saldo)||0;var comp=compromisosPorCuenta[c.id]||0;
+    var restante=saldo-comp;var ok=restante>=0;
+    totalSaldo+=saldo;totalCompromisos+=comp;
+    h+='<div style="margin-bottom:12px">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">'
+      +'<span style="font-size:12px;font-weight:500">'+ico+' '+c.nombre+'</span>'
+      +(comp>0?'<span style="font-size:11px;color:'+(ok?'#1D9E75':'#D85A30')+'">'+fmt(restante)+'</span>':'')
+      +'</div>'
+      +'<div style="display:flex;gap:6px;align-items:center">'
+      +'<input type="text" data-saldo-id="'+c.id+'" data-saldo-raw="'+(saldo||0)+'" value="'+(saldo>0?fmt(saldo):'$ 0,00')+'"'
+      +' style="flex:1;font-size:12px;text-align:right;font-family:monospace;background:transparent;border:none;border-bottom:0.5px solid #333;color:'+(ok?'#e0e0e0':'#D85A30')+';padding:3px 4px">'
+      +'</div>'
+      +(comp>0?'<div style="font-size:11px;color:#666;margin-top:2px">Compromisos: '+fmt(comp)+'</div>':'')
+      +'</div>';
+  }
+  el.innerHTML=h;
+  // Resumen cobertura
+  var cubEl=document.getElementById('ag-cobertura');
+  if(cubEl){
+    var totR=totalSaldo-totalCompromisos;
+    cubEl.innerHTML='<div style="border-top:0.5px solid #333;padding-top:10px;margin-top:4px">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">'
+      +'<span style="color:#aaa">Total en cuentas</span><span>'+fmt(totalSaldo)+'</span></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">'
+      +'<span style="color:#aaa">Total comprometido</span><span style="color:#EF9F27">'+fmt(totalCompromisos)+'</span></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600">'
+      +'<span>Posición neta</span><span style="color:'+(totR>=0?'#1D9E75':'#D85A30')+'">'+(totR>=0?'▲ ':'▼ ')+fmt(Math.abs(totR))+'</span></div>'
+      +'</div>';
+  }
+  // Bind saldo inputs (focus/blur)
+  var saldoInputs=el.querySelectorAll('[data-saldo-id]');
+  for(var k=0;k<saldoInputs.length;k++){(function(inp){
+    inp.addEventListener('focus',function(){inp.value=inp.dataset.saldoRaw>0?inp.dataset.saldoRaw:'';inp.select();});
+    inp.addEventListener('blur',function(){
+      var val=parseFloat(inp.value.replace(/[^0-9.-]/g,''))||0;
+      inp.dataset.saldoRaw=val;inp.value=fmt(val);
+      for(var x=0;x<state.agenda.cuentas.length;x++)if(state.agenda.cuentas[x].id===+inp.dataset.saldoId){state.agenda.cuentas[x].saldo=val;break;}
+      saveState();renderAgendaCuentas();
+    });
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();});
+  })(saldoInputs[k]);}
+}
+
+function agOpenModal(editId){
+  _agEditId=editId||null;
+  var modal=document.getElementById('ag-modal');
+  document.getElementById('ag-modal-title').textContent=_agEditId?'Editar pago':'Agregar pago';
+  var mes=agGetMesActual();
+  // Limpiar / cargar datos
+  var desc='',monto='',venc=mes+'-01',cuentaId='',nota='';
+  if(_agEditId){
+    for(var i=0;i<state.agenda.items.length;i++)if(state.agenda.items[i].id===_agEditId){
+      var it=state.agenda.items[i];desc=it.desc;monto=it.monto||'';venc=it.venc||venc;cuentaId=it.cuentaId||'';nota=it.nota||'';break;
+    }
+  }
+  document.getElementById('ag-desc').value=desc;
+  document.getElementById('ag-monto').value=monto;
+  document.getElementById('ag-venc').value=venc;
+  document.getElementById('ag-nota').value=nota;
+  agFillCuentasSel('ag-cuenta',cuentaId?+cuentaId:0);
+  modal.style.display='flex';
+}
+
+function agSaveModal(){
+  var desc=document.getElementById('ag-desc').value.trim();
+  var monto=parseFloat(document.getElementById('ag-monto').value)||0;
+  var venc=document.getElementById('ag-venc').value;
+  var cuentaId=document.getElementById('ag-cuenta').value;
+  var nota=document.getElementById('ag-nota').value.trim();
+  if(!desc||!venc){alert('Completá descripción y fecha de vencimiento');return;}
+  var mes=venc.slice(0,7);
+  if(_agEditId){
+    for(var i=0;i<state.agenda.items.length;i++)if(state.agenda.items[i].id===_agEditId){
+      var it=state.agenda.items[i];it.desc=desc;it.monto=monto;it.venc=venc;it.cuentaId=cuentaId?+cuentaId:null;it.nota=nota;it.mes=mes;break;
+    }
+  } else {
+    state.agenda.items.push({id:Date.now(),mes:mes,desc:desc,monto:monto,venc:venc,cuentaId:cuentaId?+cuentaId:null,nota:nota,pagado:false,fechaPago:''});
+  }
+  saveState();document.getElementById('ag-modal').style.display='none';
+  // Actualizar selector de mes si el item es de otro mes
+  var mesSel=document.getElementById('ag-mes-sel');if(mesSel)mesSel.value=mes;
+  renderAgendaMes();renderAgendaCuentas();
+}
+
+function renderAgCuentasModal(){
+  var el=document.getElementById('ag-cuentas-form-list');if(!el)return;
+  var h='';
+  for(var i=0;i<state.agenda.cuentas.length;i++){
+    var c=state.agenda.cuentas[i];var ico=AG_CUENTA_ICONS[c.tipo]||'💰';
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px;background:#2a2a2a;border-radius:6px">'
+      +'<span style="font-size:16px">'+ico+'</span>'
+      +'<span style="flex:1;font-size:13px">'+c.nombre+'</span>'
+      +'<span style="font-size:11px;color:#666;background:#1a1a1a;padding:2px 6px;border-radius:4px">'+c.tipo+'</span>'
+      +'<button class="btn btn-sm btn-danger" data-ag-del-cuenta="'+c.id+'">x</button></div>';
+  }
+  el.innerHTML=h||'<div class="empty">Sin cuentas configuradas</div>';
+  var dels=el.querySelectorAll('[data-ag-del-cuenta]');
+  for(var d=0;d<dels.length;d++){(function(btn){btn.addEventListener('click',function(){
+    state.agenda.cuentas=state.agenda.cuentas.filter(function(c){return c.id!==+btn.dataset.agDelCuenta;});
+    saveState();renderAgCuentasModal();renderAgendaCuentas();
+  });})(dels[d]);}
+}
+
+function agBindEvents(){
+  var btnAdd=document.getElementById('btn-ag-add-item');
+  if(btnAdd&&!btnAdd.dataset.bound){btnAdd.dataset.bound='1';btnAdd.addEventListener('click',function(){agOpenModal(null);});}
+  var btnCuentas=document.getElementById('btn-ag-cuentas');
+  if(btnCuentas&&!btnCuentas.dataset.bound){btnCuentas.dataset.bound='1';btnCuentas.addEventListener('click',function(){renderAgCuentasModal();document.getElementById('ag-modal-cuentas').style.display='flex';});}
+  var btnCancel=document.getElementById('ag-modal-cancel');
+  if(btnCancel&&!btnCancel.dataset.bound){btnCancel.dataset.bound='1';btnCancel.addEventListener('click',function(){document.getElementById('ag-modal').style.display='none';});}
+  var btnSave=document.getElementById('ag-modal-save');
+  if(btnSave&&!btnSave.dataset.bound){btnSave.dataset.bound='1';btnSave.addEventListener('click',agSaveModal);}
+  var btnAgregarCuenta=document.getElementById('btn-ag-add-cuenta');
+  if(btnAgregarCuenta&&!btnAgregarCuenta.dataset.bound){btnAgregarCuenta.dataset.bound='1';btnAgregarCuenta.addEventListener('click',function(){
+    var nombre=document.getElementById('ag-nueva-cuenta').value.trim();
+    var tipo=document.getElementById('ag-nueva-tipo').value;
+    if(!nombre)return;
+    state.agenda.cuentas.push({id:Date.now(),nombre:nombre,tipo:tipo,saldo:0});
+    document.getElementById('ag-nueva-cuenta').value='';
+    saveState();renderAgCuentasModal();renderAgendaCuentas();
+  });}
+  var btnClose=document.getElementById('ag-cuentas-close');
+  if(btnClose&&!btnClose.dataset.bound){btnClose.dataset.bound='1';btnClose.addEventListener('click',function(){document.getElementById('ag-modal-cuentas').style.display='none';});}
+  // Cerrar modales clickando fondo
+  document.getElementById('ag-modal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+  document.getElementById('ag-modal-cuentas').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
 }
 
 function renderAll(){renderSummary();renderTransactions();renderBudgetProgress();renderGoals();renderDebts();renderTarjetas();}
