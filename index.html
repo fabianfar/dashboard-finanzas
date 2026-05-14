@@ -758,7 +758,7 @@ function bootstrapApp() {
 
 
 // TABS
-var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'tarjetas',label:'Tarjetas'},{id:'inversiones',label:'Inversiones'},{id:'transacciones',label:'Transacciones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'}];
+var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'}];
 function buildTabs(){
   var c=document.getElementById('tabs-container');var h='';
   for(var i=0;i<TABS.length;i++)h+='<button class="tab'+(TABS[i].id===activeTab?' active':'')+'" data-tab="'+TABS[i].id+'">'+TABS[i].label+'</button>';
