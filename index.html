@@ -2148,8 +2148,8 @@ function renderAgendaMes(){
       // Vencimiento
       +'<td style="font-size:12px;color:'+(isVenc?'#D85A30':isHoy?'#EF9F27':'#aaa')+'">'
       +(isVenc?'⚠ ':isHoy?'⏰ ':'')+fmtDate(it.venc)+'</td>'
-      // Fecha pago
-      +'<td style="font-size:12px;color:#1D9E75">'+(it.fechaPago?fmtDate(it.fechaPago):'—')+'</td>'
+      // Fecha pago (editable)
+      +'<td><input type="date" class="ag-fecha-pago" data-ag-fp="'+it.id+'" value="'+(it.fechaPago||'')+'" style="font-size:12px;background:transparent;border:none;border-bottom:0.5px solid '+(it.fechaPago?'#1D9E75':'#333')+';color:'+(it.fechaPago?'#1D9E75':'#555')+';padding:2px 4px;width:130px;cursor:pointer"></td>'
       // Cuenta
       +'<td style="font-size:12px;color:'+cuentaColor+'">'+cuentaN+'</td>'
       // Acciones
@@ -2158,6 +2158,18 @@ function renderAgendaMes(){
       +'</tr>';
   }
   tbody.innerHTML=h;
+  // Bind fecha pago inputs
+  var fpInputs=tbody.querySelectorAll('.ag-fecha-pago');
+  for(var fp=0;fp<fpInputs.length;fp++){(function(inp){inp.addEventListener('change',function(){
+    var id=+inp.dataset.agFp;var val=inp.value;
+    for(var x=0;x<state.agenda.items.length;x++)if(state.agenda.items[x].id===id){
+      state.agenda.items[x].fechaPago=val;
+      // Si pone fecha, marcar como pagado automáticamente
+      if(val&&!state.agenda.items[x].pagado)state.agenda.items[x].pagado=true;
+      break;
+    }
+    saveState();renderAgendaMes();renderAgendaCuentas();
+  });})(fpInputs[fp]);}
   // Bind check buttons
   var checks=tbody.querySelectorAll('[data-ag-check]');
   for(var k=0;k<checks.length;k++){(function(btn){btn.addEventListener('click',function(){
