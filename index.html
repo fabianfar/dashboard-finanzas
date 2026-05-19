@@ -223,6 +223,45 @@ db.ref('finanzas/state').once('value').then(function(snap) {
     <div class="legend"><span><span class="legend-dot" style="background:#1D9E75"></span>Ing. reales</span><span><span class="legend-dot" style="background:#D85A30"></span>Gas. reales</span><span><span class="legend-dot" style="background:#5DCAA5"></span>Proy. ing.</span><span><span class="legend-dot" style="background:#F0997B"></span>Proy. gas.</span></div>
     <div style="position:relative;width:100%;height:240px"><canvas id="projChart" role="img" aria-label="Proyeccion"></canvas></div>
   </div>
+
+  <!-- === ANÁLISIS DE INGRESOS === -->
+  <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px">
+    <div style="flex:1;height:1px;background:#2a2a2a"></div>
+    <span style="font-size:12px;color:#555;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Análisis de Ingresos</span>
+    <div style="flex:1;height:1px;background:#2a2a2a"></div>
+  </div>
+
+  <!-- Métricas resumen -->
+  <div class="card">
+    <h3 style="margin-bottom:14px">Resumen de ingresos</h3>
+    <div class="metric-grid" id="ing-metrics"></div>
+  </div>
+
+  <!-- Evolución 12 meses + Tasa de ahorro -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+      <h3 style="margin:0">Evolución de ingresos — últimos 12 meses</h3>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#1D9E75"></span>Ingresos</span>
+        <span><span class="legend-dot" style="background:#378ADD"></span>Ahorro</span>
+        <span><span class="legend-dot" style="background:#EF9F27"></span>Gastos</span>
+      </div>
+    </div>
+    <div style="position:relative;width:100%;height:240px"><canvas id="ingLineChart" role="img" aria-label="Evolucion ingresos"></canvas></div>
+  </div>
+
+  <!-- Fuentes de ingresos + Tasa de ahorro por mes -->
+  <div class="chart-grid">
+    <div class="card">
+      <h3 style="margin-bottom:8px">Fuentes de ingresos</h3>
+      <div class="legend" id="ing-pie-legend" style="margin-bottom:8px"></div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="ingPieChart" role="img" aria-label="Fuentes ingreso"></canvas></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:10px">Tasa de ahorro por mes</h3>
+      <div id="ing-ahorro-rank"></div>
+    </div>
+  </div>
 </div>
 
 <!-- TARJETAS -->
@@ -1542,7 +1581,76 @@ function renderSummary(){
 }
 
 // ESTADISTICAS
-function renderStats(){renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();}
+function renderStats(){renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();}
+function last12(){var months=[];var d=new Date();for(var i=11;i>=0;i--){var m=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(m.getFullYear()+'-'+pad(m.getMonth()+1));}return months;}
+function renderIngresosStats(){
+  var months12=last12();var months6=last6();
+  // Calcular datos por mes
+  var ingData=[],gasData=[],ahoData=[];
+  for(var i=0;i<months12.length;i++){
+    var ing=txnSum('ingreso',months12[i]);var gas=txnSum('gasto',months12[i]);
+    ingData.push(ing);gasData.push(gas);ahoData.push(ing-gas);
+  }
+  // Métricas (sólo meses con algún ingreso)
+  var mesesConIng=[];for(var j=0;j<months12.length;j++)if(ingData[j]>0)mesesConIng.push({mes:months12[j],ing:ingData[j],gas:gasData[j],aho:ahoData[j]});
+  var ingActual=ingData[ingData.length-1];var ingAnterior=ingData[ingData.length-2]||0;
+  var tendencia=ingAnterior>0?((ingActual-ingAnterior)/ingAnterior*100):0;
+  var promedio12=mesesConIng.length>0?Math.round(mesesConIng.reduce(function(s,m){return s+m.ing;},0)/mesesConIng.length):0;
+  var maxMes=mesesConIng.reduce(function(mx,m){return m.ing>mx.ing?m:mx;},{ing:0,mes:''});
+  var minMes=mesesConIng.filter(function(m){return m.ing>0;}).reduce(function(mn,m){return m.ing<mn.ing?m:mn;},{ing:Infinity,mes:''});
+  var totalAnio=0;var curYear=new Date().getFullYear()+'';
+  for(var k=0;k<state.transactions.length;k++)if(state.transactions[k].type==='ingreso'&&state.transactions[k].date.startsWith(curYear))totalAnio+=state.transactions[k].amount;
+  var tasaAhMes=ingActual>0?Math.round((ingActual-(gasData[gasData.length-1]))/ingActual*100):0;
+  // Métricas card
+  var mEl=document.getElementById('ing-metrics');
+  if(mEl)mEl.innerHTML=
+    '<div class="metric"><div class="metric-label">Ingreso este mes</div><div class="metric-value income">'+fmtS(ingActual)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Promedio mensual</div><div class="metric-value">'+fmtS(promedio12)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total '+curYear+'</div><div class="metric-value savings">'+fmtS(Math.round(totalAnio))+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Tendencia vs mes ant.</div><div class="metric-value '+(tendencia>=0?'income':'expense')+'">'+(tendencia>=0?'▲ ':'▼ ')+Math.abs(tendencia).toFixed(1)+'%</div></div>'
+    +(maxMes.mes?'<div class="metric"><div class="metric-label">Mejor mes</div><div class="metric-value income" style="font-size:13px">'+monthLbl(maxMes.mes)+'<div style="font-size:11px;margin-top:2px">'+fmtS(maxMes.ing)+'</div></div></div>':'')
+    +(minMes.mes&&minMes.ing!==Infinity?'<div class="metric"><div class="metric-label">Mes más bajo</div><div class="metric-value warn" style="font-size:13px">'+monthLbl(minMes.mes)+'<div style="font-size:11px;margin-top:2px">'+fmtS(minMes.ing)+'</div></div></div>':'')
+    +'<div class="metric"><div class="metric-label">Tasa ahorro este mes</div><div class="metric-value '+(tasaAhMes>=20?'income':tasaAhMes>=0?'warn':'expense')+'">'+tasaAhMes+'%</div></div>';
+  // Gráfico línea 12 meses
+  destroyChart('ingLine');
+  var ingLineEl=document.getElementById('ingLineChart');
+  if(ingLineEl)charts['ingLine']=new Chart(ingLineEl,{type:'bar',data:{labels:months12.map(monthLbl),datasets:[
+    {label:'Ingresos',data:ingData,backgroundColor:'rgba(29,158,117,0.7)',borderRadius:4,order:2},
+    {label:'Gastos',data:gasData,backgroundColor:'rgba(216,90,48,0.5)',borderRadius:4,order:3},
+    {label:'Ahorro',data:ahoData,type:'line',borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.1)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:'#378ADD',order:1}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#aaa'}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#aaa',callback:function(v){return fmtS(v);}}}}}});
+  // Pie fuentes de ingresos
+  destroyChart('ingPie');
+  var fuentes={};for(var fi=0;fi<state.transactions.length;fi++){var tx=state.transactions[fi];if(tx.type==='ingreso')fuentes[tx.cat]=(fuentes[tx.cat]||0)+tx.amount;}
+  var fCats=Object.keys(fuentes).sort(function(a,b){return fuentes[b]-fuentes[a];});
+  var fColors=fCats.map(function(_,i){return PIE_COLORS[i%PIE_COLORS.length];});
+  var fTotal=fCats.reduce(function(s,c){return s+fuentes[c];},0);
+  var legHtml='';for(var li=0;li<fCats.length;li++)legHtml+='<span><span class="legend-dot" style="background:'+fColors[li]+'"></span>'+fCats[li]+' '+(fTotal>0?Math.round(fuentes[fCats[li]]/fTotal*100)+'%':'')+'</span>';
+  var legEl=document.getElementById('ing-pie-legend');if(legEl)legEl.innerHTML=legHtml;
+  var ingPieEl=document.getElementById('ingPieChart');
+  if(ingPieEl&&fCats.length)charts['ingPie']=new Chart(ingPieEl,{type:'doughnut',data:{labels:fCats,datasets:[{data:fCats.map(function(c){return Math.round(fuentes[c]);}),backgroundColor:fColors,borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  else if(ingPieEl)ingPieEl.parentElement.innerHTML='<div class="empty">Sin datos de ingresos</div>';
+  // Ranking tasa de ahorro por mes (últimos 6)
+  var rankEl=document.getElementById('ing-ahorro-rank');
+  if(rankEl){
+    var h='';
+    var mesesRank=mesesConIng.slice(-6).reverse();
+    if(!mesesRank.length){rankEl.innerHTML='<div class="empty">Sin datos</div>';return;}
+    var maxAbs=Math.max.apply(null,mesesRank.map(function(m){return Math.abs(m.ing>0?Math.round(m.aho/m.ing*100):0);}));
+    for(var ri=0;ri<mesesRank.length;ri++){
+      var mr=mesesRank[ri];var tasa=mr.ing>0?Math.round(mr.aho/mr.ing*100):0;var pos=tasa>=0;
+      var barW=maxAbs>0?Math.round(Math.abs(tasa)/maxAbs*100):0;
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">'
+        +'<span style="font-size:12px;color:#aaa;min-width:50px">'+monthLbl(mr.mes)+'</span>'
+        +'<div style="flex:1;background:#1a1a1a;border-radius:4px;height:12px;overflow:hidden">'
+        +'<div style="width:'+barW+'%;height:100%;background:'+(pos?'#1D9E75':'#D85A30')+';border-radius:4px;transition:width 0.4s"></div></div>'
+        +'<span style="font-size:12px;font-weight:600;color:'+(pos?'#1D9E75':'#D85A30')+';min-width:38px;text-align:right">'+(pos?'+':'')+tasa+'%</span>'
+        +'<span style="font-size:11px;color:#555;min-width:70px;text-align:right">'+fmtS(mr.aho)+'</span>'
+        +'</div>';
+    }
+    rankEl.innerHTML=h;
+  }
+}
 function txnSum(type,m){var s=0;for(var i=0;i<state.transactions.length;i++){var t=state.transactions[i];if(t.type===type&&t.date.startsWith(m))s+=t.amount;}return Math.round(s);}
 function renderPieChart(){
   destroyChart('pie');
