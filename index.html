@@ -1621,7 +1621,7 @@ function renderIngresosStats(){
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#aaa'}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#aaa',callback:function(v){return fmtS(v);}}}}}});
   // Pie fuentes de ingresos
   destroyChart('ingPie');
-  var fuentes={};for(var fi=0;fi<state.transactions.length;fi++){var tx=state.transactions[fi];if(tx.type==='ingreso')fuentes[tx.cat]=(fuentes[tx.cat]||0)+tx.amount;}
+  var fuentes={};for(var fi=0;fi<state.transactions.length;fi++){var tx=state.transactions[fi];if(tx.type==='ingreso')fuentes[tx.desc]=(fuentes[tx.desc]||0)+tx.amount;}
   var fCats=Object.keys(fuentes).sort(function(a,b){return fuentes[b]-fuentes[a];});
   var fColors=fCats.map(function(_,i){return PIE_COLORS[i%PIE_COLORS.length];});
   var fTotal=fCats.reduce(function(s,c){return s+fuentes[c];},0);
