@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YPF S.A. (YPFD) — Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy: #1A2F5A;
+    --navy-mid: #243F78;
+    --accent: #0070B9;
+    --accent-light: #3AABDB;
+    --accent-dark: #005A94;
+    --light: #F2F6FB;
+    --white: #FFFFFF;
+    --green: #27AE60;
+    --red: #E74C3C;
+    --amber: #E67E22;
+    --text: #0A1E3A;
+    --text-secondary: #5A6E85;
+    --border: #CCE0F0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Calibri,Arial,sans-serif; background:var(--light); color:var(--text); font-size:15px; line-height:1.65; }
+
+  /* HERO */
+  .hero { background:var(--navy); border-left:14px solid var(--accent); padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; right:-60px; width:440px; height:440px; border-radius:50%; background:radial-gradient(circle,rgba(0,112,185,0.2) 0%,transparent 65%); pointer-events:none; }
+  .hero-top { display:flex; align-items:center; gap:32px; flex-wrap:nowrap; }
+  .logo-box { width:110px; height:110px; background:var(--white); border-radius:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+  .hero-title-block { flex:1; }
+  .title-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .company-name { font-family:Georgia,serif; font-size:44px; font-weight:normal; color:var(--white); letter-spacing:-0.5px; }
+  .ticker-badge { border:1.5px solid var(--accent-light); color:var(--accent-light); padding:4px 14px; border-radius:20px; font-size:15px; font-weight:700; letter-spacing:1px; }
+  .market-badge { background:rgba(0,112,185,0.25); color:#A8D4F0; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:700; letter-spacing:1px; border:1px solid rgba(0,112,185,0.4); }
+  .hero-subtitle { color:#7A9BB5; font-size:14px; margin-top:8px; }
+  .stat-strip { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .stat-card { background:rgba(255,255,255,0.06); border:1px solid rgba(0,112,185,0.35); border-top:3px solid var(--accent); border-radius:10px; padding:16px 20px; flex:1; min-width:130px; }
+  .stat-label { font-size:10.5px; color:#7A9BB5; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+  .stat-value { font-size:22px; font-weight:700; color:var(--white); letter-spacing:-0.5px; }
+  .stat-value.green { color:#5DD891; }
+  .stat-value.amber { color:#FFD084; }
+
+  /* GENERAL */
+  .container { max-width:1140px; margin:0 auto; padding:0 32px; }
+  section { padding:48px 0; }
+  .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent-dark); margin-bottom:8px; }
+  .section-title { font-family:Georgia,serif; font-size:28px; color:var(--navy); margin-bottom:28px; font-weight:normal; }
+  .section-divider { height:1px; background:var(--border); margin:0 32px; }
+
+  /* B */
+  .about-card { background:var(--white); border-radius:16px; padding:36px 40px; box-shadow:0 2px 20px rgba(0,0,0,0.06); line-height:1.8; font-size:15px; color:#2C3E50; }
+  .accent-term { color:var(--accent-dark); font-weight:600; }
+  .biz-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+  .biz-tag { background:rgba(0,112,185,0.08); color:var(--accent-dark); border:1px solid rgba(0,112,185,0.25); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+
+  /* C */
+  .competitive-grid { display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start; }
+  .subsector-cards { display:flex; flex-direction:column; gap:14px; }
+  .subsector-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 12px 12px 0; padding:18px 22px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .subsector-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .subsector-name { font-weight:700; font-size:14px; color:var(--navy); }
+  .position-badge { background:var(--accent); color:white; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:800; }
+  .position-badge.p2 { background:var(--navy-mid); }
+  .subsector-share { font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .subsector-note { font-size:13px; color:#2C3E50; }
+  .rival-block { background:var(--navy); border-radius:16px; padding:32px 28px; color:var(--white); }
+  .rival-tag { font-size:10.5px; color:#7A9BB5; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+  .rival-name { font-family:Georgia,serif; font-size:26px; color:var(--white); margin-bottom:4px; }
+  .rival-slogan { color:var(--accent-light); font-size:13px; font-style:italic; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .rival-bullets { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .rival-bullets li { padding-left:18px; position:relative; font-size:13.5px; color:#A8C0D8; line-height:1.55; }
+  .rival-bullets li::before { content:'›'; position:absolute; left:0; color:var(--accent-light); font-weight:700; }
+
+  /* D */
+  .catalyst-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px; }
+  .catalyst-card { background:var(--white); border-top:4px solid var(--accent); border-radius:0 0 16px 16px; padding:28px 24px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .catalyst-icon { font-size:28px; margin-bottom:12px; display:block; }
+  .catalyst-title { font-weight:700; font-size:15px; color:var(--navy); margin-bottom:10px; }
+  .catalyst-text { font-size:13.5px; color:#2C3A4A; line-height:1.65; }
+  .risk-block { background:var(--navy); border-radius:12px; padding:18px 28px; color:#7A9BB5; font-size:13.5px; line-height:1.7; }
+  .risk-keyword { color:var(--accent-light); font-weight:600; }
+
+  /* E */
+  .market-cap-card { background:var(--white); border-radius:16px; padding:28px 36px; display:flex; align-items:center; gap:48px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; flex-wrap:wrap; }
+  .mcap-big { flex:1; min-width:200px; }
+  .mcap-label { font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; }
+  .mcap-value { font-family:Georgia,serif; font-size:46px; color:var(--navy); font-weight:normal; letter-spacing:-1px; line-height:1.1; }
+  .mcap-metrics { display:flex; gap:32px; flex-wrap:wrap; }
+  .metric-item { text-align:center; }
+  .metric-value { font-size:22px; font-weight:700; color:var(--navy); }
+  .metric-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+
+  /* KPI GRID */
+  .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .kpi-card { background:var(--white); border-radius:12px; padding:20px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.05); border-bottom:4px solid var(--accent); }
+  .kpi-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+  .kpi-value { font-size:26px; font-weight:800; color:var(--navy); letter-spacing:-0.5px; line-height:1; }
+  .kpi-sub { font-size:11.5px; color:var(--green); font-weight:600; margin-top:5px; }
+  .kpi-sub.amber { color:var(--amber); }
+
+  .tables-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .data-table { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .table-header { padding:16px 22px; font-weight:700; font-size:13px; }
+  .table-header.dark { background:var(--navy); color:var(--white); }
+  .table-header.accent { background:var(--accent); color:var(--white); }
+  .table-header .th-sub { font-weight:400; font-size:11px; opacity:0.75; margin-top:2px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:13px 22px; font-size:13.5px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  td:first-child { color:var(--text-secondary); }
+  td:last-child { font-weight:600; text-align:right; }
+  .yoy-green { color:var(--green); }
+  .yoy-red { color:var(--red); }
+  .yoy-amber { color:var(--amber); }
+  tr:nth-child(even) { background:#F4F8FC; }
+
+  /* PROD BARS */
+  .prod-card { background:var(--white); border-radius:16px; padding:28px 36px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; }
+  .prod-title { font-weight:700; font-size:14px; color:var(--navy); margin-bottom:20px; }
+  .prod-row { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+  .prod-label { font-size:12px; color:var(--text-secondary); width:130px; flex-shrink:0; text-align:right; }
+  .prod-bar-bg { flex:1; background:#E8F4FC; border-radius:6px; height:22px; overflow:hidden; }
+  .prod-bar { height:100%; border-radius:6px; display:flex; align-items:center; padding-left:10px; font-size:11px; font-weight:700; color:white; }
+  .prod-val { font-size:13px; font-weight:700; color:var(--navy); width:90px; flex-shrink:0; }
+
+  /* F */
+  .technical-grid { display:grid; grid-template-columns:320px 1fr; gap:20px; align-items:stretch; }
+  .ath-block { background:var(--navy); border-radius:16px; padding:40px 32px; display:flex; flex-direction:column; justify-content:center; }
+  .ath-label { font-size:11px; color:#7A9BB5; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .ath-pct { font-family:Georgia,serif; font-size:88px; line-height:0.9; color:#FFD084; letter-spacing:-4px; margin-bottom:24px; }
+  .ath-details { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .ath-details li { font-size:13px; color:#A8C0D8; display:flex; flex-direction:column; }
+  .detail-label { font-size:10px; color:#7A9BB5; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:1px; }
+  .technical-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 16px 16px 0; padding:32px; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .technical-card h3 { font-family:Georgia,serif; font-size:18px; font-weight:normal; color:var(--navy); margin-bottom:20px; }
+  .tech-bullets { list-style:none; display:flex; flex-direction:column; gap:14px; }
+  .tech-bullets li { padding-left:20px; position:relative; font-size:14px; color:#2C3E50; line-height:1.55; }
+  .tech-bullets li::before { content:'▸'; position:absolute; left:0; color:var(--accent-dark); font-size:12px; top:2px; }
+
+  /* G */
+  .chart-section { padding-bottom:56px; }
+  .chart-wrapper { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,0.08); }
+  .chart-wrapper iframe { width:100%; height:560px; border:none; display:block; }
+
+  /* H */
+  footer { background:var(--navy); color:#7A9BB5; padding:40px 56px; font-size:12.5px; line-height:1.8; }
+  footer .footer-date { color:var(--white); font-weight:600; margin-bottom:12px; font-size:13px; }
+  footer a { color:var(--accent-light); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+  .sources-title { color:#A8C0D8; font-weight:600; margin-bottom:8px; margin-top:16px; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+  .sources-list { display:flex; flex-direction:column; gap:4px; }
+
+  .warn-badge { display:inline-block; background:rgba(230,126,34,0.10); color:var(--amber); border:1px solid rgba(230,126,34,0.3); border-radius:8px; padding:10px 16px; font-size:12.5px; margin:12px 22px; line-height:1.6; }
+
+  @media(max-width:640px){
+    .hero{padding:32px 24px;border-left-width:8px;}
+    .hero-top{flex-wrap:wrap;}
+    .company-name{font-size:28px;}
+    .competitive-grid,.tables-grid,.technical-grid{grid-template-columns:1fr;}
+    .catalyst-grid,.kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .ath-pct{font-size:64px;}
+    .mcap-value{font-size:32px;}
+    footer{padding:32px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- A) HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <!-- YPF Logo SVG inline -->
+    <div class="logo-box">
+      <svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="82" height="82" rx="14" fill="#1A2F5A"/>
+        <!-- YPF wordmark -->
+        <text x="46" y="53" font-family="Arial,sans-serif" font-weight="900" font-size="26" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">YPF</text>
+        <!-- Accent bar bottom -->
+        <rect x="14" y="62" width="64" height="5" rx="2.5" fill="#0070B9"/>
+        <!-- Small diamond/rhombus accent top -->
+        <polygon points="46,14 52,20 46,26 40,20" fill="#3AABDB"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="title-row">
+        <h1 class="company-name">YPF S.A.</h1>
+        <span class="ticker-badge">BYMA: YPFD</span>
+        <span class="market-badge">NYSE: YPF</span>
+      </div>
+      <p class="hero-subtitle">Yacimientos Petrolíferos Fiscales · Líder energético de Argentina &nbsp;·&nbsp; Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card"><div class="stat-label">Precio (BYMA / ARS)</div><div class="stat-value">$69.800</div></div>
+    <div class="stat-card"><div class="stat-label">Market Cap (USD)</div><div class="stat-value">~$17B</div></div>
+    <div class="stat-card"><div class="stat-label">Revenue Q1'26 YoY</div><div class="stat-value green">+7%</div></div>
+    <div class="stat-card"><div class="stat-label">EBITDA Q1'26 YoY</div><div class="stat-value green">+28%</div></div>
+    <div class="stat-card"><div class="stat-label">Dist. ATH (ARS)</div><div class="stat-value amber">−3.1%</div></div>
+  </div>
+</div>
+
+<!-- B) DESCRIPCIÓN -->
+<section>
+  <div class="container">
+    <div class="section-label">Descripción</div>
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="about-card">
+      <p>YPF Sociedad Anónima es la empresa energética integrada más grande de Argentina, con participación mayoritaria del Estado nacional (~50.9%). Opera en tres segmentos: <span class="accent-term">Upstream</span> (produce ~30% del petróleo y gas del país, lider shale en Vaca Muerta), <span class="accent-term">Downstream</span> (3 refinerías con >50% de la capacidad nacional, >55% del mercado de naftas y gasoil) y <span class="accent-term">Gas y Energía</span> (Metrogas distribuye ~25% del gas del país, YPF Luz genera electricidad).</p>
+      <br>
+      <p>Bajo el CEO <span class="accent-term">Horacio Marín</span>, YPF ejecuta la mayor transformación de su historia: la migración masiva desde campos convencionales maduros hacia la <span class="accent-term">Formación Vaca Muerta</span>, el segundo mayor recurso de shale gas y cuarto de shale oil del mundo. La producción de shale oil alcanzó <span class="accent-term">205.000 bbl/día (+39% YoY)</span> en Q1 2026 — y el bloque La Angostura Sur pasó de 2.000 a 55.000 bbl/día en solo 18 meses. El Q1 2026 fue el <span class="accent-term">EBITDA ajustado récord histórico en un primer trimestre</span> ($1.594M, +28% YoY).</p>
+      <div class="biz-tags">
+        <span class="biz-tag">Shale Oil — Vaca Muerta</span>
+        <span class="biz-tag">E&amp;P Upstream (~30% Arg.)</span>
+        <span class="biz-tag">Refining Downstream (3 plantas)</span>
+        <span class="biz-tag">Metrogas (gas distribución)</span>
+        <span class="biz-tag">YPF Luz (generación)</span>
+        <span class="biz-tag">Exportación crudo y refinados</span>
+        <span class="biz-tag">RIGI — inversión exportadora</span>
+        <span class="biz-tag">NYSE: YPF · BYMA: YPFD</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- C) COMPETENCIA -->
+<section>
+  <div class="container">
+    <div class="section-label">Mercado</div>
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="competitive-grid">
+      <div class="subsector-cards">
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Producción oil &amp; gas — Argentina</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">~30% de toda la producción nacional · mayor operador de Vaca Muerta</div>
+          <div class="subsector-note">Vista Energy (VIST) es el mayor operador privado de Vaca Muerta y crece más rápido (~67% YoY), pero YPF tiene 10× más producción total. Pan American Energy y TotalEnergies también operan en el play pero sin la integración vertical de YPF.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Refining / Combustibles — Argentina</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">&gt;50% capacidad de refining nacional · &gt;55% cuota diesel y naftas</div>
+          <div class="subsector-note">Shell Argentina y Raízen (Cencosud) compiten en retail de combustibles pero sin capacidad de refining propia relevante. YPF procesa 344.000 bpd de refinería — récord histórico en Q1'26 — y exporta derivados a países vecinos.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Shale oil — Vaca Muerta (operador)</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">205.000 bpd shale oil (+39% YoY) · La Angostura Sur = 55.000 bpd</div>
+          <div class="subsector-note">Vista Energy (#2 privado), Chevron (JV con YPF), TotalEnergies y Shell también operan en Vaca Muerta pero ninguno en la escala de YPF. El bloque La Angostura Sur (100% YPF) tiene breakeven &lt;$40/bbl y target de 100.000 bpd.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">GNL / Gas Natural Licuado — LatAm</span>
+            <span class="position-badge p2">#2</span>
+          </div>
+          <div class="subsector-share">Proyecto YPF-Petronas GNLC en marcha · Argentina 2do exportador GNL de LatAm</div>
+          <div class="subsector-note">Petrobras de Brasil lidera la exportación de gas licuado en LatAm. YPF avanza con el megaproyecto de GNL para exportar gas de Vaca Muerta a Europa y Asia — el 80% de VMOS pipeline expansion dedicado a exportaciones confirma la dirección estratégica.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <div class="rival-tag">Rival Principal</div>
+        <div class="rival-name">Vista Energy<br><span style="font-size:14px;font-family:sans-serif;opacity:0.75;">(VIST — NYSE)</span></div>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul class="rival-bullets">
+          <li>Vista Energy opera exclusivamente en Vaca Muerta con una eficiencia superior: lifting cost de $4.3/BOE vs $8.8/BOE de YPF. Sin la carga de campos convencionales maduros ni de activos downstream, Vista asigna el 100% del capital al shale más rentable.</li>
+          <li>Vista creció su producción +67% YoY vs +39% YoY de YPF en shale. Para el inversor que quiere exposición pura y sin ruido al boom de Vaca Muerta, Vista ofrece un proxy más limpio y con mayor crecimiento relativo.</li>
+          <li>Vista cotiza con un premium valuation vs YPF dado que no carga el riesgo político de ser empresa estatal: sin riesgo de re-expropiación, sin subsidios cruzados al mercado doméstico, sin interferencia del Estado en la política de precios o dividendos.</li>
+          <li>El management de Vista (ex-YPF con Galuccio) tiene track record de ejecución impecable y comunicación institucional dirigida al inversor internacional. YPF convive con la presión política del gobierno y los sindicatos.</li>
+          <li>La disputa Burford Capital (~$16B en arbitraje por la expropiación de Repsol en 2012) es un riesgo específico de YPF que Vista no comparte. Un fallo adverso podría impactar significativamente en el equity value de YPF.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- D) POTENCIAL FUTURO -->
+<section>
+  <div class="container">
+    <div class="section-label">Perspectivas</div>
+    <h2 class="section-title">Potencial futuro del sector</h2>
+    <div class="catalyst-grid">
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">▲</span>
+        <div class="catalyst-title">Vaca Muerta: el Permian Basin de LatAm en escala YPF</div>
+        <div class="catalyst-text">
+          YPF tiene el mayor inventario de bloques en Vaca Muerta. La Angostura Sur es el ejemplo más elocuente: de 2.000 a 55.000 bbl/día en 18 meses, con breakeven &lt;$40/bbl y potencial de 100.000 bpd. La guía del año lleva a 215.000 bpd de shale promedio y 250.000 bpd de exit rate en diciembre 2026. Con la expansión de infraestructura de transporte (VMOS +44k bpd para YPF, Oldelval +40k bpd para YPF), los cuellos de botella de evacuación se resuelven en 2026-2027, habilitando el siguiente escalón de producción hacia 300.000+ bpd.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">●</span>
+        <div class="catalyst-title">Marco Milei: RIGI, paridad internacional y exportaciones</div>
+        <div class="catalyst-text">
+          El gobierno de Milei transformó el marco regulatorio: alineación de precios domésticos a paridad internacional, RIGI (Régimen de Incentivo a las Grandes Inversiones) con beneficios fiscales para exportadores, y libre acceso al MULC para divisas de exportación. YPF ya exporta diesel, GLP y jet fuel con volúmenes que crecen +25% QoQ. El 80% de la expansión del oleoducto VMOS se destina a exportaciones. ExxonMobil estudia asociarse con YPF en Vaca Muerta — confirmación del atractivo del nuevo marco.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">■</span>
+        <div class="catalyst-title">Downstream récord + integración vertical = margen defensivo</div>
+        <div class="catalyst-text">
+          YPF no es solo upstream. Sus 3 refinerías procesaron 344.000 bpd en Q1 2026 — nuevo récord histórico — produciendo nafta premium y middle distillates record que evitaron importaciones y generaron exportaciones. Esta integración vertical protege a YPF de caídas bruscas en el precio del crudo: cuando baja el Brent, el margen de refining compensa. El free cash flow de $871M en Q1 confirma que el modelo integrado genera caja real, con net leverage cayendo a 1.57x (vs >2.5x en 2023).
+        </div>
+      </div>
+
+    </div>
+    <div class="risk-block">
+      <strong style="color:#C8D8E8;">Riesgos a vigilar:</strong>
+      &nbsp;<span class="risk-keyword">Burford Capital / ICSID</span> (arbitraje ~$7-16B por expropiación Repsol 2012)
+      · <span class="risk-keyword">Riesgo político Argentina</span> (elecciones 2027 · posible cambio de política energética)
+      · <span class="risk-keyword">Precio del Brent</span> (guidance basado en $65+; a $50 el FCF se comprime)
+      · <span class="risk-keyword">Cuello de botella transporte</span> (oleoductos al Atlántico en expansión pero aún insuficientes)
+      · <span class="risk-keyword">Tipo de cambio ARS/USD</span> (costos en pesos, ingresos en dólares)
+      · <span class="risk-keyword">Interferencia estatal</span> en precios o dividendos si cambia el gobierno
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- E) FUNDAMENTALS -->
+<section>
+  <div class="container">
+    <div class="section-label">Financials</div>
+    <h2 class="section-title">Datos fundamentales</h2>
+
+    <div class="market-cap-card">
+      <div class="mcap-big">
+        <div class="mcap-label">Market Cap (USD — NYSE: YPF)</div>
+        <div class="mcap-value">~$17B</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">Líder energético integrado Argentina · ~369M acciones (NYSE) · YPF en BYMA: ARS ~$27.45T</div>
+      </div>
+      <div class="mcap-metrics">
+        <div class="metric-item"><div class="metric-value">~10×</div><div class="metric-label">EV / EBITDA</div></div>
+        <div class="metric-item"><div class="metric-value">$1.03</div><div class="metric-label">EPS Q1'26 (USD)</div></div>
+        <div class="metric-item"><div class="metric-value">32%</div><div class="metric-label">EBITDA Margin</div></div>
+        <div class="metric-item"><div class="metric-value">$871M</div><div class="metric-label">FCF Q1'26</div></div>
+        <div class="metric-item"><div class="metric-value">1.57×</div><div class="metric-label">Net Leverage</div></div>
+      </div>
+    </div>
+
+    <!-- KPI grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Shale oil producción</div>
+        <div class="kpi-value">205K</div>
+        <div class="kpi-sub">bpd · +39% YoY Q1'26</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Adj. EBITDA Q1'26</div>
+        <div class="kpi-value">$1.594B</div>
+        <div class="kpi-sub">+28% YoY · récord 1er trim.</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Lifting cost shale</div>
+        <div class="kpi-value">$8.8</div>
+        <div class="kpi-sub">/BOE · −42% YoY</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Refinery processing</div>
+        <div class="kpi-value">344K</div>
+        <div class="kpi-sub">bpd · +8% YoY · récord</div>
+      </div>
+    </div>
+
+    <!-- Production bars -->
+    <div class="prod-card">
+      <div class="prod-title">📊 Evolución producción shale oil (bpd) — La transición de Vaca Muerta</div>
+      <div class="prod-row">
+        <div class="prod-label">2022</div>
+        <div class="prod-bar-bg"><div class="prod-bar" style="width:29%;background:#1A2F5A;">~60k bpd</div></div>
+        <div class="prod-val">~60.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">2023</div>
+        <div class="prod-bar-bg"><div class="prod-bar" style="width:44%;background:#243F78;">~90k bpd</div></div>
+        <div class="prod-val">~90.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">2024</div>
+        <div class="prod-bar-bg"><div class="prod-bar" style="width:59%;background:#005A94;">~120k bpd</div></div>
+        <div class="prod-val">~120.000</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">Q1 2026 (actual)</div>
+        <div class="prod-bar-bg"><div class="prod-bar" style="width:80%;background:#0070B9;">205.000 bpd · +39% YoY</div></div>
+        <div class="prod-val" style="color:var(--accent-dark);font-weight:800;">205.000 ★</div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-label">Guía dic. 2026</div>
+        <div class="prod-bar-bg"><div class="prod-bar" style="width:97%;background:#3AABDB;opacity:0.85;">250.000 bpd exit rate</div></div>
+        <div class="prod-val" style="color:#999;">250.000</div>
+      </div>
+
+      <!-- La Angostura Sur highlight -->
+      <div style="margin-top:18px;padding:14px 16px;background:#EAF4FB;border-radius:10px;border-left:4px solid var(--accent);">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px;">⭐ La Angostura Sur — El bloque estrella de YPF en Vaca Muerta</div>
+        <div style="font-size:13px;color:#2C3E50;line-height:1.6;">100% propiedad YPF · En 18 meses: <strong>2.000 → 55.000 bpd</strong> · Breakeven &lt;$40/bbl · Target: <strong>100.000 bpd</strong> · Bloque #5 Vaca Muerta · 25% de toda la producción shale de YPF</div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+      <div class="data-table">
+        <div class="table-header dark">
+          Q1 2026 · Último trimestre reportado
+          <div class="th-sub">Publicado 7 mayo 2026 · Trimestre finalizado 31 marzo 2026</div>
+        </div>
+        <table>
+          <tr><td>Revenue total (USD)</td><td class="yoy-green">$4.95B &nbsp;(+7% YoY · +9% QoQ)</td></tr>
+          <tr><td>Adj. EBITDA</td><td class="yoy-green">$1.594B &nbsp;(+28% YoY) · récord Q1</td></tr>
+          <tr><td>EBITDA Margin</td><td class="yoy-green">32%</td></tr>
+          <tr><td>Net Income</td><td class="yoy-green">$409M &nbsp;(vs pérdida Q1'25)</td></tr>
+          <tr><td>EPS (USD)</td><td class="yoy-green">$1.03 &nbsp;(beat consenso $0.83)</td></tr>
+          <tr><td>Free Cash Flow</td><td class="yoy-green">$871M &nbsp;(mejora muy fuerte YoY)</td></tr>
+          <tr><td>Shale oil producción</td><td class="yoy-green">205.000 bpd &nbsp;(+39% YoY)</td></tr>
+          <tr><td>Shale gas</td><td class="yoy-green">47.7 kbbl/d eq. &nbsp;(+26% QoQ)</td></tr>
+          <tr><td>Refinery processing</td><td class="yoy-green">344.000 bpd &nbsp;(+8% YoY) · récord</td></tr>
+          <tr><td>Lifting cost</td><td class="yoy-green">$8.8/BOE &nbsp;(−42% YoY)</td></tr>
+          <tr><td>Net leverage</td><td class="yoy-green">1.57× &nbsp;(vs &gt;2.5× en 2023)</td></tr>
+          <tr><td>Exportaciones QoQ</td><td class="yoy-green">+25% (diesel · GLP · jet fuel)</td></tr>
+        </table>
+        <div class="warn-badge">
+          ⚠ EPS $1.03 vs estimado $1.10 de algunos analistas (−6.4%). No obstante, EBITDA ajustado +28% YoY y FCF récord de $871M confirman sólida ejecución operativa. Revenue beat del +7.14% vs consenso $4.62B.
+        </div>
+      </div>
+
+      <div class="data-table">
+        <div class="table-header accent">
+          Q2 2026 · Guidance + Previsiones
+          <div class="th-sub">Reporta 7 agosto 2026 · Trim. finaliza junio 2026</div>
+        </div>
+        <table>
+          <tr><td>EPS consensus (ARS)</td><td class="yoy-green">~ARS 1.960 por acción YPFD</td></tr>
+          <tr><td>EPS consensus (USD)</td><td class="yoy-green">~$1.69 USD (vs $1.03 Q1)</td></tr>
+          <tr><td>Revenue (ARS est.)</td><td class="yoy-green">~ARS 7T+ (próx. trimestre)</td></tr>
+          <tr><td>Shale oil guía 2026</td><td class="yoy-green">~215.000 bpd promedio año</td></tr>
+          <tr><td>Exit rate dic. 2026</td><td class="yoy-green">250.000 bpd</td></tr>
+          <tr><td>CapEx 2026</td><td>$5.5B–$5.8B (reafirmado)</td></tr>
+          <tr><td>Exportaciones</td><td class="yoy-green">80% VMOS dedicado a exports</td></tr>
+          <tr><td>Catalizador Q2</td><td>VMOS +44k bpd · Oldelval +40k</td></tr>
+          <tr><td>ExxonMobil</td><td class="yoy-green">Potencial nuevo socio en Vaca Muerta</td></tr>
+          <tr><td>Riesgo Burford</td><td class="yoy-amber">Arbitraje ICSID en curso (~$16B)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- F) TÉCNICO -->
+<section>
+  <div class="container">
+    <div class="section-label">Técnico</div>
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+    <div class="technical-grid">
+      <div class="ath-block">
+        <div class="ath-label">Dist. al ATH de cierre (ARS)</div>
+        <div class="ath-pct">−3.1%</div>
+        <ul class="ath-details">
+          <li><span class="detail-label">Precio actual (BYMA)</span>~$69.800 ARS (may 2026)</li>
+          <li><span class="detail-label">ATH de cierre (ARS)</span>$72.050 — 31 marzo 2026</li>
+          <li><span class="detail-label">ATH intradía 52 sem.</span>$72.725 ARS</li>
+          <li><span class="detail-label">Precio NYSE (USD)</span>~$43 USD (equivalente ADR)</li>
+          <li><span class="detail-label">Mín. 52 semanas</span>$35.520 ARS (recuperó +96%)</li>
+          <li><span class="detail-label">Retorno 1 año</span>+70% YoY (ARS)</li>
+          <li><span class="detail-label">Beta</span>0.69 — menos volátil que MERVAL</li>
+        </ul>
+      </div>
+      <div class="technical-card">
+        <h3>Lectura técnica · Mayo 2026</h3>
+        <ul class="tech-bullets">
+          <li><strong>Corrección del −3.1% desde ATH histórico en ARS:</strong> YPFD tocó su máximo histórico en $72.050 el 31 de marzo de 2026 y retrocedió levemente hasta ~$69.800. La consolidación post-ATH es técnicamente saludable y el mercado digiere las noticias del Q1'26 (EPS levemente por debajo de algunas estimaciones).</li>
+          <li><strong>Dualidad técnica ARS vs USD:</strong> En ARS YPFD está al −3.1% del ATH. En USD (NYSE: YPF a ~$43) el activo está ~−5% de su máximo de 52 semanas en dólares. El inversor local coteja YPFD vs inflación y tipo de cambio; el inversor internacional mira el ADR en USD con el riesgo Argentina incorporado.</li>
+          <li><strong>Resistencias clave:</strong> $72.000–$72.725 ARS (zona ATH). Recuperar y cerrar por encima de $72.050 abriría precio descubierto con próximos targets en $76.000–$78.000 (Fibonacci 127.2%) y $82.000 (161.8%).</li>
+          <li><strong>Soporte primario:</strong> $66.000–$67.500 ARS (zona de consolidación pre-earnings). $60.000 ARS (soporte estructural, base del canal alcista 2025-2026). El beta bajo (0.69) significa que YPFD tiende a caer menos que el MERVAL en correcciones generales.</li>
+          <li><strong>Catalizador técnico Q2:</strong> Resultados del 7 de agosto. El mercado buscará: (a) shale oil hacia 225.000+ bpd (en camino a guía 250.000 diciembre), (b) FCF sostenido por encima de $700M, (c) novedades sobre ExxonMobil como socio, (d) actualización del frente Burford. Cualquier noticia sobre el arbitraje ICSID puede mover el papel en ambas direcciones abruptamente.</li>
+          <li><strong>Valuación relativa atractiva:</strong> YPF cotiza con descuento significativo vs Petrobras (Brasil) y otras E&amp;P integradas de LatAm por el riesgo Argentina. Si la macro local (Milei) sigue estabilizándose, el re-rating puede llevar el múltiplo EV/EBITDA de ~10× hacia 12-14×, implicando un upside de 20-40% solo por compresión de descuento.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- G) GRÁFICO -->
+<section class="chart-section">
+  <div class="container">
+    <div class="section-label">Precio</div>
+    <h2 class="section-title">Gráfico de cotización YPFD · Últimos 24 meses (semanal) · BYMA en ARS</h2>
+    <div class="chart-wrapper">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=BCBA%3AYPFD&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        scrolling="no"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- H) FOOTER -->
+<footer>
+  <div class="footer-date">📊 Análisis generado el 22 de mayo de 2026</div>
+  <div>Precio BYMA indicativo ~ARS 69.800 (mayo 2026). Equivalente NYSE: YPF ~$43 USD. Market cap USD ~$17B. Resultados Q1 2026 publicados el 7 mayo 2026. Este análisis es de carácter informativo y no constituye asesoramiento de inversión. La inversión en YPF implica riesgo país Argentina y riesgo legal por el litigio Burford Capital.</div>
+  <div class="sources-title">Fuentes consultadas</div>
+  <div class="sources-list">
+    <div>· <a href="https://tickeron.com/earnings/YPF/" target="_blank">Tickeron — YPF Q1 2026 Earnings Recap: Record EBITDA, Shale Surge +39% YoY</a></div>
+    <div>· <a href="https://www.stocktitan.net/sec-filings/YPF/6-k-ypf-sociedad-anonima-current-report-foreign-issuer-cd94e9d9d853.html" target="_blank">SEC Filing 6-K — YPF Q1 2026: Revenue $4.95B, EBITDA $1.594B, FCF $871M</a></div>
+    <div>· <a href="https://finance.yahoo.com/sectors/energy/articles/ypf-sociedad-nima-q1-earnings-190654178.html" target="_blank">Yahoo Finance — YPF Q1 Earnings Call: La Angostura Sur 55k bpd, VMOS expansion</a></div>
+    <div>· <a href="https://es.tradingview.com/symbols/BCBA-YPFD/" target="_blank">TradingView — YPFD ATH ARS $72.050 (31 mar 2026) · Beta 0.69</a></div>
+    <div>· <a href="https://es.investing.com/equities/ypf-sociedad-historical-data" target="_blank">Investing.com — YPFD histórico: 52-sem $35.520–$72.725 ARS · +70% YoY</a></div>
+    <div>· <a href="https://bizmodelmastery.substack.com/p/ypf-stock-analysis-down-about-10" target="_blank">Biz Model Mastery — YPF Stock Analysis: FCF $871M, shale 205k bpd, lifting cost $8.8/BOE</a></div>
+    <div>· <a href="https://www.thestockobserver.com/2026/05/18/ypf-sociedad-anonima-q1-earnings-call-highlights.html" target="_blank">The Stock Observer — YPF Q1 2026 Call Highlights: Horacio Marín, refinery record 344k bpd</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
