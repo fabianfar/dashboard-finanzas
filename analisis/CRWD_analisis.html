@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrowdStrike Holdings Inc. (CRWD) — Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy: #131320;
+    --navy-mid: #1E1E35;
+    --accent: #D9232E;
+    --accent-light: #FF5A63;
+    --accent-dark: #B01C26;
+    --light: #F4F4F8;
+    --white: #FFFFFF;
+    --green: #27AE60;
+    --red: #E74C3C;
+    --amber: #F39C12;
+    --text: #0A0A1A;
+    --text-secondary: #5A6080;
+    --border: #DDD8E8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Segoe UI",Calibri,Arial,sans-serif; background:var(--light); color:var(--text); font-size:15px; line-height:1.65; }
+
+  /* HERO */
+  .hero { background:var(--navy); border-left:14px solid var(--accent); padding:48px 56px 40px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; right:-60px; width:440px; height:440px; border-radius:50%; background:radial-gradient(circle,rgba(217,35,46,0.18) 0%,transparent 65%); pointer-events:none; }
+  .hero::after { content:''; position:absolute; bottom:0; right:180px; width:500px; height:2px; background:linear-gradient(90deg,transparent,rgba(217,35,46,0.4),transparent); pointer-events:none; }
+  .hero-top { display:flex; align-items:center; gap:32px; flex-wrap:nowrap; }
+  .logo-box { width:110px; height:110px; background:var(--white); border-radius:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+  .hero-title-block { flex:1; }
+  .title-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .company-name { font-family:Georgia,serif; font-size:44px; font-weight:normal; color:var(--white); letter-spacing:-0.5px; }
+  .ticker-badge { border:1.5px solid var(--accent-light); color:var(--accent-light); padding:4px 14px; border-radius:20px; font-size:15px; font-weight:700; letter-spacing:1px; }
+  .hero-subtitle { color:#7A7A9A; font-size:14px; margin-top:8px; }
+  .stat-strip { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .stat-card { background:rgba(255,255,255,0.06); border:1px solid rgba(217,35,46,0.3); border-top:3px solid var(--accent); border-radius:10px; padding:16px 20px; flex:1; min-width:130px; }
+  .stat-label { font-size:10.5px; color:#7A7A9A; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+  .stat-value { font-size:22px; font-weight:700; color:var(--white); letter-spacing:-0.5px; }
+  .stat-value.green { color:#5DD891; }
+  .stat-value.athatm { color:var(--accent-light); }
+
+  /* GENERAL */
+  .container { max-width:1140px; margin:0 auto; padding:0 32px; }
+  section { padding:48px 0; }
+  .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent-dark); margin-bottom:8px; }
+  .section-title { font-family:Georgia,serif; font-size:28px; color:var(--navy); margin-bottom:28px; font-weight:normal; }
+  .section-divider { height:1px; background:var(--border); margin:0 32px; }
+
+  /* B */
+  .about-card { background:var(--white); border-radius:16px; padding:36px 40px; box-shadow:0 2px 20px rgba(0,0,0,0.06); line-height:1.8; font-size:15px; color:#2C2C3E; }
+  .accent-term { color:var(--accent-dark); font-weight:600; }
+  .biz-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+  .biz-tag { background:rgba(217,35,46,0.08); color:var(--accent-dark); border:1px solid rgba(217,35,46,0.22); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+
+  /* C */
+  .competitive-grid { display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start; }
+  .subsector-cards { display:flex; flex-direction:column; gap:14px; }
+  .subsector-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 12px 12px 0; padding:18px 22px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .subsector-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .subsector-name { font-weight:700; font-size:14px; color:var(--navy); }
+  .position-badge { background:var(--accent); color:white; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:800; }
+  .position-badge.p2 { background:var(--navy-mid); }
+  .subsector-share { font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .subsector-note { font-size:13px; color:#2C2C3E; }
+  .rival-block { background:var(--navy); border-radius:16px; padding:32px 28px; color:var(--white); }
+  .rival-tag { font-size:10.5px; color:#7A7A9A; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+  .rival-name { font-family:Georgia,serif; font-size:26px; color:var(--white); margin-bottom:4px; }
+  .rival-slogan { color:var(--accent-light); font-size:13px; font-style:italic; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .rival-bullets { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .rival-bullets li { padding-left:18px; position:relative; font-size:13.5px; color:#A8A8C8; line-height:1.55; }
+  .rival-bullets li::before { content:'›'; position:absolute; left:0; color:var(--accent-light); font-weight:700; }
+
+  /* D */
+  .catalyst-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px; }
+  .catalyst-card { background:var(--white); border-top:4px solid var(--accent); border-radius:0 0 16px 16px; padding:28px 24px; box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+  .catalyst-icon { font-size:28px; margin-bottom:12px; display:block; }
+  .catalyst-title { font-weight:700; font-size:15px; color:var(--navy); margin-bottom:10px; }
+  .catalyst-text { font-size:13.5px; color:#2C2C3E; line-height:1.65; }
+  .risk-block { background:var(--navy); border-radius:12px; padding:18px 28px; color:#7A7A9A; font-size:13.5px; line-height:1.7; }
+  .risk-keyword { color:var(--accent-light); font-weight:600; }
+
+  /* E */
+  .market-cap-card { background:var(--white); border-radius:16px; padding:28px 36px; display:flex; align-items:center; gap:48px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; flex-wrap:wrap; }
+  .mcap-big { flex:1; min-width:200px; }
+  .mcap-label { font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; }
+  .mcap-value { font-family:Georgia,serif; font-size:46px; color:var(--navy); font-weight:normal; letter-spacing:-1px; line-height:1.1; }
+  .mcap-metrics { display:flex; gap:32px; flex-wrap:wrap; }
+  .metric-item { text-align:center; }
+  .metric-value { font-size:22px; font-weight:700; color:var(--navy); }
+  .metric-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+
+  /* ARR VISUAL */
+  .arr-card { background:var(--white); border-radius:16px; padding:28px 36px; box-shadow:0 2px 16px rgba(0,0,0,0.06); margin-bottom:24px; }
+  .arr-title { font-weight:700; font-size:14px; color:var(--navy); margin-bottom:20px; }
+  .arr-row { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+  .arr-label { font-size:12px; color:var(--text-secondary); width:150px; flex-shrink:0; text-align:right; }
+  .arr-bar-bg { flex:1; background:#F0EEF8; border-radius:6px; height:22px; overflow:hidden; }
+  .arr-bar { height:100%; border-radius:6px; display:flex; align-items:center; padding-left:10px; font-size:11px; font-weight:700; color:white; }
+  .arr-val { font-size:13px; font-weight:700; color:var(--navy); width:90px; flex-shrink:0; }
+
+  .tables-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .data-table { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .table-header { padding:16px 22px; font-weight:700; font-size:13px; }
+  .table-header.dark { background:var(--navy); color:var(--white); }
+  .table-header.accent { background:var(--accent); color:var(--white); }
+  .table-header .th-sub { font-weight:400; font-size:11px; opacity:0.75; margin-top:2px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:13px 22px; font-size:13.5px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  td:first-child { color:var(--text-secondary); }
+  td:last-child { font-weight:600; text-align:right; }
+  .yoy-green { color:var(--green); }
+  .yoy-red { color:var(--red); }
+  .yoy-amber { color:var(--amber); }
+  tr:nth-child(even) { background:#F8F7FC; }
+
+  /* F */
+  .technical-grid { display:grid; grid-template-columns:320px 1fr; gap:20px; align-items:stretch; }
+  .ath-block { background:var(--navy); border-radius:16px; padding:40px 32px; display:flex; flex-direction:column; justify-content:center; }
+  .ath-label { font-size:11px; color:#7A7A9A; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .ath-pct { font-family:Georgia,serif; font-size:88px; line-height:0.9; color:var(--accent-light); letter-spacing:-4px; margin-bottom:16px; }
+  .ath-pill { display:inline-block; background:rgba(217,35,46,0.2); color:var(--accent-light); border:1px solid rgba(217,35,46,0.4); border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:0.5px; margin-bottom:20px; }
+  .ath-details { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .ath-details li { font-size:13px; color:#A8A8C8; display:flex; flex-direction:column; }
+  .detail-label { font-size:10px; color:#7A7A9A; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:1px; }
+  .technical-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 16px 16px 0; padding:32px; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+  .technical-card h3 { font-family:Georgia,serif; font-size:18px; font-weight:normal; color:var(--navy); margin-bottom:20px; }
+  .tech-bullets { list-style:none; display:flex; flex-direction:column; gap:14px; }
+  .tech-bullets li { padding-left:20px; position:relative; font-size:14px; color:#2C2C3E; line-height:1.55; }
+  .tech-bullets li::before { content:'▸'; position:absolute; left:0; color:var(--accent-dark); font-size:12px; top:2px; }
+
+  .chart-section { padding-bottom:56px; }
+  .chart-wrapper { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,0.08); }
+  .chart-wrapper iframe { width:100%; height:560px; border:none; display:block; }
+
+  footer { background:var(--navy); color:#7A7A9A; padding:40px 56px; font-size:12.5px; line-height:1.8; }
+  footer .footer-date { color:var(--white); font-weight:600; margin-bottom:12px; font-size:13px; }
+  footer a { color:var(--accent-light); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+  .sources-title { color:#A8A8C8; font-weight:600; margin-bottom:8px; margin-top:16px; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+  .sources-list { display:flex; flex-direction:column; gap:4px; }
+
+  @media(max-width:640px){
+    .hero{padding:32px 24px;border-left-width:8px;}
+    .hero-top{flex-wrap:wrap;}
+    .company-name{font-size:28px;}
+    .competitive-grid,.tables-grid,.technical-grid{grid-template-columns:1fr;}
+    .catalyst-grid{grid-template-columns:1fr;}
+    .ath-pct{font-size:64px;}
+    .mcap-value{font-size:32px;}
+    footer{padding:32px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- A) HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <!-- CrowdStrike Falcon Logo SVG inline -->
+    <div class="logo-box">
+      <svg width="92" height="92" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="82" height="82" rx="14" fill="#131320"/>
+        <!-- Falcon silhouette simplified -->
+        <path d="M46 16 C46 16 28 28 24 46 C20 60 30 72 46 76 C62 72 72 60 68 46 C64 28 46 16 46 16Z" fill="#D9232E" opacity="0.15"/>
+        <!-- Falcon body -->
+        <path d="M46 20 L30 52 L42 46 L38 72 L46 60 L54 72 L50 46 L62 52 Z" fill="#D9232E"/>
+        <!-- Wing highlights -->
+        <path d="M46 20 L30 52 L42 46 Z" fill="#FF5A63"/>
+        <path d="M46 20 L62 52 L50 46 Z" fill="#FF5A63"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="title-row">
+        <h1 class="company-name">CrowdStrike</h1>
+        <span class="ticker-badge">NASDAQ: CRWD</span>
+      </div>
+      <p class="hero-subtitle">El líder global de ciberseguridad basado en IA · Plataforma Falcon · Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card"><div class="stat-label">Cotización</div><div class="stat-value">$663.46</div></div>
+    <div class="stat-card"><div class="stat-label">Market Cap</div><div class="stat-value">~$169B</div></div>
+    <div class="stat-card"><div class="stat-label">Revenue Q4 FY26 YoY</div><div class="stat-value green">+23%</div></div>
+    <div class="stat-card"><div class="stat-label">EPS nGAAP Q4 YoY</div><div class="stat-value green">+38%</div></div>
+    <div class="stat-card"><div class="stat-label">Dist. Máx. Histórico</div><div class="stat-value athatm">~ATH ✦</div></div>
+  </div>
+</div>
+
+<!-- B) DESCRIPCIÓN -->
+<section>
+  <div class="container">
+    <div class="section-label">Descripción</div>
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="about-card">
+      <p>CrowdStrike Holdings es la empresa de <span class="accent-term">ciberseguridad nativa en IA</span> más valorada del mundo, fundada en 2011 por George Kurtz. Su plataforma <span class="accent-term">Falcon</span> — agente único, arquitectura cloud-native — protege endpoints, workloads en cloud, identidades y datos a través de un modelo SaaS de suscripción. Es el único proveedor que unifica en una misma plataforma: <span class="accent-term">EDR/XDR</span> (detección y respuesta en endpoints), <span class="accent-term">CSPM/CNAPP</span> (seguridad cloud), <span class="accent-term">Identity Protection</span>, <span class="accent-term">Next-Gen SIEM</span> y <span class="accent-term">Threat Intelligence</span>.</p>
+      <br>
+      <p>Con <span class="accent-term">$5.25B en ARR</span> (Annual Recurring Revenue, +24% YoY) y una base de más de 29.000 clientes suscriptores, CrowdStrike es el estándar de facto en protección endpoint. Su motor de IA — <span class="accent-term">Charlotte AI</span> — analiza billones de eventos de seguridad en tiempo real. El programa <span class="accent-term">Falcon Flex</span> ($1.69B ARR, +120% YoY) permite a los clientes consumir módulos a medida, acelerando la consolidación de la plataforma. El CEO Kurtz tiene como meta pública: <span class="accent-term">$20B de ARR para FY2036</span>.</p>
+      <div class="biz-tags">
+        <span class="biz-tag">Falcon Platform (single agent)</span>
+        <span class="biz-tag">EDR / XDR</span>
+        <span class="biz-tag">Cloud Security (CSPM/CNAPP)</span>
+        <span class="biz-tag">Identity Protection</span>
+        <span class="biz-tag">Next-Gen SIEM</span>
+        <span class="biz-tag">Charlotte AI</span>
+        <span class="biz-tag">Falcon Flex ($1.69B ARR +120%)</span>
+        <span class="biz-tag">$5.25B ARR · $20B target FY36</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- C) COMPETENCIA -->
+<section>
+  <div class="container">
+    <div class="section-label">Mercado</div>
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="competitive-grid">
+      <div class="subsector-cards">
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">EDR / XDR — Endpoint Security</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Gartner Magic Quadrant Leader 13 años consecutivos · Líder indiscutido</div>
+          <div class="subsector-note">SentinelOne (S) compite en EDR con arquitectura similar, pero tiene un tercio del ARR de CrowdStrike. Microsoft Defender tiene adopción masiva por bundling, pero carece de la profundidad de detección y respuesta de Falcon.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Cybersecurity Platform Consolidation</span>
+            <span class="position-badge">#1</span>
+          </div>
+          <div class="subsector-share">Named "Overall Champion" — Omdia 2026 Cybersecurity Platform Leadership Matrix</div>
+          <div class="subsector-note">Palo Alto Networks (PANW) lidera en firewall / SASE / XSIAM. La batalla central del mercado es quién consolida más módulos de seguridad en una sola plataforma. CrowdStrike gana en endpoint + cloud; PANW gana en network + SOC transformation.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Cloud Security (CSPM / CNAPP)</span>
+            <span class="position-badge">#2</span>
+          </div>
+          <div class="subsector-share">Falcon Cloud Security — crecimiento acelerado · Wiz lidera en CNAPP standalone</div>
+          <div class="subsector-note">Wiz (adquirida por Google en 2025 por $32B) es el rival más peligroso en seguridad cloud pura. CrowdStrike contraataca con la ventaja de la plataforma unificada: el mismo agente Falcon cubre endpoint + cloud + identidad sin fricción.</div>
+        </div>
+
+        <div class="subsector-card">
+          <div class="subsector-top">
+            <span class="subsector-name">Next-Gen SIEM / Log Management</span>
+            <span class="position-badge">#2</span>
+          </div>
+          <div class="subsector-share">Falcon Next-Gen SIEM — segmento de mayor crecimiento de CRWD · $1B+ ARR</div>
+          <div class="subsector-note">Splunk (Cisco) domina SIEM legacy con base instalada masiva. CrowdStrike ataca con NG-SIEM nativo en IA que ingiere datos de Falcon directamente, sin parsers, a un costo por GB significativamente menor. La migración desde Splunk es el pipeline más grande de CRWD en 2026.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <div class="rival-tag">Rival Principal</div>
+        <div class="rival-name">Palo Alto Networks<br><span style="font-size:14px;font-family:sans-serif;opacity:0.75;">(PANW — NASDAQ)</span></div>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul class="rival-bullets">
+          <li>PANW ejecuta la misma estrategia de consolidación de plataforma que CrowdStrike pero desde el ángulo de red y firewall. Su suite "Cortex" (XDR + XSIAM + XSOAR) ataca directamente el corazón del negocio de CrowdStrike en el mercado enterprise.</li>
+          <li>La estrategia "platformization" de PANW (ofrecer módulos gratuitos temporalmente a cambio de consolidar toda la seguridad) puede desplazar a CrowdStrike en grandes cuentas donde PANW ya opera el firewall — el punto de entrada más valioso del stack de seguridad.</li>
+          <li>PANW tiene mayor revenue total (~$9B anual) y más superficie de producto (network + cloud + SOC). Aunque CrowdStrike crece más rápido, PANW tiene mayor peso en grandes acuerdos de transformación de SOC que son el deal de mayor ARR por cliente.</li>
+          <li>La alianza PANW-IBM (servicios gestionados) y la integración con NVIDIA para AI SOC crean un ecosistema de partners que compite directamente con el stack de Falcon + Charlotte AI de CrowdStrike.</li>
+          <li>En el segmento de identidad, Microsoft Entra (ex-Azure AD) + Defender XDR representan la amenaza más silenciosa: los clientes con E5 license de Microsoft tienen acceso a seguridad de nivel "suficientemente bueno" bundleada, reduciendo el TAM de módulos de identidad de CrowdStrike.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- D) POTENCIAL FUTURO -->
+<section>
+  <div class="container">
+    <div class="section-label">Perspectivas</div>
+    <h2 class="section-title">Potencial futuro del sector</h2>
+    <div class="catalyst-grid">
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">▲</span>
+        <div class="catalyst-title">IA Agentica redefine la ciberseguridad</div>
+        <div class="catalyst-text">
+          La IA generativa crea una superficie de ataque radicalmente nueva: agentes autónomos, modelos propietarios y pipelines de datos no estructurados son el nuevo objetivo. CrowdStrike está en el centro de esta tormenta: Charlotte AI ya automatiza triaje de alertas, genera reportes de threat intelligence y responde incidentes sin intervención humana. El "Project Glasswing" de Anthropic (mencionado en noticias de mayo 2026) pone foco en ciberseguridad IA — catalizador de demanda directo para CRWD. La necesidad de proteger infraestructura de IA (modelos, APIs, agentes) es un TAM completamente nuevo.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">●</span>
+        <div class="catalyst-title">Falcon Flex + Consolidación: de 1 módulo a N</div>
+        <div class="catalyst-text">
+          El programa Falcon Flex ($1.69B ARR, +120% YoY) es el motor de expansión más potente de CrowdStrike: los clientes que adoptaron Falcon para EDR ahora consumen SIEM, Cloud Security e Identidad desde la misma plataforma. El NRR (Net Revenue Retention) superiror al 120% confirma que los clientes gastan más año a año. La meta de $20B ARR para FY2036 implica un CAGR del ~14% sostenido durante 10 años — alcanzable si la tasa de consolidación de módulos sigue la tendencia actual y el mercado total de ciberseguridad llega a $300B+.
+        </div>
+      </div>
+
+      <div class="catalyst-card">
+        <span class="catalyst-icon">■</span>
+        <div class="catalyst-title">Madurez financiera: GAAP positivo + $1.5B buyback</div>
+        <div class="catalyst-text">
+          FY2026 fue el primer año completo de GAAP net income positivo — un hito que expande el universo de inversores institucionales que pueden poseer CRWD. El FCF record del año y el programa de recompra de $1.5B (anunciado en abril 2026 con $150.6M ya ejecutado a ~$364.57) son señales de confianza del management en la valoración actual. La guía de FY27 incluye FCF margin ≥30% — un negocio que genera cash a escala mientras crece al 22-23% anual es la combinación más valorada por el mercado en 2026.
+        </div>
+      </div>
+
+    </div>
+    <div class="risk-block">
+      <strong style="color:#C8C8D8;">Riesgos a vigilar:</strong>
+      &nbsp;<span class="risk-keyword">Recuperación post-incidente julio 2024</span> (el outage global aún genera reservas en algunos clientes enterprise)
+      · <span class="risk-keyword">Valoración exigente</span> (~$169B market cap · P/S ~29× revenue FY27)
+      · <span class="risk-keyword">Competencia Microsoft</span> (bundling Defender en E5 reduce TAM identity/endpoint)
+      · <span class="risk-keyword">Consolidación PANW</span> (platformization agresiva con subsidios a clientes)
+      · <span class="risk-keyword">Macro tech</span> (ciclo de tasas altas comprime múltiplos SaaS growth)
+      · <span class="risk-keyword">Concentración clientes grandes</span> (los top 50 clientes son un riesgo de churn catastrófico)
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- E) FUNDAMENTALS -->
+<section>
+  <div class="container">
+    <div class="section-label">Financials</div>
+    <h2 class="section-title">Datos fundamentales</h2>
+
+    <div class="market-cap-card">
+      <div class="mcap-big">
+        <div class="mcap-label">Market Capitalization</div>
+        <div class="mcap-value">~$169B</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:6px;">Líder global ciberseguridad IA · 10.698 empleados · FY termina enero · Próx. earnings: 3 junio 2026</div>
+      </div>
+      <div class="mcap-metrics">
+        <div class="metric-item"><div class="metric-value">$5.25B</div><div class="metric-label">ARR actual</div></div>
+        <div class="metric-item"><div class="metric-value">+24%</div><div class="metric-label">ARR YoY</div></div>
+        <div class="metric-item"><div class="metric-value">25%</div><div class="metric-label">nGAAP Op. Margin</div></div>
+        <div class="metric-item"><div class="metric-value">≥30%</div><div class="metric-label">FCF margin FY27</div></div>
+        <div class="metric-item"><div class="metric-value">$20B</div><div class="metric-label">ARR target FY36</div></div>
+      </div>
+    </div>
+
+    <!-- ARR evolution bars -->
+    <div class="arr-card">
+      <div class="arr-title">📊 Evolución ARR (Annual Recurring Revenue) — El motor de valoración de CRWD</div>
+      <div class="arr-row">
+        <div class="arr-label">FY2023 (ene 2023)</div>
+        <div class="arr-bar-bg"><div class="arr-bar" style="width:28%;background:#1C1C2E;">$2.56B</div></div>
+        <div class="arr-val">$2.56B</div>
+      </div>
+      <div class="arr-row">
+        <div class="arr-label">FY2024 (ene 2024)</div>
+        <div class="arr-bar-bg"><div class="arr-bar" style="width:43%;background:#3A1520;">$3.44B (+34%)</div></div>
+        <div class="arr-val">$3.44B</div>
+      </div>
+      <div class="arr-row">
+        <div class="arr-label">FY2025 (ene 2025)</div>
+        <div class="arr-bar-bg"><div class="arr-bar" style="width:56%;background:#8B1520;">$4.24B (+23%)</div></div>
+        <div class="arr-val">$4.24B</div>
+      </div>
+      <div class="arr-row">
+        <div class="arr-label">FY2026 (ene 2026) ★</div>
+        <div class="arr-bar-bg"><div class="arr-bar" style="width:72%;background:#D9232E;">$5.25B (+24%) · $5B MILESTONE</div></div>
+        <div class="arr-val" style="color:var(--accent-dark);font-weight:800;">$5.25B ★</div>
+      </div>
+      <div class="arr-row">
+        <div class="arr-label">FY2027 guidance</div>
+        <div class="arr-bar-bg"><div class="arr-bar" style="width:88%;background:#FF5A63;opacity:0.8;">$6.47–$6.52B (+23-24%)</div></div>
+        <div class="arr-val" style="color:#999;">$6.49B*</div>
+      </div>
+      <div style="margin-top:18px;padding:14px 16px;background:#FFF0F0;border-radius:10px;border-left:4px solid var(--accent);">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:5px;">⭐ Falcon Flex — El módulo de mayor crecimiento</div>
+        <div style="font-size:13px;color:#2C2C3E;line-height:1.6;">ARR $1.69B &nbsp;·&nbsp; +120% YoY &nbsp;·&nbsp; Permite consumir cualquier módulo Falcon &nbsp;·&nbsp; El mayor driver de expansión de revenue en clientes existentes</div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+      <div class="data-table">
+        <div class="table-header dark">
+          Q4 FY2026 · Último trimestre reportado
+          <div class="th-sub">Publicado 3 marzo 2026 · Trim. nov 2025 – ene 2026</div>
+        </div>
+        <table>
+          <tr><td>Revenue total</td><td class="yoy-green">$1.31B &nbsp;(+23% YoY)</td></tr>
+          <tr><td>Subscription revenue</td><td class="yoy-green">$1.24B &nbsp;(+23% YoY)</td></tr>
+          <tr><td>ARR (ending)</td><td class="yoy-green">$5.25B &nbsp;(+24% YoY) ★ $5B milestone</td></tr>
+          <tr><td>Net new ARR (trimestre)</td><td class="yoy-green">$330.7M &nbsp;(+47% YoY) · récord</td></tr>
+          <tr><td>Falcon Flex ARR</td><td class="yoy-green">$1.69B &nbsp;(+120% YoY)</td></tr>
+          <tr><td>Non-GAAP EPS diluted</td><td class="yoy-green">$1.12 &nbsp;(+38% vs $0.81 Q4 FY25)</td></tr>
+          <tr><td>GAAP net income</td><td class="yoy-green">Positivo por 1ra vez (full year)</td></tr>
+          <tr><td>Non-GAAP Op. Margin</td><td class="yoy-green">25% &nbsp;($326M)</td></tr>
+          <tr><td>Free Cash Flow</td><td class="yoy-green">$376.4M &nbsp;(29% margen) · récord</td></tr>
+          <tr><td>Revenue FY2026 completo</td><td class="yoy-green">$4.81B &nbsp;(vs $3.06B FY2024)</td></tr>
+        </table>
+      </div>
+
+      <div class="data-table">
+        <div class="table-header accent">
+          Q1 FY2027 · Guidance + Previsión
+          <div class="th-sub">Reporta 3 junio 2026 · Trim. feb–abr 2026</div>
+        </div>
+        <table>
+          <tr><td>Revenue guidance</td><td class="yoy-green">$1.360–$1.364B (+23-24% YoY)</td></tr>
+          <tr><td>ARR guidance (ending)</td><td class="yoy-green">$5.502–$5.504B (+24% YoY)</td></tr>
+          <tr><td>Net new ARR guidance</td><td class="yoy-green">$249–$251M (+29-30% YoY)</td></tr>
+          <tr><td>Non-GAAP Op. Income</td><td class="yoy-green">$308–$310M</td></tr>
+          <tr><td>Non-GAAP EPS guidance</td><td class="yoy-green">$1.06–$1.07</td></tr>
+          <tr><td>EPS consensus</td><td class="yoy-green">$1.07</td></tr>
+          <tr><td>FCF margin Q1 est.</td><td class="yoy-green">~33%</td></tr>
+          <tr><td>FY2027 revenue guidance</td><td class="yoy-green">$5.868–$5.928B (+22-23%)</td></tr>
+          <tr><td>FY2027 nGAAP EPS</td><td class="yoy-green">$4.78–$4.90</td></tr>
+          <tr><td>FY2027 FCF margin</td><td class="yoy-green">≥30% (objetivo)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- F) TÉCNICO -->
+<section>
+  <div class="container">
+    <div class="section-label">Técnico</div>
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+    <div class="technical-grid">
+      <div class="ath-block">
+        <div class="ath-label">Dist. al ATH (intraday)</div>
+        <div class="ath-pct">−1.7%</div>
+        <span class="ath-pill">✦ ZONA DE MÁXIMOS HISTÓRICOS</span>
+        <ul class="ath-details">
+          <li><span class="detail-label">Precio actual (23 may 2026)</span>$663.46</li>
+          <li><span class="detail-label">ATH intraday (52 sem.)</span>$674.84 — 22 mayo 2026</li>
+          <li><span class="detail-label">ATH closing reciente</span>$618.83 — 18 mayo 2026*</li>
+          <li><span class="detail-label">52-week low</span>$342.72 (recuperó +93.6%)</li>
+          <li><span class="detail-label">PT más alto (KeyBanc)</span>$700 (↑ de $525 en may'26)</li>
+          <li><span class="detail-label">PT Barclays</span>$650 (↑ de $550 en may'26)</li>
+          <li><span class="detail-label">Próx. earnings</span>3 junio 2026 (after close)</li>
+        </ul>
+      </div>
+      <div class="technical-card">
+        <h3>Lectura técnica · Mayo 2026</h3>
+        <ul class="tech-bullets">
+          <li><strong>Rally extraordinario desde el mínimo:</strong> CRWD recuperó +93.6% desde su mínimo de 52 semanas ($342.72) hasta $663.46, borrando completamente el sell-off de principios de 2026 y superando los máximos pre-corrección. El mercado premió la aceleración del ARR (+24%), los récords de FCF y el primer año completo de GAAP positivo.</li>
+          <li><strong>En zona de ATH histórico:</strong> La acción cotiza a solo −1.7% del máximo intradía de $674.84 (22 mayo 2026). Este nivel representa precio descubierto puro: no hay resistencias técnicas por encima. Múltiples analistas elevaron precios objetivo en mayo (KeyBanc a $700, Barclays a $650) validando el momentum.</li>
+          <li><strong>Catalizador técnico inminente — 3 junio 2026:</strong> Los earnings de Q1 FY2027 son el evento más relevante a corto plazo. El consenso espera EPS $1.07 y revenue $1.362B. Un beat + raise del guidance FY27 puede ser el detonante para superar $674 y avanzar hacia $700–$720.</li>
+          <li><strong>Resistencias proyectadas:</strong> $675 (ATH intraday actual). $700 (target KeyBanc, nivel psicológico). $750–$760 (extensión Fibonacci 127.2% del rango 2026). El riesgo de miss en earnings es el principal factor de ruptura bajista: la acción cayó −4.12% aftermarket tras Q4 FY26 pese al beat, mostrando sensibilidad extrema.</li>
+          <li><strong>Soporte primario:</strong> $620–$630 (zona de breakout del ATH previo de mayo). $580–$590 (soporte del canal alcista post-mínimos). $520 como soporte estructural relevante si hubiera decepción en guidance.</li>
+          <li><strong>Nota sobre el contexto macro:</strong> El "Project Glasswing" de Anthropic (foco en ciberseguridad IA, mencionado en prensa may'26) actúa como catalizador narrativo adicional para el sector. Jim Cramer advirtió el 19 mayo que "software stocks may be rallying for the wrong reasons" — señal contrarian de posible sobreextensión a corto plazo.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- G) GRÁFICO -->
+<section class="chart-section">
+  <div class="container">
+    <div class="section-label">Precio</div>
+    <h2 class="section-title">Gráfico de cotización · Últimos 24 meses (semanal)</h2>
+    <div class="chart-wrapper">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3ACRWD&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        scrolling="no"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- H) FOOTER -->
+<footer>
+  <div class="footer-date">📊 Análisis generado el 23 de mayo de 2026</div>
+  <div>Precio al cierre de mayo 23, 2026 ($663.46). Market cap ~$168.87B. Último quarter reportado: Q4 FY2026 (publicado 3 marzo 2026). Próximo earnings: Q1 FY2027 el 3 junio 2026, after close. Fiscal year de CrowdStrike termina el 31 de enero. Este análisis es de carácter informativo y no constituye asesoramiento de inversión.</div>
+  <div class="sources-title">Fuentes consultadas</div>
+  <div class="sources-list">
+    <div>· <a href="https://www.sec.gov/Archives/edgar/data/0001535527/000153552726000007/crwd-20260303xex991.htm" target="_blank">SEC EDGAR — CrowdStrike Q4 FY2026 Earnings Release (3 marzo 2026)</a></div>
+    <div>· <a href="https://www.sec.gov/Archives/edgar/data/1535527/000153552726000013/sharerepurchaseincreasepre.htm" target="_blank">SEC EDGAR — CrowdStrike $1.5B Share Repurchase Program (6 abril 2026)</a></div>
+    <div>· <a href="https://www.tipranks.com/stocks/crwd/earnings" target="_blank">TipRanks — CRWD Q1 FY27 guidance: EPS $1.06-$1.07 · Revenue $1.36B · Earnings 3 jun 2026</a></div>
+    <div>· <a href="https://www.macrotrends.net/stocks/charts/CRWD/crowdstrike/stock-price-history" target="_blank">MacroTrends — CRWD ATH closing $618.83 (18 may 2026) · 52-week range</a></div>
+    <div>· <a href="https://robinhood.com/us/en/stocks/CRWD/" target="_blank">Robinhood — CRWD intraday ATH $674.84 (22 may 2026) · 52-week low $342.72</a></div>
+    <div>· <a href="https://www.investing.com/equities/crowdstrike-holdings-inc" target="_blank">Investing.com — CRWD price $663.46 (23 may 2026) · Market cap $168.87B · 42 Buy ratings</a></div>
+    <div>· <a href="https://www.cnn.com/markets/stocks/CRWD" target="_blank">CNN Markets — KeyBanc PT $700 · Barclays PT $650 · Project Glasswing cybersecurity spotlight</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
