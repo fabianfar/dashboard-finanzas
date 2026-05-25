@@ -1716,6 +1716,10 @@ function sortTxnTableByDateDesc() {
   rows.forEach(function(row) { tbody.appendChild(row); });
 }
 
+window.addEventListener('DOMContentLoaded', function(){
+  sortTxnTableByDateDesc();
+});
+
 function addTransaction(){
   var type=document.getElementById('txn-type').value;var amount=parseFloat(document.getElementById('txn-amount').value);
   var date=document.getElementById('txn-date').value;var desc=document.getElementById('txn-desc').value.trim();var cat=document.getElementById('txn-cat').value;
