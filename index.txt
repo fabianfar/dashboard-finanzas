@@ -437,40 +437,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
       <h3 style="margin:0">Historial</h3>
       <select id="filter-month" style="width:auto;max-width:180px"></select>
     </div>
-    <table id="txn-table"><thead><tr><th>Fecha</th><th>Descripcion</th><th>Categoria</th><th>Tipo</th><th style="text-align:right">Monto</th><th></th></tr></thead><tbody></tbody></table>
-
-<script>
-function sortTxnTableByDateDesc() {
-  const table = document.getElementById('txn-table');
-  if (!table) return;
-
-  const tbody = table.querySelector('tbody');
-  const rows = Array.from(tbody.querySelectorAll('tr'));
-
-  const parseDate = (str) => {
-    // Formato: DD/MM/YYYY
-    const [d, m, y] = str.trim().split('/');
-    return new Date(`${y}-${m}-${d}`);
-  };
-
-  rows.sort((a, b) => {
-    const textA = a.children[0]?.textContent || '';
-    const textB = b.children[0]?.textContent || '';
-    const dateA = parseDate(textA);
-    const dateB = parseDate(textB);
-    return dateB - dateA; // descendente
-  });
-
-  rows.forEach(row => tbody.appendChild(row));
-}
-
-// Ordenar automáticamente al cargar la página
-window.addEventListener('DOMContentLoaded', () => {
-  sortTxnTableByDateDesc();
-});
-</script>
-
-
+    <table id="txn-table"><thead><tr><th style="cursor:pointer" onclick="sortTxnTableByDateDesc()">Fecha ⬇</th><th>Descripcion</th><th>Categoria</th><th>Tipo</th><th style="text-align:right">Monto</th><th></th></tr></thead><tbody></tbody></table>
   </div>
 </div>
 
@@ -1724,6 +1691,31 @@ function renderProjChart(){
 }
 
 // TRANSACCIONES
+function sortTxnTableByDateDesc() {
+  const table = document.getElementById('txn-table');
+  if (!table) return;
+
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+
+  const parseDate = function(str) {
+    // Formato DD/MM/YYYY (ej: 22/05/2026)
+    var parts = str.trim().split('/');
+    var d = parts[0], m = parts[1], y = parts[2];
+    return new Date(y + '-' + m + '-' + d);
+  };
+
+  rows.sort(function(a, b) {
+    var textA = (a.children[0] && a.children[0].textContent) || '';
+    var textB = (b.children[0] && b.children[0].textContent) || '';
+    var dateA = parseDate(textA);
+    var dateB = parseDate(textB);
+    return dateB - dateA; // descendente: más nueva primero
+  });
+
+  rows.forEach(function(row) { tbody.appendChild(row); });
+}
+
 function addTransaction(){
   var type=document.getElementById('txn-type').value;var amount=parseFloat(document.getElementById('txn-amount').value);
   var date=document.getElementById('txn-date').value;var desc=document.getElementById('txn-desc').value.trim();var cat=document.getElementById('txn-cat').value;
@@ -2088,9 +2080,22 @@ function renderAnalisis(){
     var a=state.analisis[i];var s=a.sector||'Otro';
     if(!bySector[s])bySector[s]=[];bySector[s].push(a);
   }
+  // Ordenar sectores alfabeticamente
   var sectors=Object.keys(bySector).sort();
+
   for(var si=0;si<sectors.length;si++){
     var sec=sectors[si];var color=SECTOR_COLORS[sec]||'#888';
+
+    // >>> NUEVO: ordenar análisis dentro del sector por ticker alfabético
+    bySector[sec].sort(function(a,b){
+      var ta=(a.ticker||'').toUpperCase();
+      var tb=(b.ticker||'').toUpperCase();
+      if(ta<tb)return-1;
+      if(ta>tb)return 1;
+      return 0;
+    });
+    //      
+
     h+='<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:600;color:'+color+';text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">'+sec+'</div>';
     for(var j=0;j<bySector[sec].length;j++){
       var an=bySector[sec][j];var isSel=selectedAnalisis===an.id;
