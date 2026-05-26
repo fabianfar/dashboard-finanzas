@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPY – Análisis Fundamental y Técnico · Mayo 2026</title>
+<style>
+  :root {
+    --navy:   #0D2137;
+    --accent: #BF0D3E;
+    --accent2:#E8A000;
+    --light:  #F7F8FA;
+    --white:  #FFFFFF;
+    --text:   #1C2B3A;
+    --muted:  #5A6A7A;
+    --green:  #1A9E5C;
+    --red:    #C0392B;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Calibri, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ──────────────────────────────────────────
+     A) HERO
+  ────────────────────────────────────────── */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 44px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -80px; top: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(191,13,62,0.07);
+    pointer-events: none;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+  .logo-box {
+    width: 110px; height: 110px;
+    border-radius: 16px;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .hero-title {
+    flex: 1;
+  }
+  .hero-title h1 {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    color: var(--white);
+    line-height: 1.1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .ticker-badge {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    color: var(--accent2);
+    border: 1.5px solid var(--accent2);
+    padding: 3px 12px;
+    border-radius: 6px;
+    letter-spacing: 2px;
+    vertical-align: middle;
+  }
+  .hero-subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  /* stat-cards strip */
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(191,13,62,0.4);
+    border-radius: 10px;
+    padding: 14px 20px;
+    min-width: 130px;
+    flex: 1;
+  }
+  .stat-card .label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .stat-card .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    margin-top: 4px;
+    line-height: 1;
+  }
+  .stat-card .value.green { color: #4CD98A; }
+  .stat-card .value.amber { color: var(--accent2); }
+  .stat-card .value.red   { color: #FF6B6B; }
+
+  /* ──────────────────────────────────────────
+     CONTENT WRAPPER
+  ────────────────────────────────────────── */
+  .content { max-width: 1100px; margin: 0 auto; padding: 40px 32px 0; }
+
+  /* sections */
+  section { margin-bottom: 48px; }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: var(--navy);
+    border-left: 5px solid var(--accent);
+    padding-left: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* ──────────────────────────────────────────
+     B) DESCRIPCIÓN
+  ────────────────────────────────────────── */
+  .desc-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+  .hl { color: var(--accent); font-weight: 600; }
+
+  /* ──────────────────────────────────────────
+     C) POSICIÓN COMPETITIVA
+  ────────────────────────────────────────── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    align-items: start;
+  }
+  .comp-cards { display: flex; flex-direction: column; gap: 14px; }
+  .comp-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .comp-card .pos { font-size: 22px; font-weight: 800; color: var(--accent); }
+  .comp-card .sector-name { font-weight: 700; font-size: 15px; color: var(--navy); }
+  .comp-card .share { font-size: 13px; color: var(--muted); margin: 2px 0 6px; }
+  .comp-card .note { font-size: 13px; color: var(--text); }
+
+  .rival-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 28px 24px;
+    color: var(--white);
+  }
+  .rival-block h3 { font-family: Georgia, serif; font-size: 20px; margin-bottom: 4px; }
+  .rival-slogan { color: var(--accent2); font-size: 13px; margin-bottom: 16px; font-style: italic; }
+  .rival-block ul { list-style: none; }
+  .rival-block ul li {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.8);
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-left: 16px;
+    position: relative;
+  }
+  .rival-block ul li::before { content: '▶'; color: var(--accent2); position: absolute; left: 0; font-size: 10px; top: 8px; }
+
+  /* ──────────────────────────────────────────
+     D) POTENCIAL FUTURO
+  ────────────────────────────────────────── */
+  .catalyst-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .catalyst-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 12px 12px;
+    padding: 22px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .catalyst-card .icon { font-size: 22px; margin-bottom: 8px; }
+  .catalyst-card h4 { font-family: Georgia, serif; font-size: 15px; color: var(--navy); margin-bottom: 8px; }
+  .catalyst-card p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+
+  .risks-block {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 16px 24px;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.8;
+  }
+  .risks-block .rk { color: var(--accent2); font-weight: 600; }
+
+  /* ──────────────────────────────────────────
+     E) DATOS FUNDAMENTALES
+  ────────────────────────────────────────── */
+  .fund-top {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .fund-top .mcap-big {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .fund-top .mcap-label { font-size: 12px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; }
+  .fund-meta { display: flex; gap: 28px; flex-wrap: wrap; }
+  .fund-meta-item .ml { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+  .fund-meta-item .mv { font-size: 16px; font-weight: 700; color: var(--accent2); }
+
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; border-radius: 10px; overflow: hidden; }
+  table thead tr th {
+    padding: 12px 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    text-align: left;
+  }
+  .table-dark thead tr { background: var(--navy); color: var(--white); }
+  .table-accent thead tr { background: var(--accent); color: var(--white); }
+  table tbody tr { background: var(--white); border-bottom: 1px solid #EEF0F2; }
+  table tbody tr:nth-child(even) { background: #F4F5F7; }
+  table tbody td { padding: 11px 16px; }
+  table tbody td.green { color: var(--green); font-weight: 700; }
+  table tbody td.red   { color: var(--red);   font-weight: 700; }
+  table tbody td.amber { color: #C97A00;       font-weight: 700; }
+  .td-label { color: var(--muted); font-size: 13px; }
+
+  /* ──────────────────────────────────────────
+     F) ANÁLISIS TÉCNICO
+  ────────────────────────────────────────── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .tech-big-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .tech-pct {
+    font-family: Georgia, serif;
+    font-size: 80px;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .tech-pct-label { font-size: 12px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+  .tech-data-row { font-size: 13px; color: rgba(255,255,255,0.7); margin: 4px 0; }
+  .tech-data-row span { color: var(--white); font-weight: 600; }
+
+  .tech-analysis {
+    background: var(--white);
+    border-left: 5px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 24px 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .tech-analysis h4 { font-family: Georgia, serif; font-size: 16px; color: var(--navy); margin-bottom: 14px; }
+  .tech-analysis ul { list-style: none; }
+  .tech-analysis ul li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 7px 0;
+    border-bottom: 1px solid #EEF0F2;
+    padding-left: 18px;
+    position: relative;
+  }
+  .tech-analysis ul li::before { content: '◆'; color: var(--accent); position: absolute; left: 0; font-size: 9px; top: 10px; }
+
+  /* ──────────────────────────────────────────
+     G) GRÁFICO
+  ────────────────────────────────────────── */
+  .chart-section {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 48px;
+  }
+  .chart-section iframe {
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    height: 560px;
+  }
+
+  /* ──────────────────────────────────────────
+     H) FOOTER
+  ────────────────────────────────────────── */
+  footer {
+    background: var(--navy);
+    border-top: 3px solid var(--accent);
+    padding: 28px 48px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.5);
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .footer-title { color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 8px; }
+
+  /* ──────────────────────────────────────────
+     RESPONSIVE
+  ────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .comp-grid, .tables-grid, .tech-grid, .catalyst-grid { grid-template-columns: 1fr; }
+    .tech-pct { font-size: 60px; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: 28px 20px 24px; }
+    .hero-top { flex-wrap: wrap; }
+    .hero-title h1 { font-size: 28px; }
+    .content { padding: 24px 16px 0; }
+    .stat-strip { flex-direction: column; }
+    .fund-top { flex-direction: column; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     A) HERO
+══════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-top">
+    <!-- LOGO SVG INLINE -->
+    <div class="logo-box">
+      <svg width="88" height="88" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
+        <!-- SPDR shield shape -->
+        <rect x="8" y="8" width="72" height="72" rx="12" fill="#0D2137"/>
+        <!-- S letter -->
+        <text x="44" y="52" font-family="Georgia, serif" font-size="36" font-weight="700"
+              fill="#BF0D3E" text-anchor="middle" dominant-baseline="middle">S&amp;P</text>
+        <!-- gold bar below -->
+        <rect x="16" y="62" width="56" height="5" rx="2.5" fill="#E8A000"/>
+        <!-- 500 label -->
+        <text x="44" y="76" font-family="-apple-system,Arial,sans-serif" font-size="10"
+              fill="rgba(255,255,255,0.7)" text-anchor="middle">500 · SPY</text>
+      </svg>
+    </div>
+
+    <div class="hero-title">
+      <h1>
+        SPDR S&amp;P 500 ETF Trust
+        <span class="ticker-badge">SPY</span>
+      </h1>
+      <div class="hero-subtitle">Análisis fundamental y técnico · Mayo 2026 · NYSEARCA</div>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="label">Cotización</div>
+      <div class="value">$749.25</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">AUM (ETF)</div>
+      <div class="value amber">$768B</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">EPS Q1 '26 YoY</div>
+      <div class="value green">+13.2%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Revenue Q1 '26 YoY</div>
+      <div class="value green">+9.0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Dist. a ATH cierre</div>
+      <div class="value amber">−0.04%</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     CONTENT
+══════════════════════════════════════════ -->
+<div class="content">
+
+  <!-- B) DESCRIPCIÓN -->
+  <section>
+    <div class="section-title">¿Qué es el SPY?</div>
+    <div class="desc-card">
+      El <span class="hl">SPDR S&amp;P 500 ETF Trust (SPY)</span> es el ETF de mayor volumen de negociación del mundo, lanzado en enero de 1993 por <span class="hl">State Street Global Advisors</span>. Replica con precisión el índice <span class="hl">S&amp;P 500</span>, que agrupa las 500 mayores compañías de EE.UU. por capitalización bursátil. Con un ratio de gastos de solo el <span class="hl">0,0945%</span> anual y más de <span class="hl">$768.000 millones</span> en activos bajo gestión, es el vehículo de referencia para todo inversor que busque exposición diversificada a la <span class="hl">renta variable estadounidense de gran capitalización</span>. Sus 11 sectores incluyen tecnología (~31%), finanzas (~14%), salud (~12%) e industriales (~9%), con una volatilidad (beta) de 1,0 respecto al propio índice. Para el trader de opciones, SPY ofrece el <span class="hl">mercado de derivados más líquido del planeta</span>, con vencimientos diarios y la mayor profundidad de book del mercado.
+    </div>
+  </section>
+
+  <!-- C) POSICIÓN COMPETITIVA -->
+  <section>
+    <div class="section-title">Posición competitiva</div>
+    <div class="comp-grid">
+      <div class="comp-cards">
+        <div class="comp-card">
+          <div class="pos">#1</div>
+          <div class="sector-name">Volumen de trading — ETFs mundiales</div>
+          <div class="share">~$25–35B negociados diariamente</div>
+          <div class="note">Ningún otro ETF se acerca en liquidez intradía; market makers de opciones usan SPY como cobertura global.</div>
+        </div>
+        <div class="comp-card">
+          <div class="pos">#2</div>
+          <div class="sector-name">Activos bajo gestión — ETFs de renta variable USA</div>
+          <div class="share">AUM ~$768B vs. VOO ~$590B</div>
+          <div class="note">Vanguard VOO ha captado más patrimonio en los últimos años, pero SPY mantiene el liderazgo en trading activo.</div>
+        </div>
+        <div class="comp-card">
+          <div class="pos">#1</div>
+          <div class="sector-name">Mercado de opciones sobre ETF</div>
+          <div class="share">Open interest + volumen de opciones</div>
+          <div class="note">El ecosistema de opciones sobre SPY (0DTE, spreads, puts de cobertura) es único por profundidad y spreads.</div>
+        </div>
+        <div class="comp-card">
+          <div class="pos">#3</div>
+          <div class="sector-name">Coste (expense ratio)</div>
+          <div class="share">SPY 0,0945% vs VOO 0,03% / IVV 0,03%</div>
+          <div class="note">El ETF más caro de los tres S&amp;P 500 principales; inversores a largo plazo prefieren VOO o IVV por el menor TER.</div>
+        </div>
+      </div>
+
+      <div class="rival-block">
+        <h3>Vanguard VOO</h3>
+        <div class="rival-slogan">La mayor amenaza estructural</div>
+        <ul>
+          <li>Ratio de gastos 3× menor (0,03% vs 0,0945%), decisivo para carteras buy &amp; hold de largo plazo.</li>
+          <li>Ha superado a SPY en captación de nuevos activos los últimos 5 años consecutivos.</li>
+          <li>Acumula ya ~$590B AUM y crece a mayor ritmo; podría superar a SPY en AUM en 2–3 años.</li>
+          <li>El respaldo de Vanguard (propiedad de sus partícipes) alinea incentivos con el inversor minorista.</li>
+          <li>SPY defiende su liderazgo en trading activo e institucional donde el TER importa menos que la liquidez.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- D) POTENCIAL FUTURO -->
+  <section>
+    <div class="section-title">Potencial futuro del S&amp;P 500 (2026–2030)</div>
+    <div class="catalyst-grid">
+      <div class="catalyst-card">
+        <div class="icon">▲</div>
+        <h4>IA como motor de beneficios</h4>
+        <p>Goldman Sachs estima que la inversión en IA explicará el ~40% del crecimiento de EPS en 2026. El capex de los hyperscalers (Microsoft, Google, Amazon, Meta) sigue acelerando y se traslada en ingresos a semis, software y cloud.</p>
+      </div>
+      <div class="catalyst-card">
+        <div class="icon">●</div>
+        <h4>Expansión del ciclo de beneficios</h4>
+        <p>Q1 2026 marcó el 6.º trimestre consecutivo de crecimiento de EPS de doble dígito. El consenso espera +21% YoY en Q2'26. La broadening del rally hacia sectores ex-Mag7 (salud, finanzas, industriales) sostiene el mercado.</p>
+      </div>
+      <div class="catalyst-card">
+        <div class="icon">■</div>
+        <h4>Ciclo de recortes Fed + reactivación</h4>
+        <p>La normalización de tipos apoya el múltiplo de valoración (P/E fwd ~21×). La infraestructura eléctrica para IA, la electrificación y el onshoring manufacturero son catalizadores estructurales de 3–5 años para industriales y utilities.</p>
+      </div>
+    </div>
+    <div class="risks-block">
+      <strong style="color:rgba(255,255,255,0.9)">⚠ Riesgos a vigilar:</strong>&nbsp;
+      <span class="rk">Concentración en Mag-7</span> (top-10 = ~37% del índice) · 
+      <span class="rk">Valoraciones elevadas</span> (P/E fwd 21× vs media 40 años ~16×) · 
+      <span class="rk">Inflación por petróleo</span> (~$105/barril, conflicto Irán) retrasa bajadas de tipos · 
+      <span class="rk">Pausa en capex IA</span> de hyperscalers · 
+      <span class="rk">Fortaleza dólar</span> reduce beneficios internacionales · 
+      <span class="rk">Deuda federal</span> y riesgo de yield spike en Treasuries
+    </div>
+  </section>
+
+  <!-- E) DATOS FUNDAMENTALES -->
+  <section>
+    <div class="section-title">Datos fundamentales</div>
+
+    <div class="fund-top">
+      <div>
+        <div class="mcap-label">Activos bajo gestión (AUM)</div>
+        <div class="mcap-big">$768B</div>
+      </div>
+      <div class="fund-meta">
+        <div class="fund-meta-item">
+          <div class="ml">Expense Ratio</div>
+          <div class="mv">0,0945%</div>
+        </div>
+        <div class="fund-meta-item">
+          <div class="ml">NAV (22 mayo)</div>
+          <div class="mv">$745,57</div>
+        </div>
+        <div class="fund-meta-item">
+          <div class="ml">Vol. diario prom.</div>
+          <div class="mv">71,3M acc.</div>
+        </div>
+        <div class="fund-meta-item">
+          <div class="ml">P/E fwd 12m</div>
+          <div class="mv">~21,0×</div>
+        </div>
+        <div class="fund-meta-item">
+          <div class="ml">Dividend Yield</div>
+          <div class="mv">0,99%</div>
+        </div>
+        <div class="fund-meta-item">
+          <div class="ml">Holdings</div>
+          <div class="mv">505 empresas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+      <!-- Q1 2026 REPORTADO -->
+      <table class="table-dark">
+        <thead><tr>
+          <th colspan="2">Q1 2026 · Temporada de resultados (89% de compañías reportadas)</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="td-label">EPS blended YoY</td><td class="green">+13,2%</td></tr>
+          <tr><td class="td-label">Revenue blended YoY</td><td class="green">+9,0%</td></tr>
+          <tr><td class="td-label">% empresas beat EPS</td><td class="green">84% (5-yr avg: 78%)</td></tr>
+          <tr><td class="td-label">Sorpresa EPS agregada</td><td class="green">+18,2% vs estimado</td></tr>
+          <tr><td class="td-label">Líderes sectoriales</td><td>IT, Financieras, Industriales</td></tr>
+          <tr><td class="td-label">Rezagado</td><td class="red">Salud (Healthcare)</td></tr>
+          <tr><td class="td-label">Racha de doble dígito</td><td class="green">6.º trimestre consecutivo</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Q2 2026 PREVISIÓN -->
+      <table class="table-accent">
+        <thead><tr>
+          <th colspan="2">Q2 2026 · Previsión consenso (reporta jul–ago 2026)</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="td-label">EPS growth YoY estimado</td><td class="green">+19,9–21,3%</td></tr>
+          <tr><td class="td-label">Revenue growth YoY</td><td class="green">+9,0% (estimado)</td></tr>
+          <tr><td class="td-label">CY 2026 EPS forecast</td><td class="green">+21,0% (FactSet)</td></tr>
+          <tr><td class="td-label">Target Goldman Sachs</td><td>S&amp;P 500 → 7.600 fin 2026</td></tr>
+          <tr><td class="td-label">Target UBS</td><td>S&amp;P 500 → 7.500 fin 2026</td></tr>
+          <tr><td class="td-label">Driver principal</td><td class="amber">IA (~40% del crecimiento EPS)</td></tr>
+          <tr><td class="td-label">Q3–Q4 2026 outlook</td><td class="green">+23,2% / +20,7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- F) ANÁLISIS TÉCNICO -->
+  <section>
+    <div class="section-title">Análisis técnico — Distancia a máximos históricos</div>
+    <div class="tech-grid">
+      <div class="tech-big-block">
+        <div class="tech-pct">−0,04%</div>
+        <div class="tech-pct-label">Distancia al ATH de cierre</div>
+        <div class="tech-data-row">Cierre actual: <span>$749,25</span></div>
+        <div class="tech-data-row">ATH cierre: <span>$749,53 (14 may 2026)</span></div>
+        <div class="tech-data-row">Máx. intradía 52s: <span>$752,13</span></div>
+        <div class="tech-data-row">Mín. 52 semanas: <span>$575,60</span></div>
+        <div class="tech-data-row">Var. 12 meses: <span>+27,88%</span></div>
+        <div class="tech-data-row">Var. 30 días: <span>+4,84%</span></div>
+      </div>
+
+      <div class="tech-analysis">
+        <h4>Lectura técnica — Mayo 2026</h4>
+        <ul>
+          <li><strong>Precio en zona de ATH absoluto:</strong> SPY cotiza a solo $0,28 de su máximo histórico de cierre ($749,53), una señal de fortaleza técnica excepcional.</li>
+          <li><strong>Recuperación completa post-corrección:</strong> Desde el mínimo de $575,60 (mayo 2025) el ETF recuperó un +30% en 12 meses, borrando totalmente la corrección de Liberation Day.</li>
+          <li><strong>Tendencia semanal alcista:</strong> Mínimos y máximos crecientes desde septiembre 2025. La media de 200 sesiones actúa como soporte dinámico lejano (~$680).</li>
+          <li><strong>Soporte inmediato:</strong> Zona $725–730 (máximos de enero 2026 reconquistados). Rotura de ese nivel implicaría revisión de la tesis.</li>
+          <li><strong>Resistencia / objetivo:</strong> Zona $750–755 (ATH intradía). Superación abre el camino a los $780 en base a extensiones de Fibonacci.</li>
+          <li><strong>Momentum:</strong> RSI semanal en zona alta (~68–72) sin señal de divergencia bajista. No hay sobrecompra extrema.</li>
+          <li><strong>Próximo catalizador:</strong> Datos de empleo de mayo (jun 2026) y reunión FOMC junio 2026. Temporada Q2 earnings (julio 2026) podría impulsar nuevo ATH.</li>
+          <li><strong>Para opciones:</strong> Con SPY en ATH, la volatilidad implícita tiende a estar comprimida; estrategias vendedoras de volatilidad (iron condors, covered calls) son favorecidas en este entorno.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /content -->
+
+<!-- G) GRÁFICO -->
+<div class="content">
+  <section>
+    <div class="section-title">Gráfico de cotización — SPY (24 meses, semanal)</div>
+    <div class="chart-section">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=AMEX%3ASPY&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        frameborder="0"
+        scrolling="no">
+      </iframe>
+    </div>
+  </section>
+</div>
+
+<!-- H) FOOTER -->
+<footer>
+  <div class="footer-title">Fuentes consultadas · Análisis generado el 26 de mayo de 2026</div>
+  <p>
+    <a href="https://www.ssga.com/us/en/intermediary/etfs/state-street-spdr-sp-500-etf-trust-spy" target="_blank">State Street SPDR – Ficha oficial SPY</a> &nbsp;·&nbsp;
+    <a href="https://insight.factset.com/sp-500-earnings-season-update-may-8-2026" target="_blank">FactSet – S&amp;P 500 Earnings Season Update May 2026</a> &nbsp;·&nbsp;
+    <a href="https://www.goldmansachs.com/insights/articles/us-stocks-forecast-to-rise-in-2026" target="_blank">Goldman Sachs – US Stocks Forecast 2026</a> &nbsp;·&nbsp;
+    <a href="https://www.tipranks.com/etf/spy" target="_blank">TipRanks – SPY Price &amp; Data</a> &nbsp;·&nbsp;
+    <a href="https://www.macrotrends.net/stocks/charts/SPY/spdr-s-p-500-etf/stock-price-history" target="_blank">MacroTrends – SPY Historical Prices</a> &nbsp;·&nbsp;
+    <a href="https://www.financecharts.com/etfs/SPY/summary/price" target="_blank">FinanceCharts – SPY Summary</a>
+  </p>
+  <p style="margin-top:10px;font-size:11.5px;color:rgba(255,255,255,0.3);">
+    Este informe es únicamente informativo y no constituye asesoramiento de inversión. Los datos de precio corresponden al 26 de mayo de 2026. Past performance no garantiza resultados futuros.
+  </p>
+</footer>
+
+</body>
+</html>
