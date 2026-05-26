@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSLR — First Solar | Análisis Fundamental y Técnico</title>
+<style>
+  :root {
+    --navy:   #1C3664;
+    --accent: #00A0DC;
+    --accent2:#0077A8;
+    --green:  #22C55E;
+    --red:    #EF4444;
+    --light:  #F4F7FB;
+    --card:   #FFFFFF;
+    --text:   #1A2535;
+    --muted:  #5A6A80;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", Calibri, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ─── HERO ─────────────────────────────────────────── */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    right: -80px; top: -80px;
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,160,220,.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: nowrap;
+  }
+
+  .logo-box {
+    width: 110px; height: 110px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    padding: 10px;
+  }
+
+  .title-block { flex: 1; min-width: 0; }
+  .title-block h1 {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.1;
+    display: inline;
+    margin-right: 12px;
+  }
+  .ticker-badge {
+    display: inline-block;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    vertical-align: middle;
+    letter-spacing: .08em;
+  }
+  .subtitle {
+    color: rgba(255,255,255,.60);
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  /* stat strip */
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(0,160,220,.35);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 130px;
+  }
+  .stat-card .label {
+    font-size: 11px;
+    color: rgba(255,255,255,.5);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+  .stat-card .value.up   { color: #4ADE80; }
+  .stat-card .value.down { color: #F87171; }
+  .stat-card .value.warn { color: #FBBF24; }
+
+  /* ─── MAIN LAYOUT ─────────────────────────────────── */
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px 60px; }
+  .section { margin-top: 40px; }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: var(--navy);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* ─── CARDS ───────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 10px rgba(28,54,100,.07);
+  }
+  .card p { color: var(--muted); line-height: 1.75; }
+  .card p em { font-style: normal; color: var(--accent2); font-weight: 600; }
+
+  /* competitive */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+  .sub-cards { display: flex; flex-direction: column; gap: 12px; }
+  .sub-card {
+    background: var(--card);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(28,54,100,.06);
+  }
+  .sub-card h4 { font-size: 14px; color: var(--navy); font-weight: 700; }
+  .sub-card .rank { font-size: 20px; font-weight: 800; color: var(--accent); }
+  .sub-card .note { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .rival-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 24px;
+    color: #fff;
+  }
+  .rival-block h3 { font-family: Georgia, serif; font-size: 20px; margin-bottom: 4px; }
+  .rival-slogan { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 16px; }
+  .rival-block ul { list-style: none; padding: 0; }
+  .rival-block ul li {
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    font-size: 13.5px;
+    color: rgba(255,255,255,.8);
+  }
+  .rival-block ul li::before { content: "▸ "; color: var(--accent); }
+
+  /* potential */
+  .pot-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .pot-card {
+    background: var(--card);
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 12px 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(28,54,100,.06);
+  }
+  .pot-card .icon { font-size: 22px; margin-bottom: 10px; }
+  .pot-card h4 { font-size: 15px; color: var(--navy); font-weight: 700; margin-bottom: 8px; }
+  .pot-card p  { font-size: 13.5px; color: var(--muted); }
+
+  .risk-block {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: rgba(255,255,255,.75);
+    line-height: 1.8;
+  }
+  .risk-block strong { color: var(--accent); }
+
+  /* fundamentals */
+  .mcap-bar {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    box-shadow: 0 2px 10px rgba(28,54,100,.07);
+    margin-bottom: 20px;
+  }
+  .mcap-big { font-size: 44px; font-weight: 800; color: var(--navy); font-family: Georgia, serif; }
+  .mcap-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .mcap-meta { display: flex; flex-direction: column; gap: 6px; }
+  .mcap-meta span { font-size: 14px; color: var(--muted); }
+  .mcap-meta span b { color: var(--text); }
+
+  .tables-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table th {
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .th-dark { background: var(--navy); color: #fff; }
+  .th-accent { background: var(--accent); color: #fff; }
+  table td { padding: 9px 14px; border-bottom: 1px solid #EEF2F8; }
+  table tr:last-child td { border-bottom: none; }
+  table tbody tr:hover { background: #F8FAFD; }
+  .tbl-wrap { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(28,54,100,.06); }
+  .tbl-head { padding: 12px 14px; font-size: 13px; font-weight: 700; }
+  .green { color: var(--green); font-weight: 700; }
+  .red   { color: var(--red);   font-weight: 700; }
+
+  /* technical */
+  .tech-row {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+  }
+  .tech-dark {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 28px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .tech-pct {
+    font-family: Georgia, serif;
+    font-size: 88px;
+    font-weight: 700;
+    color: #FBBF24;
+    line-height: 1;
+  }
+  .tech-sub { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 16px; line-height: 2; }
+  .tech-sub b { color: #fff; }
+
+  .tech-card {
+    background: var(--card);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 24px 28px;
+    box-shadow: 0 2px 8px rgba(28,54,100,.06);
+  }
+  .tech-card h4 { font-size: 15px; color: var(--navy); font-weight: 700; margin-bottom: 14px; }
+  .tech-card ul { list-style: none; padding: 0; }
+  .tech-card ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #EEF2F8;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .tech-card ul li:last-child { border-bottom: none; }
+  .tech-card ul li::before { content: "● "; color: var(--accent); font-size: 10px; }
+
+  /* chart */
+  .chart-wrap {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(28,54,100,.07);
+  }
+  .chart-wrap iframe { display: block; width: 100%; height: 560px; border: none; }
+
+  /* footer */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,.5);
+    padding: 28px 48px;
+    font-size: 12.5px;
+    line-height: 2;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer strong { color: rgba(255,255,255,.8); }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .hero { padding: 24px 20px; border-left-width: 6px; }
+    .hero-top { flex-wrap: wrap; }
+    .comp-grid, .pot-grid, .tables-row, .tech-row { grid-template-columns: 1fr; }
+    .title-block h1 { font-size: 28px; }
+    .tech-pct { font-size: 60px; }
+    .mcap-big { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     A) HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-top">
+
+    <!-- LOGO SVG inline -->
+    <div class="logo-box">
+      <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg" width="90" height="90">
+        <!-- Sun rays -->
+        <circle cx="45" cy="45" r="18" fill="#00A0DC"/>
+        <g stroke="#00A0DC" stroke-width="3.5" stroke-linecap="round">
+          <line x1="45" y1="6"  x2="45" y2="16"/>
+          <line x1="45" y1="74" x2="45" y2="84"/>
+          <line x1="6"  y1="45" x2="16" y2="45"/>
+          <line x1="74" y1="45" x2="84" y2="45"/>
+          <line x1="18.7" y1="18.7" x2="25.7" y2="25.7"/>
+          <line x1="64.3" y1="64.3" x2="71.3" y2="71.3"/>
+          <line x1="71.3" y1="18.7" x2="64.3" y2="25.7"/>
+          <line x1="25.7" y1="64.3" x2="18.7" y2="71.3"/>
+        </g>
+        <!-- Panel grid lines inside circle -->
+        <circle cx="45" cy="45" r="18" fill="none" stroke="#1C3664" stroke-width="1.2"/>
+        <line x1="27" y1="45" x2="63" y2="45" stroke="#1C3664" stroke-width="1.2"/>
+        <line x1="45" y1="27" x2="45" y2="63" stroke="#1C3664" stroke-width="1.2"/>
+        <!-- FSLR text below -->
+        <text x="45" y="88" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="800" fill="#1C3664" letter-spacing="1">FIRST SOLAR</text>
+      </svg>
+    </div>
+
+    <div class="title-block">
+      <h1>First Solar, Inc.</h1>
+      <span class="ticker-badge">FSLR</span>
+      <p class="subtitle">Análisis fundamental y técnico · Mayo 2026</p>
+    </div>
+  </div>
+
+  <!-- STAT STRIP -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="label">Cotización</div>
+      <div class="value">$219.38</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Market Cap</div>
+      <div class="value">$23.6B</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Ventas Q1 2026 YoY</div>
+      <div class="value up">+24%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">EPS Q1 2026 YoY</div>
+      <div class="value up">+28%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Dist. a Máx. Histórico</div>
+      <div class="value warn">-27.1%</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CONTENIDO PRINCIPAL
+══════════════════════════════════════════ -->
+<div class="container">
+
+  <!-- ─── B) ¿A QUÉ SE DEDICA? ─────────────── -->
+  <section class="section">
+    <h2 class="section-title">¿A qué se dedica?</h2>
+    <div class="card">
+      <p>
+        First Solar es el <em>único fabricante de paneles solares de gran escala con sede en EE.UU.</em> y el líder mundial en <em>tecnología de película delgada de telururo de cadmio (CdTe)</em>. A diferencia de sus rivales chinos —que utilizan silicio cristalino convencional—, First Solar desarrolla y manufactura sus módulos con una cadena de suministro 100% estadounidense, distribuida en cinco plantas (Ohio ×3, Alabama, Louisiana) con capacidad instalada de <em>~14 GW anuales</em> al cierre de Q1 2026. La compañía sirve a desarrolladores de proyectos, productoras de energía independiente (IPPs), utilities, corporaciones industriales y compradores corporativos de energía, con un backlog récord de <em>47.9 GW / $14.4B</em> con entregas hasta 2030. Su ventaja diferencial descansa en el coeficiente de temperatura superior de los módulos CdTe —mayor rendimiento en calor—, en la huella medioambiental menor por módulo y, sobre todo, en su condición de beneficiaria natural de los <em>créditos fiscales Section 45X de la IRA</em>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── C) POSICIÓN COMPETITIVA ───────────── -->
+  <section class="section">
+    <h2 class="section-title">Posición competitiva</h2>
+    <div class="comp-grid">
+      <div class="sub-cards">
+
+        <div class="sub-card">
+          <h4>Fabricación solar doméstica EE.UU.</h4>
+          <div class="rank">#1</div>
+          <div class="note">Mayor capacidad instalada en suelo americano (~14 GW). Ventaja regulatoria insuperable bajo la IRA y aranceles sección 201/301.</div>
+        </div>
+
+        <div class="sub-card">
+          <h4>Tecnología thin-film CdTe global</h4>
+          <div class="rank">#1</div>
+          <div class="note">Único fabricante a escala industrial de módulos CdTe. La patente de proceso genera un moat tecnológico difícil de replicar.</div>
+        </div>
+
+        <div class="sub-card">
+          <h4>Módulos de alta eficiencia utility-scale</h4>
+          <div class="rank">#2–3 global</div>
+          <div class="note">Detrás de los gigantes chinos (JinkoSolar, Longi) en volumen total, pero líder indiscutido en el mercado occidental.</div>
+        </div>
+
+        <div class="sub-card">
+          <h4>Beneficiario de créditos IRA (45X)</h4>
+          <div class="rank">#1</div>
+          <div class="note">Capta la mayor proporción de créditos por componentes domésticos. Competidores extranjeros excluidos de este subsidio.</div>
+        </div>
+
+      </div>
+
+      <div class="rival-block">
+        <h3>JinkoSolar (JKS)</h3>
+        <p class="rival-slogan">La mayor amenaza estructural</p>
+        <ul>
+          <li>Fabricante chino #1 mundial por volumen (~100 GW capacidad global)</li>
+          <li>Domina el mercado de silicio cristalino con costes un 25–40% menores</li>
+          <li>Aranceles actuales (~150%) frenan su entrada en EE.UU., pero la geopolítica puede cambiar</li>
+          <li>Cotiza con descuento masivo: ASP de módulo en ~$0.10/W vs ~$0.30/W de FSLR</li>
+          <li>Presión a la baja en márgenes globales; obliga a FSLR a depender del mercado doméstico</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── D) POTENCIAL FUTURO DEL SECTOR ────── -->
+  <section class="section">
+    <h2 class="section-title">Potencial futuro del sector</h2>
+    <div class="pot-grid">
+      <div class="pot-card">
+        <div class="icon">▲</div>
+        <h4>Explosión de la demanda AI / Data Centers</h4>
+        <p>Los centros de datos para inteligencia artificial requieren GWs adicionales de generación limpia y confiable. Microsoft, Google y Amazon tienen compromisos de compra de energía solar que alimentan el backlog de FSLR directamente. La IA podría triplicar el consumo eléctrico de los data centers para 2030.</p>
+      </div>
+      <div class="pot-card">
+        <div class="icon">●</div>
+        <h4>IRA + aranceles: ventaja estructural</h4>
+        <p>Los créditos Section 45X aportan ~$0.17/W adicional por módulo producido en EE.UU. Los aranceles de importación sobre módulos chinos (hasta 150%) blindan el mercado doméstico. Ambas palancas son sostenibles en el tiempo independientemente del ciclo político bajo la actual administración.</p>
+      </div>
+      <div class="pot-card">
+        <div class="icon">■</div>
+        <h4>Expansión de capacidad + South Carolina</h4>
+        <p>La nueva instalación de acabado en Carolina del Sur (prevista para 2026) elevará la capacidad doméstica y reducirá costes de logística. La expansión en India (~3.3 GW) diversifica ingresos internacionales. Para 2030, FSLR podría superar los 25 GW de capacidad total anual.</p>
+      </div>
+    </div>
+
+    <div class="risk-block">
+      <strong>Riesgos a vigilar:</strong>
+      Derogación o reducción de créditos IRA · <strong>Caída de precios ASP</strong> por sobreoferta global ·
+      Normalización arancelaria con China · Concentración de clientes (top 10 = &gt;60% backlog) ·
+      <strong>Riesgo de ejecución</strong> en expansiones · Competencia del almacenamiento en baterías · Costes de teluro
+    </div>
+  </section>
+
+  <!-- ─── E) DATOS FUNDAMENTALES ─────────────── -->
+  <section class="section">
+    <h2 class="section-title">Datos fundamentales</h2>
+
+    <div class="mcap-bar">
+      <div>
+        <div class="mcap-label">Market Capitalization</div>
+        <div class="mcap-big">$23.6B</div>
+      </div>
+      <div class="mcap-meta">
+        <span><b>~107.5M</b> acciones en circulación</span>
+        <span>P/E fwd 2026: <b>~12×</b></span>
+        <span>EV/EBITDA: <b>~10×</b></span>
+        <span>Net cash: <b>~$2.0B</b></span>
+        <span>Revenue guidance FY2026: <b>$4.9B – $5.2B</b></span>
+      </div>
+    </div>
+
+    <div class="tables-row">
+      <!-- Q1 2026 reportado -->
+      <div class="tbl-wrap">
+        <div class="tbl-head th-dark" style="background:var(--navy);color:#fff;">
+          Q1 2026 · Último trimestre reportado (30-abr-2026)
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="background:#EEF2F8;color:var(--navy);">Métrica</th>
+              <th style="background:#EEF2F8;color:var(--navy);">Resultado</th>
+              <th style="background:#EEF2F8;color:var(--navy);">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Ventas netas</td><td><b>$1.04B</b></td><td class="green">+24%</td></tr>
+            <tr><td>EPS diluido (GAAP)</td><td><b>$3.22</b></td><td class="green">+28%</td></tr>
+            <tr><td>Adj. EBITDA</td><td><b>$520M</b></td><td class="green">+31%</td></tr>
+            <tr><td>Margen EBITDA adj.</td><td><b>50%</b></td><td class="green">+3pp</td></tr>
+            <tr><td>Producción módulos</td><td><b>4.3 GW</b></td><td class="green">+18%</td></tr>
+            <tr><td>Utilización plantas EE.UU.</td><td><b>~96%</b></td><td>—</td></tr>
+            <tr><td>Backlog total</td><td><b>47.9 GW</b></td><td>—</td></tr>
+            <tr><td>Precio medio backlog</td><td><b>$0.30/W</b></td><td>—</td></tr>
+            <tr><td>Beat EPS vs consenso</td><td colspan="2" class="green">+9.95% sorpresa positiva</td></tr>
+            <tr><td>Beat ventas vs consenso</td><td colspan="2" class="red">-1.3% miss leve</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Q2 2026 previsión -->
+      <div class="tbl-wrap">
+        <div class="tbl-head th-accent" style="background:var(--accent);color:#fff;">
+          Q2 2026 · Previsión (reporta ~jul-2026)
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="background:#E6F5FC;color:var(--navy);">Métrica</th>
+              <th style="background:#E6F5FC;color:var(--navy);">Estimado</th>
+              <th style="background:#E6F5FC;color:var(--navy);">Fuente</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EPS consenso</td><td><b>$3.40</b></td><td>TipRanks</td></tr>
+            <tr><td>Ventas consenso</td><td><b>~$1.05B</b></td><td>Analistas</td></tr>
+            <tr><td>Volúmenes guidance</td><td><b>3.4–4.0 GW</b></td><td>Mgmt (FSLR)</td></tr>
+            <tr><td>Adj. EBITDA guidance</td><td><b>$400–$500M</b></td><td>Mgmt (FSLR)</td></tr>
+            <tr><td>Margen bruto módulos</td><td><b>~7% ex-IRA</b></td><td>Mgmt (FSLR)</td></tr>
+            <tr><td>Headwind Malaysia/Viet.</td><td colspan="2" style="color:var(--red);">↓ menor utilización interl.</td></tr>
+            <tr><td>Tariff section 122</td><td colspan="2">Modelado ~150 días (hasta jul-26)</td></tr>
+            <tr><td>FY 2026 EPS consenso</td><td><b>$18.04</b></td><td>WallStreetZen</td></tr>
+            <tr><td>FY 2026 revenue guidance</td><td><b>$4.9–5.2B</b></td><td>Mgmt (FSLR)</td></tr>
+            <tr><td>Precio objetivo prom.</td><td><b>$237–$247</b></td><td>48 analistas</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── F) ANÁLISIS TÉCNICO ────────────────── -->
+  <section class="section">
+    <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+    <div class="tech-row">
+      <div class="tech-dark">
+        <div class="tech-pct">-27%</div>
+        <div class="tech-sub">
+          <b>Precio actual:</b> $219.38<br>
+          <b>ATH cierre (12-jun-2024):</b> $300.71<br>
+          <b>Máx. 52 sem. intradía:</b> $285.99<br>
+          <b>Mín. 52 sem.:</b> $135.50<br>
+          <b>Dist. a mín. 52 sem.:</b> +61.9%
+        </div>
+      </div>
+      <div class="tech-card">
+        <h4>Lectura técnica · Contexto</h4>
+        <ul>
+          <li>El valor <b>tocó suelo en ~$135</b> (ene-2025) en medio de pánico regulatorio post-elecciones EE.UU.; recuperación del +61% desde mínimos.</li>
+          <li>El rally desde mínimos (+61%) refleja la reafirmación de los créditos 45X y los resultados récord de Q1 2026.</li>
+          <li><b>Resistencia clave:</b> zona $235–$245 (confluencia de medias móviles 200 días y objetivo precio medio analistas).</li>
+          <li><b>Soporte inmediato:</b> $200–$205 (media 50D y nivel psicológico).</li>
+          <li>Soporte secundario fuerte: $170–$180 (zona consolidación nov-dic 2025).</li>
+          <li>El volumen en los rebotes supera el de las caídas → estructura técnica alcista a medio plazo.</li>
+          <li><b>Próximo catalizador:</b> Resultados Q2 2026 (~julio 2026); si la guidance de $400–500M EBITDA se cumple, es el detonante para atacar ATH.</li>
+          <li>RSI semanal en zona neutra (~52): margen amplio para continuar recuperación sin sobrecompra.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── G) GRÁFICO TRADINGVIEW ─────────────── -->
+  <section class="section">
+    <h2 class="section-title">Gráfico de cotización — 24 meses (semanal)</h2>
+    <div class="chart-wrap">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3AFSLR&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        allowtransparency="true"
+        frameborder="0"
+        scrolling="no"
+      ></iframe>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+
+<!-- ─── H) FOOTER ─────────────────────────── -->
+<footer>
+  <strong>Análisis generado el 26 de mayo de 2026.</strong> Solo con fines informativos; no constituye asesoramiento de inversión.<br><br>
+  <strong>Fuentes consultadas:</strong><br>
+  · ChartMill — precio, market cap, EPS beat: <a href="https://www.chartmill.com/stock/quote/FSLR/profile" target="_blank">chartmill.com/FSLR</a><br>
+  · MacroTrends — historial precio / ATH: <a href="https://www.macrotrends.net/stocks/charts/FSLR/first-solar/stock-price-history" target="_blank">macrotrends.net</a><br>
+  · TipRanks — earnings call Q1 2026, guidance Q2: <a href="https://www.tipranks.com/stocks/fslr/earnings" target="_blank">tipranks.com/stocks/fslr/earnings</a><br>
+  · WallStreetZen — consenso EPS FY2026: <a href="https://www.wallstreetzen.com/stocks/us/nasdaq/fslr/stock-forecast" target="_blank">wallstreetzen.com</a><br>
+  · Tickeron — análisis pre-earnings, guideance full-year: <a href="https://tickeron.com/ticker/FSLR/" target="_blank">tickeron.com/FSLR</a><br>
+  · Wikipedia — descripción corporativa First Solar: <a href="https://en.wikipedia.org/wiki/First_Solar" target="_blank">en.wikipedia.org/wiki/First_Solar</a><br>
+  · Google Finance — descripción operativa, capacidad: <a href="https://www.google.com/finance/quote/FSLR:NASDAQ" target="_blank">google.com/finance</a>
+</footer>
+
+</body>
+</html>

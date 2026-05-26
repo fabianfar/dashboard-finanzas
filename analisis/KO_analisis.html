@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KO · The Coca-Cola Company — Análisis Fundamental y Técnico</title>
+<style>
+  :root {
+    --navy:  #1A1A1A;
+    --accent: #F40009;
+    --accent2: #CC0007;
+    --light: #F7F7F7;
+    --white: #FFFFFF;
+    --green: #1DB954;
+    --muted: #888;
+    --border: #E5E5E5;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--light);
+    font-family: -apple-system, "Segoe UI", Calibri, Arial, sans-serif;
+    color: #222;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  /* HERO */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 48px 52px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    background: rgba(244,0,9,0.07);
+    pointer-events: none;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+  .logo-box {
+    width: 110px; height: 110px;
+    border-radius: 16px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .hero-text h1 {
+    font-family: Georgia, serif;
+    font-size: 44px;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  .ticker-badge {
+    display: inline-block;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-left: 14px;
+    vertical-align: middle;
+  }
+  .hero-subtitle {
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+  .stat-strip {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(244,0,9,0.35);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 120px;
+  }
+  .stat-card .label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .stat-card .value.positive { color: #3ddc84; }
+  .stat-card .value.negative { color: #ff6b6b; }
+  /* SECTIONS */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 44px 32px;
+  }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-title span { color: var(--accent); }
+  /* DESCRIPCION */
+  .desc-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+  .desc-card em { color: var(--accent); font-style: normal; font-weight: 600; }
+  /* COMPETITIVA */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+  }
+  .comp-cards { display: flex; flex-direction: column; gap: 14px; }
+  .comp-item {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  .comp-item h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 4px; }
+  .comp-item .pos { font-size: 20px; font-weight: 800; color: var(--navy); }
+  .comp-item .note { font-size: 13px; color: #555; margin-top: 4px; }
+  .rival-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 28px 24px;
+    color: #fff;
+  }
+  .rival-block h3 { font-family: Georgia, serif; font-size: 22px; color: var(--accent); margin-bottom: 4px; }
+  .rival-block .slogan { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+  .rival-block ul { list-style: none; }
+  .rival-block ul li { font-size: 13.5px; color: #ccc; padding: 6px 0; padding-left: 16px; position: relative; }
+  .rival-block ul li::before { content: "▸"; color: var(--accent); position: absolute; left: 0; }
+  /* SECTOR */
+  .sector-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .sector-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 22px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .sector-card .icon { font-size: 26px; margin-bottom: 10px; }
+  .sector-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--navy); }
+  .sector-card p { font-size: 13.5px; color: #555; line-height: 1.6; }
+  .risks-block {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 16px 24px;
+    font-size: 13.5px;
+    color: #ccc;
+  }
+  .risks-block span { color: var(--accent); font-weight: 600; }
+  /* FUNDAMENTALES */
+  .fund-header {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .fund-header .cap-big {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .fund-header .cap-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .fund-metrics { display: flex; gap: 32px; flex-wrap: wrap; }
+  .fund-metric .mk { font-size: 13px; color: var(--muted); }
+  .fund-metric .mv { font-size: 17px; font-weight: 700; }
+  .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  thead th { padding: 12px 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; text-align: left; }
+  .thead-dark thead th { background: var(--navy); color: #fff; }
+  .thead-accent thead th { background: var(--accent); color: #fff; }
+  tbody tr { border-bottom: 1px solid #f0f0f0; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 10px 16px; font-size: 14px; }
+  tbody td:first-child { color: #555; }
+  tbody td.green { color: var(--green); font-weight: 700; }
+  tbody td.red { color: #e53935; font-weight: 700; }
+  /* TECNICO */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .ath-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 32px 28px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .ath-pct {
+    font-family: Georgia, serif;
+    font-size: 78px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .ath-detail { font-size: 13px; color: #aaa; margin-bottom: 6px; }
+  .ath-detail strong { color: #fff; }
+  .tech-bullets {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 28px 28px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .tech-bullets h4 { font-family: Georgia, serif; font-size: 18px; margin-bottom: 16px; color: var(--navy); }
+  .tech-bullets ul { list-style: none; }
+  .tech-bullets ul li {
+    font-size: 14px; color: #444;
+    padding: 7px 0; padding-left: 20px;
+    position: relative;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .tech-bullets ul li:last-child { border-bottom: none; }
+  .tech-bullets ul li::before { content: "◆"; color: var(--accent); position: absolute; left: 0; font-size: 10px; top: 10px; }
+  /* GRAFICO */
+  .chart-section { background: var(--white); padding: 28px 32px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .chart-section h3 { font-family: Georgia, serif; font-size: 20px; margin-bottom: 16px; color: var(--navy); }
+  iframe { border: none; border-radius: 8px; display: block; }
+  /* FOOTER */
+  footer {
+    background: var(--navy);
+    color: #888;
+    font-size: 12px;
+    padding: 28px 52px;
+    border-top: 3px solid var(--accent);
+    margin-top: 16px;
+  }
+  footer strong { color: #ccc; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .hero-top { flex-wrap: wrap; }
+    .hero { padding: 32px 20px 24px; border-left-width: 6px; }
+    .hero-text h1 { font-size: 28px; }
+    .comp-grid, .tables-grid, .tech-grid, .sector-cards { grid-template-columns: 1fr; }
+    .section { padding: 28px 16px; }
+    .stat-strip { gap: 10px; }
+    .ath-pct { font-size: 56px; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-top">
+    <div class="logo-box">
+      <svg width="90" height="60" viewBox="0 0 90 60" xmlns="http://www.w3.org/2000/svg">
+        <rect width="90" height="60" fill="#fff"/>
+        <text x="45" y="24" font-family="Georgia, serif" font-size="13.5" font-weight="700"
+              fill="#F40009" text-anchor="middle" letter-spacing="0.5">Coca-Cola</text>
+        <path d="M8 36 Q22 27 36 36 Q50 45 64 36 Q74 29 84 36"
+              stroke="#F40009" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        <path d="M12 46 Q28 37 44 46 Q60 55 76 46"
+              stroke="#F40009" stroke-width="1.5" fill="none" opacity="0.45" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="hero-text">
+      <h1>The Coca-Cola Company <span class="ticker-badge">NYSE: KO</span></h1>
+      <p class="hero-subtitle">Análisis fundamental y técnico &nbsp;·&nbsp; Mayo 2026</p>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="label">Cotización</div>
+      <div class="value">$81.22</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Market Cap</div>
+      <div class="value">$350.6 B</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Ventas Q1·26 YoY</div>
+      <div class="value positive">+12.0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">EPS Q1·26 YoY</div>
+      <div class="value positive">+18.0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Dist. a Máx. Histórico</div>
+      <div class="value negative">−1.7%</div>
+    </div>
+  </div>
+</section>
+
+<!-- A QUE SE DEDICA -->
+<div style="max-width:1100px;margin:0 auto;padding:44px 32px 0">
+  <h2 class="section-title">¿A qué se dedica? <span>●</span></h2>
+  <div class="desc-card">
+    The Coca-Cola Company es la mayor empresa de <em>bebidas no alcohólicas</em> del mundo, fundada en Atlanta en 1886. Opera en más de <em>200 países</em> a través de un modelo de franquicia con socios embotelladores, comercializando más de <em>500 marcas</em> que incluyen refrescos carbonatados (Coca-Cola, Diet Coke, Fanta, Sprite), aguas y bebidas deportivas (Smartwater, Powerade), jugos (Minute Maid, Simply), tés (Fuze Tea), café (Costa Coffee) y proteínas lácteas (<em>fairlife</em>). Sus segmentos son: Europa/Oriente Medio/África, Latinoamérica, Norteamérica, Asia Pacífico, Global Ventures e Inversiones en Embotellado. KO vende concentrados y jarabes a embotelladores independientes, lo que le otorga <em>márgenes operativos superiores al 35%</em> y una estructura de capital extraordinariamente eficiente. Es acción "forever" del portafolio de Berkshire Hathaway desde 1988.
+  </div>
+</div>
+
+<!-- COMPETITIVA -->
+<div class="section">
+  <h2 class="section-title">Posición competitiva <span>▲</span></h2>
+  <div class="comp-grid">
+    <div class="comp-cards">
+      <div class="comp-item">
+        <h4>Refrescos Carbonatados Globales (CSD)</h4>
+        <div class="pos">#1 — ~43% cuota de mercado</div>
+        <div class="note">Dominio absoluto frente a PepsiCo (~26%). La Coca-Cola original es la marca de bebidas más valiosa del mundo (Kantar BrandZ). Value share ganado en 20 trimestres consecutivos.</div>
+      </div>
+      <div class="comp-item">
+        <h4>Aguas Premium y Bebidas Funcionales</h4>
+        <div class="pos">#2 — Crecimiento acelerado</div>
+        <div class="note">Smartwater y Powerade compiten con Aquafina/Gatorade (PepsiCo). Fairlife (proteínas) es el activo de mayor crecimiento del portafolio; nueva planta Webster online en Q2 2026.</div>
+      </div>
+      <div class="comp-item">
+        <h4>Café (Costa Coffee / Global Ventures)</h4>
+        <div class="pos">#3 Global — Expansión en Asia</div>
+        <div class="note">Costa Coffee es el mayor rival de Starbucks en Reino Unido. Expansión hacia mercados emergentes de Asia donde el consumo de café está en auge.</div>
+      </div>
+      <div class="comp-item">
+        <h4>Jugos Refrigerados — EE.UU.</h4>
+        <div class="pos">#1 — Simply Orange y Minute Maid</div>
+        <div class="note">Simply Orange lidera jugos premium refrigerados en EE.UU. Competencia creciente de marcas private-label. El segmento enfrenta presión por tendencias hacia opciones más frescas.</div>
+      </div>
+    </div>
+    <div class="rival-block">
+      <h3>PepsiCo (PEP)</h3>
+      <p class="slogan">La mayor amenaza estructural</p>
+      <ul>
+        <li>Supera a KO en ingresos totales gracias al segmento de snacks (Frito-Lay, Quaker), otorgándole mayor diversificación y resiliencia</li>
+        <li>Gatorade domina bebidas deportivas con más del 65% de cuota; Powerade de KO se queda en segundo lugar con gran diferencia</li>
+        <li>Pepsi Zero Sugar ha ganado cuota en sin-azúcar, atacando directamente a Coca-Cola Zero Sugar en la categoría más dinámica</li>
+        <li>Portafolio de snacks salados ofrece resistencia a shocks de demanda de CSD; menos expuesta a la tendencia anti-azúcar</li>
+        <li>Fuerte posición en mercados emergentes de Latinoamérica y Medio Oriente donde compite de igual a igual con KO</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECTOR -->
+<div class="section" style="padding-top:0">
+  <h2 class="section-title">Potencial futuro del sector <span>■</span></h2>
+  <div class="sector-cards">
+    <div class="sector-card">
+      <div class="icon">🌍</div>
+      <h4>Mercados Emergentes y Premiumización</h4>
+      <p>Asia, África y Latinoamérica concentran el grueso del crecimiento en volumen. La clase media creciente en India, Indonesia y Nigeria impulsa el consumo de marca. KO reportó +3% en unit case globales en Q1 2026, con dinamismo especial en LATAM y Asia-Pacífico. Mercados sub-penetrados representan una oportunidad estructural de 5-10 años.</p>
+    </div>
+    <div class="sector-card">
+      <div class="icon">🥛</div>
+      <h4>Bebidas Funcionales "Better-for-You"</h4>
+      <p>Fairlife (proteínas lácteas) crece a doble dígito y es uno de los activos más rentables. La nueva planta en Webster (online Q2 2026) elimina el cuello de botella productivo. Las bebidas con electrolitos, sin azúcar, funcionales y con proteína son la macro-tendencia de consumo 2024-2030 en mercados desarrollados.</p>
+    </div>
+    <div class="sector-card">
+      <div class="icon">⚽</div>
+      <h4>Eventos Globales y Activación de Marca</h4>
+      <p>KO es patrocinador oficial de la FIFA World Cup 2026 (Norteamérica), el mayor evento deportivo del planeta, activando en 30 países. Se suma a décadas de Juegos Olímpicos y Copa América. El marketing digital de KO ha impulsado value share por 20 trimestres consecutivos con expansión continua de puntos de venta.</p>
+    </div>
+  </div>
+  <div class="risks-block">
+    <strong style="color:#fff">⚠ Riesgos a vigilar:</strong> &nbsp;
+    <span>Litigio fiscal IRS (~$14B exposición 2010-2025)</span> · 
+    <span>Impuestos al azúcar</span> en mercados desarrollados · 
+    <span>Fortaleza del USD</span> (headwind en divisas) · 
+    <span>Volatilidad en commodities</span> (plástico, aluminio, azúcar, té) · 
+    <span>Regulación ESG</span> en packaging plástico · 
+    <span>Preferencias del consumidor joven</span> alejándose de CSD clásicos
+  </div>
+</div>
+
+<!-- FUNDAMENTALES -->
+<div class="section" style="padding-top:0">
+  <h2 class="section-title">Datos fundamentales <span>◆</span></h2>
+  <div class="fund-header">
+    <div>
+      <div class="cap-label">Market Cap</div>
+      <div class="cap-big">$350.6 B</div>
+    </div>
+    <div class="fund-metrics">
+      <div class="fund-metric"><div class="mk">P/E (TTM)</div><div class="mv">25.7×</div></div>
+      <div class="fund-metric"><div class="mk">Fwd P/E</div><div class="mv">24.4×</div></div>
+      <div class="fund-metric"><div class="mk">EPS TTM</div><div class="mv">$3.18</div></div>
+      <div class="fund-metric"><div class="mk">Margen Neto</div><div class="mv">27.9%</div></div>
+      <div class="fund-metric"><div class="mk">Div. Yield</div><div class="mv">2.5%</div></div>
+      <div class="fund-metric"><div class="mk">ROE (TTM)</div><div class="mv">45.8%</div></div>
+      <div class="fund-metric"><div class="mk">Beta</div><div class="mv">0.36</div></div>
+    </div>
+  </div>
+  <div class="tables-grid">
+    <table class="thead-dark">
+      <thead>
+        <tr><th colspan="3">Q1 2026 &nbsp;·&nbsp; Último trimestre (28-Abr-2026)</th></tr>
+        <tr><th>Métrica</th><th>Valor</th><th>YoY</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ingresos netos reportados</td><td><strong>$12.47 B</strong></td><td class="green">+12.0%</td></tr>
+        <tr><td>Ingresos orgánicos</td><td>adj. $12.47 B</td><td class="green">+10.0%</td></tr>
+        <tr><td>Ingreso operativo</td><td>$4.36 B</td><td class="green">+19.2%</td></tr>
+        <tr><td>Margen operativo</td><td>35.0%</td><td class="green">+210 pb</td></tr>
+        <tr><td>EPS GAAP diluido</td><td><strong>$0.91</strong></td><td class="green">+18.2%</td></tr>
+        <tr><td>EPS comparable (non-GAAP)</td><td>$0.86</td><td class="green">+18.0%</td></tr>
+        <tr><td>Volumen unit case global</td><td>+3%</td><td class="green">+3.0%</td></tr>
+        <tr><td>Precio / Mix</td><td>+2%</td><td class="green">+2.0%</td></tr>
+        <tr><td>Free Cash Flow</td><td>$1.8 B</td><td class="green">▲ Rebound</td></tr>
+        <tr><td>Sorpresa vs. consenso EPS</td><td>$0.86 vs $0.81 est.</td><td class="green">+6.2%</td></tr>
+      </tbody>
+    </table>
+    <table class="thead-accent">
+      <thead>
+        <tr><th colspan="3">Q2 2026 &nbsp;·&nbsp; Previsión (reporta ~20-Jul-2026)</th></tr>
+        <tr><th>Métrica</th><th>Consenso</th><th>Nota</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ingresos estimados</td><td><strong>~$13.4 B</strong></td><td class="green">+YoY estimado</td></tr>
+        <tr><td>EPS consenso</td><td><strong>~$0.94–0.96</strong></td><td class="green">+YoY</td></tr>
+        <tr><td>Guidance orgánico FY26</td><td>+4% a +5%</td><td>Reiterado</td></tr>
+        <tr><td>Guidance EPS comparable FY26</td><td>+8% a +9%</td><td class="green">▲ Revisado al alza</td></tr>
+        <tr><td>Catalizador: fairlife Webster</td><td>Online Q2 2026</td><td>Elimina cuello</td></tr>
+        <tr><td>Catalizador: FIFA World Cup</td><td>Jun–Jul 2026</td><td>30 países</td></tr>
+        <tr><td>Venta KO Beverages Africa</td><td>H2 2026</td><td>↑ Márgenes consol.</td></tr>
+        <tr><td>Impacto divisa FY26 (rev.)</td><td>+1% a +2%</td><td>Tailwind FX</td></tr>
+        <tr><td>Tasa impositiva efectiva</td><td>19.9%</td><td>↓ Reducida</td></tr>
+        <tr><td>FCF objetivo FY26</td><td>$12.2 B</td><td>Guidance mgmt.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TECNICO -->
+<div class="section" style="padding-top:0">
+  <h2 class="section-title">Análisis técnico — Distancia a máximos históricos <span>▲</span></h2>
+  <div class="tech-grid">
+    <div class="ath-block">
+      <div class="ath-pct">−1.7%</div>
+      <div class="ath-detail">Cierre actual: <strong>$81.22</strong></div>
+      <div class="ath-detail">Máx. 52 semanas (cierre): <strong>$82.66</strong></div>
+      <div class="ath-detail">Mín. 52 semanas: <strong>$65.35</strong></div>
+      <div class="ath-detail">Recuperación desde mín.: <strong>+24.3%</strong></div>
+      <div class="ath-detail" style="margin-top:14px">Beta: <strong>0.36</strong> — volatilidad muy baja</div>
+      <div class="ath-detail">Target consenso analistas: <strong>$85.38</strong></div>
+    </div>
+    <div class="tech-bullets">
+      <h4>Lectura técnica</h4>
+      <ul>
+        <li><strong>Tendencia largo plazo alcista:</strong> KO cotiza en zona de máximos históricos ajustados. Canal alcista intacto desde mediados de 2024 con máximos y mínimos crecientes.</li>
+        <li><strong>Resistencia clave ATH:</strong> $82.50–$83.00. Un cierre sostenido por encima abriría espacio hacia el rango de precio objetivo de analistas ($85–$92).</li>
+        <li><strong>Soporte primario:</strong> $79–$80, ex-resistencia convertida en soporte; coincide aproximadamente con MM50 diaria. Es la línea en la arena para bulls.</li>
+        <li><strong>Soporte secundario:</strong> $75–$77, zona de consolidación de feb-mar 2026 y convergencia con MM200 diaria. Ruptura implicaría reversión de tendencia.</li>
+        <li><strong>Momentum:</strong> RSI ~60–65 (sin sobrecompra extrema). MACD en territorio positivo. Precio por encima de todas las medias relevantes.</li>
+        <li><strong>Próximo catalizador técnico:</strong> Resultados Q2 (20-Jul-2026). Un beat sobre el consenso ($0.94–0.96) con re-rating podría empujar hacia $86–$89 en el corto plazo.</li>
+        <li><strong>Riesgo de cola:</strong> Resolución adversa del litigio IRS (~$14B) generaría gap bajista significativo. Seguimiento imprescindible antes de la fecha de reporte.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- GRAFICO -->
+<div class="section" style="padding-top:0">
+  <div class="chart-section">
+    <h3>📈 Gráfico de cotización — KO (NYSE) &nbsp;·&nbsp; Velas semanales &nbsp;·&nbsp; 24 meses</h3>
+    <iframe
+      src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3AKO&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+      width="100%"
+      height="560"
+      allowtransparency="true"
+      scrolling="no">
+    </iframe>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong>Fecha del análisis:</strong> 26 de mayo de 2026<br>
+      <strong>Precio de referencia:</strong> $81.22 (NYSE, 26-May-2026)<br>
+      <strong>Próxima fecha de resultados:</strong> ~20 de julio de 2026 (Q2 2026)<br><br>
+      ⚠ Este informe es de carácter estrictamente informativo y no constituye asesoramiento de inversión. Invertir en acciones implica riesgos. Consulte con su asesor financiero.
+    </div>
+    <div>
+      <strong>Fuentes consultadas:</strong><br>
+      · <a href="https://investors.coca-colacompany.com/" target="_blank">investors.coca-colacompany.com</a> — Resultados oficiales Q1 2026 (8-K / 10-Q)<br>
+      · <a href="https://www.cnbc.com/quotes/KO" target="_blank">cnbc.com/quotes/KO</a> — Datos de mercado<br>
+      · <a href="https://stockanalysis.com/stocks/ko/" target="_blank">stockanalysis.com/stocks/ko</a> — Datos financieros históricos<br>
+      · <a href="https://www.morningstar.com/stocks/xnys/ko/quote" target="_blank">morningstar.com</a> — Valoración y fair value<br>
+      · <a href="https://www.chartmill.com/stock/quote/KO/analyst-ratings" target="_blank">chartmill.com</a> — Consenso Q2 2026 (35 analistas)<br>
+      · <a href="https://www.tikr.com/blog/coca-cola-stock-raises-full-year-eps-guidance-after-a-strong-q1-beat-is-86-the-floor" target="_blank">tikr.com</a> — Análisis guidance y catalizadores<br>
+      · <a href="https://www.tradingview.com/symbols/NYSE-KO/" target="_blank">tradingview.com</a> — Datos técnicos y gráfico
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
