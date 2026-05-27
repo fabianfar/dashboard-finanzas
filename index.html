@@ -2551,8 +2551,13 @@ function renderGastosMes(){
     grand+=tx.amount;
   }
 
-  // Filtrar columnas sin dato en el año seleccionado (opcional: mostrar todas)
+  // Solo columnas con dato en el año seleccionado
   var activeCats=cats.filter(function(c){return colTot[c]>0;});
+
+  if(!activeCats.length){
+    wrap.innerHTML='<div style="text-align:center;padding:32px;color:#555;font-size:13px">Sin egresos registrados para '+anio+'</div>';
+    return;
+  }
 
   var MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   var stickyTh='position:sticky;left:0;z-index:2;';
