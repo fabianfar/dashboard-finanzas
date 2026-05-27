@@ -114,11 +114,6 @@ tr:last-child td{border-bottom:none}
 .rec-info{display:flex;flex-direction:column;gap:3px}
 .rec-name{font-weight:500;font-size:14px}
 .rec-meta{font-size:12px;color:#aaa}
-</style>
-</head>
-
-
-
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -171,7 +166,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
             amount: raw.cr > 0 ? raw.cr : raw.db,
             date: raw.f,
             desc: raw.d,
-            cat: CATMAP[raw.d] || (raw.cr > 0 ? 'Ingresos' : 'Otro')
+            cat: CAT_MAP[raw.d] || (raw.cr > 0 ? 'Ingresos' : 'Otro')
           });
         }
       }
@@ -187,6 +182,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   // Fallback: si querés, podés inicializar con RAW y llamar bootstrapApp() igual
 });
 </script>
+</head>
 
 <body>
 <div class="tabs" id="tabs-container"></div>
@@ -262,6 +258,30 @@ db.ref('finanzas/state').once('value').then(function(snap) {
       <div id="ing-ahorro-rank"></div>
     </div>
   </div>
+
+  <!-- === TABLA EGRESOS POR MES === -->
+  <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px">
+    <div style="flex:1;height:1px;background:#2a2a2a"></div>
+    <span style="font-size:12px;color:#555;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Egresos por Categoría y Mes</span>
+    <div style="flex:1;height:1px;background:#2a2a2a"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div>
+        <h3 style="margin-bottom:2px">Egresos por categoría y mes</h3>
+        <div style="font-size:12px;color:#aaa">Totales mensuales por categoría de gasto · Solo columnas con movimientos</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:12px;color:#aaa;margin:0">Año:</label>
+        <select id="gastos-anio-sel" style="width:auto;padding:6px 12px;font-size:13px"></select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+      <div id="gastos-mes-wrap"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- TARJETAS -->
@@ -799,7 +819,7 @@ function getPrecioPromedio(invId){
     else{var pp=cantTotal>0?costoTotal/cantTotal:0;costoTotal-=m.cantidad*pp;cantTotal-=m.cantidad;}
   }
   if(cantTotal<=0)return{cant:0,promedio:0};
-  return{cant:cantTotal,promedio:cantTotal>0?costoTotal/cantTotal:0};
+  return{cant:cantTotal,promedio:costoTotal/cantTotal};
 }
 function getValorCartera(){
   var tot=0;
@@ -912,8 +932,8 @@ function getCartActual(){
     var catCart=CAT_TO_CARTERA[inv.cat]||'Otro';
     cartActual[catCart]=(cartActual[catCart]||0)+valor;totalCart+=valor;
   }
-  // LECAP hardcoded si no hay instrumentos
-  if(state.instrumentos.length===0){var pHoy=292526/Math.pow(1+0.0255,158/30);cartActual['LECAP/BONCAP pesos']=pHoy;totalCart=pHoy;}
+  // Si no hay instrumentos cargados, la cartera está vacía
+  if(state.instrumentos.length===0)return{cartActual:{},totalCart:0};
   return{cartActual:cartActual,totalCart:totalCart};
 }
 
@@ -979,30 +999,7 @@ function bindEvents(){
   document.getElementById('mov-cantidad').addEventListener('input',updateMovPreview);
   document.getElementById('mov-precio').addEventListener('input',updateMovPreview);
   document.getElementById('mov-tipo').addEventListener('change',updateMovPreview);
-  // forzar recarga de datos del storage si hay datos perdidos
-  if(state.tarjetas&&state.tarjetas.length===0){
-    window.storage.get('finance_state').then(function(r){
-      if(r&&r.value){
-        var saved=JSON.parse(r.value);
-        if(saved.tarjetas&&saved.tarjetas.length>0){
-          state.tarjetas=saved.tarjetas;
-          state.consumos=saved.consumos||[];
-          state.recurrentes=saved.recurrentes||[];
-          state.budget=saved.budget||{};
-          state.goals=saved.goals||[];
-          state.debts=saved.debts||[];
-          state.instrumentos=saved.instrumentos||[];
-          state.movimientos=saved.movimientos||[];
-          // transacciones: mantener las del storage si tiene mas que el RAW
-          if(saved.transactions&&saved.transactions.length>state.transactions.length){
-            state.transactions=saved.transactions;
-            populateMonthFilter();
-          }
-          initBudgetForm();renderAll();renderInversiones();
-        }
-      }
-    }).catch(function(){});
-  }
+  // Firebase es la fuente única de verdad; no se usa storage alternativo
 }
 
 function updateCoPreview(){
@@ -1582,7 +1579,17 @@ function renderSummary(){
 }
 
 // ESTADISTICAS
-function renderStats(){renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();}
+function renderStats(){
+  renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();
+  initGastosAnioSel();
+  renderGastosMes();
+  // Bind año selector (una sola vez)
+  var sel=document.getElementById('gastos-anio-sel');
+  if(sel&&!sel.dataset.bound){
+    sel.dataset.bound='1';
+    sel.addEventListener('change',renderGastosMes);
+  }
+}
 function last12(){var months=[];var d=new Date();for(var i=11;i>=0;i--){var m=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(m.getFullYear()+'-'+pad(m.getMonth()+1));}return months;}
 function renderIngresosStats(){
   var months12=last12();var months6=last6();
@@ -1716,9 +1723,7 @@ function sortTxnTableByDateDesc() {
   rows.forEach(function(row) { tbody.appendChild(row); });
 }
 
-window.addEventListener('DOMContentLoaded', function(){
-  sortTxnTableByDateDesc();
-});
+// Nota: sortTxnTableByDateDesc() se llama desde renderTransactions() cuando hay datos reales
 
 function addTransaction(){
   var type=document.getElementById('txn-type').value;var amount=parseFloat(document.getElementById('txn-amount').value);
@@ -2488,7 +2493,108 @@ function agBindEvents(){
 }
 
 function renderAll(){renderSummary();renderTransactions();renderBudgetProgress();renderGoals();renderDebts();renderTarjetas();}
-//load();
+
+// ===== TABLA EGRESOS POR CATEGORÍA Y MES =====
+function initGastosAnioSel(){
+  var sel=document.getElementById('gastos-anio-sel');
+  if(!sel)return;
+  var seen={};
+  for(var i=0;i<state.transactions.length;i++){
+    var y=state.transactions[i].date.slice(0,4);
+    seen[y]=true;
+  }
+  var years=Object.keys(seen).sort().reverse();
+  var curYear=new Date().getFullYear()+'';
+  if(!years.length)years=[curYear];
+  if(years.indexOf(curYear)===-1)years.unshift(curYear);
+  // Solo rebuild si cambiaron los años disponibles
+  var existing=[];
+  for(var j=0;j<sel.options.length;j++)existing.push(sel.options[j].value);
+  if(JSON.stringify(existing)===JSON.stringify(years))return;
+  var cur=sel.value||curYear;
+  sel.innerHTML='';
+  for(var k=0;k<years.length;k++)
+    sel.innerHTML+='<option value="'+years[k]+'"'+(years[k]===cur?' selected':'')+'>'+years[k]+'</option>';
+}
+
+function renderGastosMes(){
+  var sel=document.getElementById('gastos-anio-sel');
+  var wrap=document.getElementById('gastos-mes-wrap');
+  if(!sel||!wrap)return;
+  var anio=sel.value;
+
+  // Categorías con al menos un gasto en CUALQUIER año (columnas fijas consistentes)
+  var usedCats={};
+  for(var i=0;i<state.transactions.length;i++){
+    var t=state.transactions[i];
+    if(t.type==='gasto')usedCats[t.cat]=true;
+  }
+  // Orden: primero CATS_EXPENSE, luego extras
+  var cats=[];
+  for(var ci=0;ci<CATS_EXPENSE.length;ci++){if(usedCats[CATS_EXPENSE[ci]])cats.push(CATS_EXPENSE[ci]);}
+  for(var uc in usedCats){if(cats.indexOf(uc)===-1)cats.push(uc);}
+
+  // Acumular data[mes][cat]
+  var data={};var colTot={};var rowTot={};var grand=0;
+  for(var m=1;m<=12;m++){data[m]={};rowTot[m]=0;}
+  for(var c=0;c<cats.length;c++)colTot[cats[c]]=0;
+
+  for(var ti=0;ti<state.transactions.length;ti++){
+    var tx=state.transactions[ti];
+    if(tx.type!=='gasto'||!tx.date.startsWith(anio))continue;
+    var mes=parseInt(tx.date.slice(5,7));
+    var cat=tx.cat;
+    data[mes][cat]=(data[mes][cat]||0)+tx.amount;
+    rowTot[mes]=(rowTot[mes]||0)+tx.amount;
+    colTot[cat]=(colTot[cat]||0)+tx.amount;
+    grand+=tx.amount;
+  }
+
+  // Filtrar columnas sin dato en el año seleccionado (opcional: mostrar todas)
+  var activeCats=cats.filter(function(c){return colTot[c]>0;});
+
+  var MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var stickyTh='position:sticky;left:0;z-index:2;';
+  var stickyTd='position:sticky;left:0;z-index:1;';
+
+  var h='<table style="font-size:12px;border-collapse:collapse;min-width:'+(activeCats.length*115+220)+'px">';
+
+  // Cabecera
+  h+='<thead><tr style="background:#111">';
+  h+='<th style="padding:9px 14px;color:#aaa;font-weight:500;text-align:left;border-bottom:0.5px solid #333;white-space:nowrap;'+stickyTh+'background:#111">Mes</th>';
+  for(var ch=0;ch<activeCats.length;ch++)
+    h+='<th style="padding:9px 10px;color:#aaa;font-weight:500;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap">'+activeCats[ch]+'</th>';
+  h+='<th style="padding:9px 14px;color:#EF9F27;font-weight:600;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap;border-left:0.5px solid #333">TOTAL</th>';
+  h+='</tr></thead>';
+
+  // Filas de meses
+  h+='<tbody>';
+  for(var mr=1;mr<=12;mr++){
+    var hasData=rowTot[mr]>0;
+    var rowBg=mr%2===0?'background:#1e1e1e;':'background:#222;';
+    h+='<tr style="'+rowBg+(hasData?'':'opacity:0.35;')+'">';
+    h+='<td style="padding:7px 14px;border-bottom:0.5px solid #1a1a1a;font-weight:500;color:#e0e0e0;white-space:nowrap;'+stickyTd+(mr%2===0?'background:#1e1e1e':'background:#222')+'">'+MN[mr-1]+' \''+anio.slice(2)+'</td>';
+    for(var cc=0;cc<activeCats.length;cc++){
+      var val=data[mr][activeCats[cc]]||0;
+      h+='<td style="padding:7px 10px;border-bottom:0.5px solid #1a1a1a;text-align:right;color:'+(val>0?'#F0997B':'#333')+'">'+(val>0?fmtS(val):'—')+'</td>';
+    }
+    h+='<td style="padding:7px 14px;border-bottom:0.5px solid #1a1a1a;text-align:right;font-weight:600;color:'+(hasData?'#EF9F27':'#333')+';border-left:0.5px solid #2a2a2a">'+(hasData?fmtS(rowTot[mr]):'—')+'</td>';
+    h+='</tr>';
+  }
+  h+='</tbody>';
+
+  // Fila totales
+  h+='<tfoot><tr style="background:#111;border-top:1px solid #444">';
+  h+='<td style="padding:9px 14px;font-weight:700;color:#e0e0e0;'+stickyTd+'background:#111">TOTALES '+anio+'</td>';
+  for(var ct=0;ct<activeCats.length;ct++){
+    var cv=colTot[activeCats[ct]]||0;
+    h+='<td style="padding:9px 10px;text-align:right;font-weight:600;color:'+(cv>0?'#D85A30':'#333')+'">'+(cv>0?fmtS(cv):'—')+'</td>';
+  }
+  h+='<td style="padding:9px 14px;text-align:right;font-weight:700;color:#D85A30;border-left:0.5px solid #333">'+fmtS(grand)+'</td>';
+  h+='</tr></tfoot></table>';
+
+  wrap.innerHTML=h;
+}
 </script>
 </body>
 </html>
