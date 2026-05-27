@@ -270,8 +270,8 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
       <div>
-        <h3 style="margin-bottom:2px">Egresos por categoría y mes</h3>
-        <div style="font-size:12px;color:#aaa">Totales mensuales por categoría de gasto · Solo columnas con movimientos</div>
+        <h3 style="margin-bottom:2px">Egresos por descripción y mes</h3>
+        <div style="font-size:12px;color:#aaa">Totales mensuales por descripción · Columnas ordenadas por mayor gasto anual</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <label style="font-size:12px;color:#aaa;margin:0">Año:</label>
@@ -2524,37 +2524,25 @@ function renderGastosMes(){
   if(!sel||!wrap)return;
   var anio=sel.value;
 
-  // Categorías con al menos un gasto en CUALQUIER año (columnas fijas consistentes)
-  var usedCats={};
-  for(var i=0;i<state.transactions.length;i++){
-    var t=state.transactions[i];
-    if(t.type==='gasto')usedCats[t.cat]=true;
-  }
-  // Orden: primero CATS_EXPENSE, luego extras
-  var cats=[];
-  for(var ci=0;ci<CATS_EXPENSE.length;ci++){if(usedCats[CATS_EXPENSE[ci]])cats.push(CATS_EXPENSE[ci]);}
-  for(var uc in usedCats){if(cats.indexOf(uc)===-1)cats.push(uc);}
-
-  // Acumular data[mes][cat]
+  // Acumular data[mes][desc] para el año seleccionado
   var data={};var colTot={};var rowTot={};var grand=0;
   for(var m=1;m<=12;m++){data[m]={};rowTot[m]=0;}
-  for(var c=0;c<cats.length;c++)colTot[cats[c]]=0;
 
   for(var ti=0;ti<state.transactions.length;ti++){
     var tx=state.transactions[ti];
     if(tx.type!=='gasto'||!tx.date.startsWith(anio))continue;
     var mes=parseInt(tx.date.slice(5,7));
-    var cat=tx.cat;
-    data[mes][cat]=(data[mes][cat]||0)+tx.amount;
+    var desc=tx.desc&&tx.desc.trim()?tx.desc.trim():'(sin desc.)';
+    data[mes][desc]=(data[mes][desc]||0)+tx.amount;
     rowTot[mes]=(rowTot[mes]||0)+tx.amount;
-    colTot[cat]=(colTot[cat]||0)+tx.amount;
+    colTot[desc]=(colTot[desc]||0)+tx.amount;
     grand+=tx.amount;
   }
 
-  // Solo columnas con dato en el año seleccionado
-  var activeCats=cats.filter(function(c){return colTot[c]>0;});
+  // Columnas ordenadas por total anual descendente
+  var descs=Object.keys(colTot).sort(function(a,b){return colTot[b]-colTot[a];});
 
-  if(!activeCats.length){
+  if(!descs.length){
     wrap.innerHTML='<div style="text-align:center;padding:32px;color:#555;font-size:13px">Sin egresos registrados para '+anio+'</div>';
     return;
   }
@@ -2563,13 +2551,13 @@ function renderGastosMes(){
   var stickyTh='position:sticky;left:0;z-index:2;';
   var stickyTd='position:sticky;left:0;z-index:1;';
 
-  var h='<table style="font-size:12px;border-collapse:collapse;min-width:'+(activeCats.length*115+220)+'px">';
+  var h='<table style="font-size:12px;border-collapse:collapse;min-width:'+(descs.length*120+220)+'px">';
 
   // Cabecera
   h+='<thead><tr style="background:#111">';
   h+='<th style="padding:9px 14px;color:#aaa;font-weight:500;text-align:left;border-bottom:0.5px solid #333;white-space:nowrap;'+stickyTh+'background:#111">Mes</th>';
-  for(var ch=0;ch<activeCats.length;ch++)
-    h+='<th style="padding:9px 10px;color:#aaa;font-weight:500;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap">'+activeCats[ch]+'</th>';
+  for(var ch=0;ch<descs.length;ch++)
+    h+='<th style="padding:9px 10px;color:#aaa;font-weight:500;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap" title="'+descs[ch]+'">'+descs[ch]+'</th>';
   h+='<th style="padding:9px 14px;color:#EF9F27;font-weight:600;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap;border-left:0.5px solid #333">TOTAL</th>';
   h+='</tr></thead>';
 
@@ -2580,8 +2568,8 @@ function renderGastosMes(){
     var rowBg=mr%2===0?'background:#1e1e1e;':'background:#222;';
     h+='<tr style="'+rowBg+(hasData?'':'opacity:0.35;')+'">';
     h+='<td style="padding:7px 14px;border-bottom:0.5px solid #1a1a1a;font-weight:500;color:#e0e0e0;white-space:nowrap;'+stickyTd+(mr%2===0?'background:#1e1e1e':'background:#222')+'">'+MN[mr-1]+' \''+anio.slice(2)+'</td>';
-    for(var cc=0;cc<activeCats.length;cc++){
-      var val=data[mr][activeCats[cc]]||0;
+    for(var cc=0;cc<descs.length;cc++){
+      var val=data[mr][descs[cc]]||0;
       h+='<td style="padding:7px 10px;border-bottom:0.5px solid #1a1a1a;text-align:right;color:'+(val>0?'#F0997B':'#333')+'">'+(val>0?fmtS(val):'—')+'</td>';
     }
     h+='<td style="padding:7px 14px;border-bottom:0.5px solid #1a1a1a;text-align:right;font-weight:600;color:'+(hasData?'#EF9F27':'#333')+';border-left:0.5px solid #2a2a2a">'+(hasData?fmtS(rowTot[mr]):'—')+'</td>';
@@ -2592,8 +2580,8 @@ function renderGastosMes(){
   // Fila totales
   h+='<tfoot><tr style="background:#111;border-top:1px solid #444">';
   h+='<td style="padding:9px 14px;font-weight:700;color:#e0e0e0;'+stickyTd+'background:#111">TOTALES '+anio+'</td>';
-  for(var ct=0;ct<activeCats.length;ct++){
-    var cv=colTot[activeCats[ct]]||0;
+  for(var ct=0;ct<descs.length;ct++){
+    var cv=colTot[descs[ct]]||0;
     h+='<td style="padding:9px 10px;text-align:right;font-weight:600;color:'+(cv>0?'#D85A30':'#333')+'">'+(cv>0?fmtS(cv):'—')+'</td>';
   }
   h+='<td style="padding:9px 14px;text-align:right;font-weight:700;color:#D85A30;border-left:0.5px solid #333">'+fmtS(grand)+'</td>';
