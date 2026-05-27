@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRK.B — Berkshire Hathaway · Análisis Fundamental y Técnico</title>
+<style>
+  :root {
+    --navy:   #1B2A47;
+    --accent: #C9993A;
+    --accent2:#E8B84B;
+    --light:  #F7F6F2;
+    --white:  #FFFFFF;
+    --text:   #1C1C1C;
+    --muted:  #6B6B6B;
+    --green:  #1E7B4B;
+    --red:    #C0392B;
+    --card-shadow: 0 2px 14px rgba(0,0,0,0.09);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif; background: var(--light); color: var(--text); font-size: 15px; line-height: 1.6; }
+  h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; }
+
+  /* HERO */
+  .hero { background: var(--navy); border-left: 14px solid var(--accent); padding: 48px 52px 36px; color: var(--white); position: relative; overflow: hidden; }
+  .hero::after { content:''; position:absolute; right:-80px; top:-80px; width:380px; height:380px; border-radius:50%; background:rgba(201,153,58,0.07); pointer-events:none; }
+  .hero-top { display:flex; align-items:center; gap:32px; flex-wrap:nowrap; }
+  .logo-box { width:110px; height:110px; min-width:110px; background:var(--white); border-radius:16px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,0.25); overflow:hidden; }
+  .hero-info h1 { font-size:40px; font-weight:normal; letter-spacing:-0.5px; line-height:1.1; color:var(--white); }
+  .ticker-badge { display:inline-block; border:1.5px solid var(--accent); color:var(--accent); font-family:"Courier New",monospace; font-size:13px; font-weight:bold; padding:2px 10px; border-radius:4px; margin-left:12px; vertical-align:middle; letter-spacing:1px; }
+  .hero-subtitle { color:rgba(255,255,255,0.55); font-size:13px; margin-top:8px; letter-spacing:0.3px; }
+
+  /* STAT STRIP */
+  .stat-strip { display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
+  .stat-card { flex:1; min-width:140px; background:rgba(255,255,255,0.07); border:1px solid rgba(201,153,58,0.35); border-top:3px solid var(--accent); border-radius:8px; padding:14px 18px; }
+  .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:rgba(255,255,255,0.5); margin-bottom:6px; }
+  .stat-value { font-size:24px; font-family:Georgia,serif; font-weight:bold; color:var(--white); }
+  .stat-value.positive { color:#5EE88A; }
+  .stat-value.negative { color:#FF7B7B; }
+  .stat-note { font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px; }
+
+  /* SECTIONS */
+  .section { max-width:1100px; margin:0 auto; padding:48px 32px; }
+  .section-title { font-family:Georgia,serif; font-size:22px; font-weight:normal; color:var(--navy); border-bottom:2px solid var(--accent); padding-bottom:10px; margin-bottom:28px; display:flex; align-items:center; gap:10px; }
+  .section-title .icon { width:28px; height:28px; background:var(--accent); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px; }
+
+  /* DESCRIPCION */
+  .desc-card { background:var(--white); border-radius:12px; padding:28px 32px; box-shadow:var(--card-shadow); line-height:1.75; color:#333; }
+  .desc-card .hl { color:var(--accent); font-weight:600; }
+
+  /* COMPETITIVA */
+  .comp-grid { display:grid; grid-template-columns:1fr 340px; gap:24px; }
+  .comp-cards { display:flex; flex-direction:column; gap:14px; }
+  .comp-card { background:var(--white); border-left:6px solid var(--accent); border-radius:0 10px 10px 0; padding:16px 20px; box-shadow:var(--card-shadow); }
+  .comp-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .comp-sector { font-weight:600; font-size:14px; color:var(--navy); }
+  .comp-rank { font-size:11px; background:var(--accent); color:var(--white); padding:2px 8px; border-radius:20px; font-weight:700; }
+  .comp-cuota { font-size:13px; color:var(--muted); margin-bottom:4px; }
+  .comp-note { font-size:13px; color:#555; }
+  .rival-block { background:var(--navy); border-radius:12px; padding:28px 24px; color:var(--white); }
+  .rival-tag { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:8px; }
+  .rival-name { font-family:Georgia,serif; font-size:26px; margin-bottom:4px; }
+  .rival-slogan { font-size:12px; color:rgba(255,255,255,0.45); font-style:italic; margin-bottom:18px; border-bottom:1px solid rgba(201,153,58,0.3); padding-bottom:14px; }
+  .rival-block ul { list-style:none; padding:0; }
+  .rival-block ul li { padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.07); font-size:13px; color:rgba(255,255,255,0.78); padding-left:18px; position:relative; }
+  .rival-block ul li::before { content:'▸'; color:var(--accent); position:absolute; left:0; }
+
+  /* POTENCIAL */
+  .potencial-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:24px; }
+  .pot-card { background:var(--white); border-top:4px solid var(--accent); border-radius:0 0 10px 10px; padding:22px 20px; box-shadow:var(--card-shadow); }
+  .pot-icon { font-size:22px; margin-bottom:10px; }
+  .pot-title { font-family:Georgia,serif; font-size:16px; color:var(--navy); margin-bottom:10px; }
+  .pot-text { font-size:13.5px; color:#555; line-height:1.65; }
+  .risks-block { background:var(--navy); border-radius:10px; padding:16px 24px; font-size:13.5px; color:rgba(255,255,255,0.7); }
+  .risks-block span.rk { color:var(--accent2); font-weight:600; }
+
+  /* FUNDAMENTALES */
+  .mcap-banner { background:var(--navy); border-radius:12px; padding:22px 32px; display:flex; align-items:center; gap:40px; margin-bottom:24px; flex-wrap:wrap; }
+  .mcap-main { font-family:Georgia,serif; font-size:46px; color:var(--white); font-weight:normal; }
+  .mcap-label { font-size:12px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.45); margin-bottom:4px; }
+  .mcap-metrics { display:flex; gap:32px; flex-wrap:wrap; }
+  .mcap-metric { text-align:center; }
+  .mcap-metric .val { font-size:22px; font-family:Georgia,serif; color:var(--accent2); }
+  .mcap-metric .lbl { font-size:11px; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.6px; }
+  .tables-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  table { width:100%; border-collapse:collapse; background:var(--white); border-radius:10px; overflow:hidden; box-shadow:var(--card-shadow); font-size:13.5px; }
+  table thead tr { background:var(--navy); color:var(--white); }
+  table thead.accent-head tr { background:var(--accent); color:var(--white); }
+  table thead th { padding:12px 16px; text-align:left; font-weight:600; font-size:12px; letter-spacing:0.4px; }
+  table tbody tr { border-bottom:1px solid #F0EDE6; }
+  table tbody tr:last-child { border-bottom:none; }
+  table tbody td { padding:11px 16px; color:#333; }
+  table tbody td:first-child { font-weight:500; color:var(--navy); }
+  .green { color:var(--green); font-weight:600; }
+  .red { color:var(--red); font-weight:600; }
+
+  /* TECNICO */
+  .tech-grid { display:grid; grid-template-columns:300px 1fr; gap:24px; }
+  .tech-block { background:var(--navy); border-radius:12px; padding:32px 28px; color:var(--white); text-align:center; }
+  .ath-pct { font-family:Georgia,serif; font-size:88px; line-height:1; color:var(--accent2); font-weight:normal; }
+  .ath-sub { font-size:13px; color:rgba(255,255,255,0.45); margin-top:8px; text-transform:uppercase; letter-spacing:0.7px; }
+  .ath-details { margin-top:24px; text-align:left; }
+  .ath-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08); font-size:12.5px; }
+  .ath-row .lbl { color:rgba(255,255,255,0.45); }
+  .ath-row .val { color:var(--white); font-weight:600; }
+  .tech-card { background:var(--white); border-left:5px solid var(--accent); border-radius:0 12px 12px 0; padding:28px 28px; box-shadow:var(--card-shadow); }
+  .tech-card h3 { font-family:Georgia,serif; font-size:17px; color:var(--navy); margin-bottom:16px; }
+  .tech-card ul { list-style:none; padding:0; }
+  .tech-card ul li { padding:9px 0; border-bottom:1px solid #F0EDE6; font-size:13.5px; color:#444; padding-left:20px; position:relative; line-height:1.5; }
+  .tech-card ul li::before { content:'◆'; color:var(--accent); position:absolute; left:0; font-size:9px; top:13px; }
+  .tech-card ul li:last-child { border-bottom:none; }
+
+  /* GRAFICO */
+  .chart-section { background:var(--white); max-width:1100px; margin:0 auto 0; padding:0 32px 48px; }
+  .chart-title { font-family:Georgia,serif; font-size:22px; font-weight:normal; color:var(--navy); border-bottom:2px solid var(--accent); padding-bottom:10px; margin-bottom:20px; }
+  .chart-wrapper { border-radius:12px; overflow:hidden; box-shadow:var(--card-shadow); border:1px solid #E8E3D8; }
+
+  /* FOOTER */
+  footer { background:var(--navy); color:rgba(255,255,255,0.45); font-size:12px; padding:28px 52px; border-top:3px solid var(--accent); }
+  footer a { color:var(--accent2); text-decoration:none; }
+  footer .footer-grid { display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  footer .sources { max-width:700px; }
+  footer .sources span { display:block; margin-top:6px; }
+
+  @media (max-width:640px) {
+    .hero { padding:28px 20px 24px; }
+    .hero-top { flex-wrap:wrap; }
+    .comp-grid, .potencial-grid, .tech-grid, .tables-grid { grid-template-columns:1fr; }
+    .ath-pct { font-size:60px; }
+    .hero-info h1 { font-size:28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- A · HERO -->
+<header class="hero">
+  <div class="hero-top">
+    <div class="logo-box">
+      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <rect width="90" height="90" fill="#1B2A47" rx="14"/>
+        <polygon points="45,10 72,22 72,52 45,78 18,52 18,22" fill="none" stroke="#C9993A" stroke-width="3.5"/>
+        <text x="45" y="36" text-anchor="middle" fill="#C9993A" font-family="Georgia, serif" font-size="15" font-weight="bold">BRK</text>
+        <line x1="26" y1="45" x2="64" y2="45" stroke="#C9993A" stroke-width="1.5" opacity="0.5"/>
+        <text x="45" y="60" text-anchor="middle" fill="#FFFFFF" font-family="Georgia, serif" font-size="11">BERKSHIRE</text>
+      </svg>
+    </div>
+    <div class="hero-info">
+      <h1>Berkshire Hathaway <span class="ticker-badge">BRK.B · NYSE</span></h1>
+      <div class="hero-subtitle">Análisis fundamental y técnico · Mayo 2026</div>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">$483.62</div>
+      <div class="stat-note">Cierre 26-May-2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">$1.04 T</div>
+      <div class="stat-note">USD · Rank #13 mundial</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ventas Q1 2026 YoY</div>
+      <div class="stat-value positive">+4.4%</div>
+      <div class="stat-note">$93.7B vs $89.7B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Op. Earnings Q1 2026 YoY</div>
+      <div class="stat-value positive">+17.7%</div>
+      <div class="stat-note">$11.35B vs $9.64B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a máximo histórico</div>
+      <div class="stat-value negative">−10.4%</div>
+      <div class="stat-note">ATH cierre: $539.80 (02-May-25)</div>
+    </div>
+  </div>
+</header>
+
+<!-- B · DESCRIPCION -->
+<section class="section">
+  <h2 class="section-title"><span class="icon">🏛</span> ¿A qué se dedica?</h2>
+  <div class="desc-card">
+    <strong>Berkshire Hathaway</strong> es el <span class="hl">conglomerado diversificado</span> más grande del mundo, estructurado como un holding descentralizado que opera en tres grandes bloques. Su pilar es el <span class="hl">seguro</span>, con GEICO (automóviles), Berkshire Hathaway Reinsurance y el Grupo Primario, que generan el «float» con el que financia inversiones a coste cero. El segundo bloque es el de <span class="hl">transporte y energía</span>: BNSF Railway (segunda red ferroviaria de EE.UU.) y Berkshire Hathaway Energy (utilities y renovables en expansión). El tercer bloque es un universo de <span class="hl">manufactura, servicios y retail</span> que incluye Precision Castparts, Lubrizol, Clayton Homes, Marmon y la cadena McLane. Sobre todo esto, gestiona una <span class="hl">cartera de renta variable</span> de ~$290B dominada por Apple, American Express, Bank of America y Coca-Cola. Desde enero de 2026, <span class="hl">Greg Abel</span> reemplazó a Warren Buffett como CEO, con ~$380B en caja disponible para el próximo gran movimiento.
+  </div>
+</section>
+
+<!-- C · COMPETITIVA -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title"><span class="icon">⚔</span> Posición competitiva</h2>
+  <div class="comp-grid">
+    <div class="comp-cards">
+      <div class="comp-card">
+        <div class="comp-card-header">
+          <span class="comp-sector">Seguros de Auto (GEICO)</span>
+          <span class="comp-rank">#2 EE.UU.</span>
+        </div>
+        <div class="comp-cuota">~14% cuota de mercado personal lines</div>
+        <div class="comp-note">Progressive lidera con ~15%. GEICO alcanzó parity en telemática en 2025 pero su underwriting profit cayó 35% en Q1 2026 por mayor siniestralidad y mayores gastos en publicidad.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-card-header">
+          <span class="comp-sector">Reaseguro (BH Reinsurance)</span>
+          <span class="comp-rank">#1–2 Global</span>
+        </div>
+        <div class="comp-cuota">Top 3 global por capacidad de suscripción</div>
+        <div class="comp-note">Compite con Munich Re y Swiss Re. Su fortaleza es el balance excepcional que le permite asumir riesgos catastróficos que otros rechazarían, especialmente en ciclos de endurecimiento.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-card-header">
+          <span class="comp-sector">Ferroviario (BNSF Railway)</span>
+          <span class="comp-rank">#2 EE.UU.</span>
+        </div>
+        <div class="comp-cuota">~40% tráfico ferroviario oeste de EE.UU.</div>
+        <div class="comp-note">Union Pacific mantiene ventaja en operating ratio (~425 pb mejor). BNSF mejora gradualmente pero la competencia intermodal con camiones presiona el pricing.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-card-header">
+          <span class="comp-sector">Holding / Conglomerado global</span>
+          <span class="comp-rank">#1 Único</span>
+        </div>
+        <div class="comp-cuota">$1.04T market cap · sin rival replicable</div>
+        <div class="comp-note">No existe competidor comparable en estructura: float de seguro + cartera bursátil + 60+ empresas propias con gestión completamente autónoma y cero deuda holding.</div>
+      </div>
+    </div>
+    <div class="rival-block">
+      <div class="rival-tag">■ Rival principal en segmento clave</div>
+      <div class="rival-name">Progressive Corp.</div>
+      <div class="rival-slogan">La mayor amenaza estructural en el núcleo de negocio</div>
+      <ul>
+        <li>Lidera en seguros de auto con cuota ~15%, superando a GEICO tras años de rezago tecnológico.</li>
+        <li>Pionera en telemática y pricing dinámico; GEICO recién alcanzó parity en 2025 tras una reestructuración costosa.</li>
+        <li>EPS crece de forma más consistente que BRK, con disciplina de suscripción superior en ciclos adversos.</li>
+        <li>Fuerza de marca directa-a-consumidor ("Flo") y presencia digital que erosiona la base de clientes de GEICO.</li>
+        <li>Si bien no replica la estructura de conglomerado, es quien más daño puede causar en el segmento de mayor margen de BRK.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- D · POTENCIAL -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title"><span class="icon">▲</span> Potencial futuro del sector</h2>
+  <div class="potencial-grid">
+    <div class="pot-card">
+      <div class="pot-icon">▲</div>
+      <div class="pot-title">Caja histórica como munición</div>
+      <div class="pot-text">Con ~$380B en caja y T-Bills al cierre de Q1 2026, Berkshire tiene poder de fuego sin precedentes en su historia. Tipos altos generan retornos atractivos mientras espera la gran adquisición. Una sola compra transformadora podría relanzar el crecimiento orgánico y desbloquear el valor latente que el mercado no está pagando hoy.</div>
+    </div>
+    <div class="pot-card">
+      <div class="pot-icon">●</div>
+      <div class="pot-title">Energía y transición climática</div>
+      <div class="pot-text">Berkshire Hathaway Energy tiene un pipeline masivo en renovables y redes eléctricas para la próxima década. La electrificación de EE.UU. y la explosión de centros de datos de IA son viento de cola estructural para las utilities reguladas de BHE, con flujos de caja predecibles y concesiones de largo plazo.</div>
+    </div>
+    <div class="pot-card">
+      <div class="pot-icon">■</div>
+      <div class="pot-title">Reaseguro en ciclo endurecido</div>
+      <div class="pot-text">El cambio climático y el riesgo geopolítico creciente impulsan primas más altas en reaseguro a nivel global. BH Reinsurance, con su balance inexpugnable, es uno de los pocos actores capaces de suscribir riesgos extremos de forma rentable cuando el mercado se endurece y los competidores retiran capacidad.</div>
+    </div>
+  </div>
+  <div class="risks-block">
+    ⚠ <strong>Riesgos a vigilar:</strong>
+    <span class="rk">Sucesión post-Buffett</span> (Greg Abel sin veredicto del mercado en capital allocation a gran escala) ·
+    <span class="rk">Softening insurance</span> (nuevos capitales comprimen primas; Abel lo reconoció en la junta mayo 2026) ·
+    <span class="rk">Concentración en Apple</span> (sigue siendo top holding a pesar de ventas parciales) ·
+    <span class="rk">Aranceles / tarifas</span> (impacto en cadenas manufactureras de filiales) ·
+    <span class="rk">Tamaño como lastre</span> (el universo de inversiones a su escala se estrecha peligrosamente)
+  </div>
+</section>
+
+<!-- E · DATOS FUNDAMENTALES -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title"><span class="icon">$</span> Datos fundamentales</h2>
+  <div class="mcap-banner">
+    <div>
+      <div class="mcap-label">Market Capitalization</div>
+      <div class="mcap-main">$1.04 T</div>
+    </div>
+    <div class="mcap-metrics">
+      <div class="mcap-metric"><div class="val">$483.62</div><div class="lbl">Precio BRK.B</div></div>
+      <div class="mcap-metric"><div class="val">~23.5×</div><div class="lbl">P/Op. Earnings</div></div>
+      <div class="mcap-metric"><div class="val">~1.05×</div><div class="lbl">P/Book Value</div></div>
+      <div class="mcap-metric"><div class="val">$380B</div><div class="lbl">Caja + T-Bills</div></div>
+      <div class="mcap-metric"><div class="val">$520.33</div><div class="lbl">Price Target 12m</div></div>
+    </div>
+  </div>
+  <div class="tables-grid">
+    <table>
+      <thead>
+        <tr><th colspan="3">Q1 2026 · Último trimestre reportado (02-May-2026)</th></tr>
+        <tr><th>Métrica</th><th>Valor</th><th>YoY</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ingresos operativos</td><td>$93.68B</td><td class="green">+4.4%</td></tr>
+        <tr><td>Earnings operativos</td><td>$11.35B</td><td class="green">+17.7%</td></tr>
+        <tr><td>Net earnings totales</td><td>$10.11B</td><td class="green">+119.6%*</td></tr>
+        <tr><td>EPS neto (B share)</td><td>$4.68</td><td class="green">+119.7%*</td></tr>
+        <tr><td>Revenue Q1 (vs consenso)</td><td>$93.68B</td><td class="green">+0.8% sorpresa</td></tr>
+        <tr><td>EPS (vs consenso)</td><td>$4.68</td><td class="green">+2.74% sorpresa</td></tr>
+        <tr><td>GEICO underwriting</td><td>Positivo</td><td class="red">−35% YoY</td></tr>
+        <tr><td>Book Value/share (B eq.)</td><td>~$337</td><td class="green">+11.1% YoY</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead class="accent-head">
+        <tr><th colspan="3">Q2 2026 · Previsión consenso (reporta 03-Ago-2026)</th></tr>
+        <tr><th>Métrica</th><th>Consenso</th><th>Nota</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ingresos estimados</td><td>$96.03B</td><td>+2.5% vs Q2 2025 est.</td></tr>
+        <tr><td>EPS operativo (B)</td><td>~$4.92</td><td>Basado en guidance implícito</td></tr>
+        <tr><td>EPS anual FY2026</td><td>~$20.61</td><td>Consenso Seeking Alpha</td></tr>
+        <tr><td>Revenue anual FY2026</td><td>$384.37B</td><td>+3.5% vs FY2025</td></tr>
+        <tr><td>Price target 12m</td><td>$520–$523</td><td>Barchart / Stockanalysis</td></tr>
+        <tr><td>Rating consenso</td><td>Moderate Buy</td><td>2 Strong Buy · 4 Hold</td></tr>
+        <tr><td>Guidance propio</td><td>Sin guidance</td><td>Berkshire nunca emite guidance</td></tr>
+        <tr><td>Upside implícito</td><td class="green">+7.7%</td><td>vs precio actual $483.62</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11.5px;color:#888;margin-top:10px;">* El salto en net earnings/EPS Q1 2026 vs Q1 2025 se debe a las pérdidas de inversión no realizadas de −$5B en Q1 2025. Los earnings <em>operativos</em> (+17.7%) son la métrica más representativa de la salud del negocio.</p>
+</section>
+
+<!-- F · TECNICO -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title"><span class="icon">📈</span> Análisis técnico — Distancia a máximos históricos</h2>
+  <div class="tech-grid">
+    <div class="tech-block">
+      <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Desde ATH de cierre</div>
+      <div class="ath-pct">−10.4%</div>
+      <div class="ath-sub">Distancia al máximo histórico</div>
+      <div class="ath-details">
+        <div class="ath-row"><span class="lbl">Cierre actual</span><span class="val">$483.62</span></div>
+        <div class="ath-row"><span class="lbl">ATH cierre</span><span class="val">$539.80</span></div>
+        <div class="ath-row"><span class="lbl">Fecha ATH</span><span class="val">02-May-2025</span></div>
+        <div class="ath-row"><span class="lbl">Máx. 52 semanas</span><span class="val">$516.85</span></div>
+        <div class="ath-row"><span class="lbl">Fecha 52W High</span><span class="val">28-Nov-2025</span></div>
+        <div class="ath-row"><span class="lbl">Mín. 52 semanas</span><span class="val">$455.19</span></div>
+      </div>
+    </div>
+    <div class="tech-card">
+      <h3>Lectura técnica semanal</h3>
+      <ul>
+        <li><strong>Tendencia principal:</strong> Alcista de largo plazo intacta, pero en fase de consolidación desde el ATH de mayo 2025 (~$540). El precio lleva 12 meses dibujando un rango lateral entre $455 y $520, típico de distribución o acumulación en grandes valores.</li>
+        <li><strong>Soporte clave:</strong> $455–$460 (mínimo agosto 2025, soporte probado y respetado). Segunda defensa en $420 (máximos históricos de 2024). Ambas zonas actuaron como suelo en las dos correcciones recientes.</li>
+        <li><strong>Resistencia inmediata:</strong> $516–$520 (52-week high y borde superior del rango). Ruptura semanal en cierre con volumen por encima de la media apuntaría hacia retest del ATH ~$540.</li>
+        <li><strong>Momentum relativo:</strong> YTD −2.84%, rezagando al S&amp;P 500 en el rebote de 2026. Señal de rotación defensiva hacia crecimiento, no de debilidad estructural. El P/Book de ~1.05× sugiere que el mercado no paga aún prima por el conglomerado.</li>
+        <li><strong>Catalizador próximo:</strong> Resultados Q2 2026 el 3-Ago-2026. Sorpresa positiva en earnings operativos o anuncio de adquisición relevante podría ser el detonante de ruptura del rango y reaceleración alcista.</li>
+        <li><strong>Escenario bajista:</strong> Pérdida de $455 en cierre semanal habilitaría caída hacia $420. Improbable salvo recesión severa o catástrofe aseguradora masiva (huracán categoría 5+ en zona metropolitana).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- G · GRAFICO -->
+<div class="chart-section">
+  <h2 class="chart-title">📊 Gráfico de cotización — BRK.B (2 años, semanal)</h2>
+  <div class="chart-wrapper">
+    <iframe src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3ABRKB&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+      width="100%" height="560" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+  </div>
+</div>
+
+<!-- H · FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="sources">
+      <strong style="color:rgba(255,255,255,0.6)">Fuentes consultadas</strong>
+      <span>· <a href="https://www.sec.gov/Archives/edgar/data/0001067983/000119312526212148/d74313dex991.htm">SEC · BRK Q1 2026 Earnings Release (8-K)</a></span>
+      <span>· <a href="https://www.morningstar.com/stocks/berkshire-hathaway-earnings-cash-hits-record-380-billion-stock-sales-solid-q1-results">Morningstar · Q1 2026 Analysis — Cash hits record $380B</a></span>
+      <span>· <a href="https://www.macrotrends.net/stocks/charts/BRK.B/berkshire-hathaway/stock-price-history">Macrotrends · BRK.B Price History &amp; ATH</a></span>
+      <span>· <a href="https://www.investing.com/equities/berkshire-hathaway-earnings">Investing.com · Earnings &amp; Forecasts</a></span>
+      <span>· <a href="https://money.usnews.com/investing/news/articles/2026-05-02/berkshire-ceo-greg-abel-says-insurance-becoming-increasingly-competitive">Reuters / USNews · Greg Abel Annual Meeting May 2, 2026</a></span>
+      <span>· <a href="https://stockanalysis.com/stocks/brk.b/">Stock Analysis · BRK.B Overview &amp; Analyst Consensus</a></span>
+      <span>· <a href="https://www.tipranks.com/news/the-fly/berkshire-hathaway-reports-q1-net-earnings-10-18b-vs-4-67b-last-year-thefly-news">TipRanks · Q1 2026 Net Earnings Report</a></span>
+    </div>
+    <div style="text-align:right;">
+      <div style="color:rgba(255,255,255,0.6);font-size:15px;font-family:Georgia,serif;">Berkshire Hathaway · BRK.B</div>
+      <div>Análisis generado: 27 de mayo de 2026</div>
+      <div style="margin-top:6px;line-height:1.7;">Este informe es de carácter estrictamente informativo.<br>No constituye asesoramiento de inversión.</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
