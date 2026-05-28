@@ -1431,45 +1431,82 @@ function renderListaInstrumentos(){
     if(oa!==ob)return oa-ob;
     return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;
   });
-  var lastGroup=null;
+  // Pre-agrupar para poder emitir subtotales al cierre de cada grupo
+  var groupKeys=[];var groupMap={};
   for(var i=0;i<sorted.length;i++){
-    var inv=sorted[i];var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
-    var cotz=parseFloat(inv.cotizacion)||0;
-    var costoTotal=pos.cant*pos.promedio;
-    var valorActual=cotz>0?pos.cant*cotz:0;
-    var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
-    var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
-    var difColor=difMonto!==null?(difMonto>=0?'#1D9E75':'#D85A30'):'#555';
-    // Separador de grupo
+    var inv=sorted[i];
     var grp=INV_TYPE_ORDER[inv.cat]!==undefined?INV_TYPE_ORDER[inv.cat]:99;
-    if(grp!==lastGroup){
-      lastGroup=grp;
-      var grpLabel=INV_TYPE_LABEL[grp]||inv.cat;
-      h+='<tr><td colspan="13" style="padding:6px 12px 4px;background:#161616;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#555;border-top:'+(i>0?'1px solid #2a2a2a':'none')+'">'
-        +grpLabel+'</td></tr>';
+    if(!groupMap[grp]){groupMap[grp]=[];groupKeys.push(grp);}
+    groupMap[grp].push(inv);
+  }
+
+  for(var gi=0;gi<groupKeys.length;gi++){
+    var grp=groupKeys[gi];
+    var grpInvs=groupMap[grp];
+    var grpLabel=INV_TYPE_LABEL[grp]||grpInvs[0].cat;
+    // Cabecera de grupo (colspan corregido a 14)
+    h+='<tr><td colspan="14" style="padding:6px 12px 4px;background:#161616;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#555;border-top:'+(gi>0?'1px solid #2a2a2a':'none')+'">'
+      +grpLabel+'</td></tr>';
+
+    // Acumuladores del grupo
+    var grpCostoTotal=0,grpValorActual=0,grpDifMonto=0,grpCostoConCotz=0,grpSmbRef='$ ';
+
+    for(var ii=0;ii<grpInvs.length;ii++){
+      var inv=grpInvs[ii];
+      var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
+      var cotz=parseFloat(inv.cotizacion)||0;
+      var costoTotal=pos.cant*pos.promedio;
+      var valorActual=cotz>0?pos.cant*cotz:0;
+      var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
+      var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
+      var difColor=difMonto!==null?(difMonto>=0?'#1D9E75':'#D85A30'):'#555';
+
+      // Acumular subtotales
+      grpCostoTotal+=costoTotal;
+      if(cotz>0){grpValorActual+=valorActual;grpDifMonto+=(difMonto||0);grpCostoConCotz+=costoTotal;grpSmbRef=smb;}
+
+      h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
+        +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
+        +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
+        +'<td><span class="badge" style="background:'+(inv.moneda==='USD'?'#0C447C':'#085041')+';color:'+(inv.moneda==='USD'?'#85B7EB':'#9FE1CB')+'">'+inv.moneda+'</span></td>'
+        +'<td style="font-size:12px;color:#aaa">'+(inv.venc?fmtDate(inv.venc):'-')+'</td>'
+        +'<td style="font-size:12px;color:#aaa">'+(inv.tasa||'-')+'</td>'
+        +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
+        +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
+        +'<td style="text-align:right;color:#9FE1CB">'+fmtN(costoTotal,smb)+'</td>'
+        +'<td style="text-align:right;padding:4px 8px">'
+        +'<input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—"'
+        +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
+        +'<td style="text-align:right;color:'+(cotz>0?'#9FE1CB':'#555')+'">'+(cotz>0?fmtN(valorActual,smb):'-')+'</td>'
+        +'<td style="text-align:right;font-weight:500;color:'+difColor+'">'
+        +(difMonto!==null?(difMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
+        +'<td style="text-align:right;font-weight:600;color:'+difColor+'">'
+        +(difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
+        +'<td style="white-space:nowrap"><button class="btn btn-sm primary" data-selinv="'+inv.id+'">Ver mov.</button> <button class="btn btn-sm btn-danger" data-delinv="'+inv.id+'">x</button></td>'
+        +'</tr>';
     }
-    h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
-      +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
-      +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
-      +'<td><span class="badge" style="background:'+(inv.moneda==='USD'?'#0C447C':'#085041')+';color:'+(inv.moneda==='USD'?'#85B7EB':'#9FE1CB')+'">'+inv.moneda+'</span></td>'
-      +'<td style="font-size:12px;color:#aaa">'+(inv.venc?fmtDate(inv.venc):'-')+'</td>'
-      +'<td style="font-size:12px;color:#aaa">'+(inv.tasa||'-')+'</td>'
-      +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
-      +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
-      +'<td style="text-align:right;color:#9FE1CB">'+fmtN(costoTotal,smb)+'</td>'
-      // Cotizacion: input editable con focus/blur
-      +'<td style="text-align:right;padding:4px 8px">'
-      +'<input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—"'
-      +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
-      // Valor actual
-      +'<td style="text-align:right;color:'+(cotz>0?'#9FE1CB':'#555')+'">'+(cotz>0?fmtN(valorActual,smb):'-')+'</td>'
-      // Dif $
-      +'<td style="text-align:right;font-weight:500;color:'+difColor+'">'
-      +(difMonto!==null?(difMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
-      // Dif %
-      +'<td style="text-align:right;font-weight:600;color:'+difColor+'">'
-      +(difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
-      +'<td style="white-space:nowrap"><button class="btn btn-sm primary" data-selinv="'+inv.id+'">Ver mov.</button> <button class="btn btn-sm btn-danger" data-delinv="'+inv.id+'">x</button></td>'
+
+    // Fila subtotal del grupo — columnas alineadas con la tabla
+    var grpDifPct=grpCostoConCotz>0?(grpDifMonto/grpCostoConCotz*100):null;
+    var grpDifColor=grpDifMonto>=0?'#1D9E75':'#D85A30';
+    var stBase='padding:5px 8px;font-size:12px;font-weight:600;border-top:0.5px solid #333;border-bottom:1px solid #2a2a2a;background:#171717;';
+    h+='<tr>'
+      // cols 1-8: etiqueta subtotal
+      +'<td colspan="8" style="'+stBase+'padding-left:14px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.5px">Subtotal · '+grpLabel+'</td>'
+      // col 9: Costo Total
+      +'<td style="'+stBase+'text-align:right;color:#9FE1CB">'+fmtN(grpCostoTotal,grpSmbRef)+'</td>'
+      // col 10: Cotizacion — vacío
+      +'<td style="'+stBase+'"></td>'
+      // col 11: Valor Actual
+      +'<td style="'+stBase+'text-align:right;color:'+(grpValorActual>0?'#9FE1CB':'#555')+'">'+(grpValorActual>0?fmtN(grpValorActual,grpSmbRef):'-')+'</td>'
+      // col 12: Dif $
+      +'<td style="'+stBase+'text-align:right;color:'+(grpCostoConCotz>0?grpDifColor:'#555')+'">'
+      +(grpCostoConCotz>0?(grpDifMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(grpDifMonto),grpSmbRef):'-')+'</td>'
+      // col 13: Dif %
+      +'<td style="'+stBase+'text-align:right;color:'+(grpDifPct!==null?grpDifColor:'#555')+'">'
+      +(grpDifPct!==null?(grpDifPct>=0?'+':'')+grpDifPct.toFixed(2)+'%':'-')+'</td>'
+      // col 14: botones — vacío
+      +'<td style="'+stBase+'"></td>'
       +'</tr>';
   }
   h+='</tbody></table></div>';el.innerHTML=h;
