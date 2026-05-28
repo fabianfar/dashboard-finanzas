@@ -1422,14 +1422,32 @@ function renderListaInstrumentos(){
     +'<th style="text-align:right">Dif. $</th>'
     +'<th style="text-align:right">Dif. %</th>'
     +'<th></th></tr></thead><tbody>';
-  for(var i=0;i<state.instrumentos.length;i++){
-    var inv=state.instrumentos[i];var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
+  // Orden por tipo (renta fija primero, luego variable) y alfabético por ticker dentro de cada grupo
+  var INV_TYPE_ORDER={'Letra (LECAP)':0,'BONCAP':1,'Bono CER':1,'Bono Soberano':1,'Bono Linked':1,'CEDEAR':2,'Accion':3,'Obligacion Negociable':4,'FCI':5,'Otro':6};
+  var INV_TYPE_LABEL={0:'Letras',1:'Bonos',2:'CEDEARs',3:'Acciones',4:'Obligaciones Negociables',5:'Fondos Comunes de Inversión',6:'Otros'};
+  var sorted=state.instrumentos.slice().sort(function(a,b){
+    var oa=INV_TYPE_ORDER[a.cat]!==undefined?INV_TYPE_ORDER[a.cat]:99;
+    var ob=INV_TYPE_ORDER[b.cat]!==undefined?INV_TYPE_ORDER[b.cat]:99;
+    if(oa!==ob)return oa-ob;
+    return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;
+  });
+  var lastGroup=null;
+  for(var i=0;i<sorted.length;i++){
+    var inv=sorted[i];var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
     var cotz=parseFloat(inv.cotizacion)||0;
     var costoTotal=pos.cant*pos.promedio;
     var valorActual=cotz>0?pos.cant*cotz:0;
     var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
     var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
     var difColor=difMonto!==null?(difMonto>=0?'#1D9E75':'#D85A30'):'#555';
+    // Separador de grupo
+    var grp=INV_TYPE_ORDER[inv.cat]!==undefined?INV_TYPE_ORDER[inv.cat]:99;
+    if(grp!==lastGroup){
+      lastGroup=grp;
+      var grpLabel=INV_TYPE_LABEL[grp]||inv.cat;
+      h+='<tr><td colspan="13" style="padding:6px 12px 4px;background:#161616;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#555;border-top:'+(i>0?'1px solid #2a2a2a':'none')+'">'
+        +grpLabel+'</td></tr>';
+    }
     h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
       +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
       +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
