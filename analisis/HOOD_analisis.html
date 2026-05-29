@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOOD · Robinhood Markets — Análisis Fundamental y Técnico</title>
+<style>
+  :root {
+    --navy:  #0D1117;
+    --navy2: #161B22;
+    --accent: #00C805;
+    --accent-dim: rgba(0,200,5,0.15);
+    --accent-glow: rgba(0,200,5,0.35);
+    --light: #F4F6F8;
+    --white: #FFFFFF;
+    --text:  #1A1F2E;
+    --muted: #6B7280;
+    --red:   #EF4444;
+    --green: #16A34A;
+    --border: rgba(0,200,5,0.25);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .hero {
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+    padding: 48px 56px 40px 72px;
+    border-left: 14px solid var(--accent);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,200,5,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-top { display: flex; align-items: center; gap: 32px; flex-wrap: nowrap; }
+  .logo-box {
+    width: 110px; height: 110px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(0,200,5,0.3), 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .hero-title { flex: 1; }
+  .hero-title h1 {
+    font-family: Georgia, serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .ticker-badge {
+    display: inline-block;
+    margin-left: 14px;
+    padding: 4px 12px;
+    border: 1.5px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    vertical-align: middle;
+  }
+  .hero-subtitle { color: rgba(255,255,255,0.5); font-size: 14px; margin-top: 8px; letter-spacing: 0.5px; }
+  .stat-strip { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+  .stat-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1; min-width: 130px;
+  }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+  .stat-value.positive { color: var(--accent); }
+  .stat-value.negative { color: #F87171; }
+  .section { max-width: 1100px; margin: 0 auto; padding: 0 40px 48px; }
+  .section:first-of-type { padding-top: 48px; }
+  .section-title { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 24px; padding-bottom: 10px; border-bottom: 2px solid var(--accent-dim); }
+  .section-title span { color: var(--accent); }
+  .desc-card { background: var(--white); border-radius: 14px; padding: 28px 32px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); line-height: 1.75; font-size: 15px; color: #374151; }
+  .desc-card .hl { color: var(--accent); font-weight: 600; }
+  .competitive-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+  .subsector-cards { display: flex; flex-direction: column; gap: 14px; }
+  .subsector-card { background: var(--white); border-left: 6px solid var(--accent); border-radius: 0 10px 10px 0; padding: 16px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .subsector-card h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 4px; }
+  .subsector-card .pos { font-size: 20px; font-weight: 700; color: var(--accent); display: inline-block; margin-right: 8px; }
+  .subsector-card .quota { font-size: 13px; color: var(--muted); }
+  .subsector-card p { margin-top: 6px; font-size: 13.5px; color: #4B5563; }
+  .rival-block { background: var(--navy); border-radius: 14px; padding: 28px 24px; color: #fff; }
+  .rival-block h3 { font-family: Georgia, serif; font-size: 22px; color: #fff; margin-bottom: 4px; }
+  .rival-block .threat-tag { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 18px; display: block; }
+  .rival-block ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .rival-block ul li::before { content: '\25B8'; color: var(--accent); margin-right: 8px; }
+  .rival-block ul li { font-size: 13.5px; color: rgba(255,255,255,0.8); }
+  .future-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 20px; }
+  .future-card { background: var(--white); border-top: 4px solid var(--accent); border-radius: 10px; padding: 22px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .future-card .icon { font-size: 22px; margin-bottom: 10px; display: block; }
+  .future-card h4 { font-family: Georgia, serif; font-size: 16px; margin-bottom: 8px; color: var(--text); }
+  .future-card p { font-size: 13.5px; color: #4B5563; line-height: 1.65; }
+  .risks-block { background: var(--navy2); border-radius: 10px; padding: 16px 24px; font-size: 13.5px; color: rgba(255,255,255,0.7); }
+  .risks-block strong { color: #fff; margin-right: 6px; }
+  .risks-block .rk { color: var(--accent); font-weight: 600; }
+  .market-cap-banner { background: var(--navy); border-radius: 14px; padding: 24px 32px; display: flex; align-items: center; gap: 40px; margin-bottom: 22px; flex-wrap: wrap; }
+  .mcap-big { font-family: Georgia, serif; font-size: 46px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .mcap-label { font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.8px; }
+  .mcap-metrics { display: flex; gap: 32px; flex-wrap: wrap; }
+  .mcap-metric { text-align: center; }
+  .mcap-metric .val { font-size: 22px; font-weight: 700; color: #fff; }
+  .mcap-metric .lbl { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .tables-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .fin-table { border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .fin-table table { width: 100%; border-collapse: collapse; }
+  .fin-table thead th { padding: 14px 18px; text-align: left; font-size: 12px; letter-spacing: 0.6px; text-transform: uppercase; color: #fff; }
+  .fin-table.dark thead { background: var(--navy); }
+  .fin-table.accent-head thead { background: var(--accent); }
+  .fin-table.accent-head thead th { color: #000; }
+  .fin-table tbody tr { background: var(--white); }
+  .fin-table tbody tr:nth-child(even) { background: #F9FAFB; }
+  .fin-table tbody td { padding: 12px 18px; font-size: 13.5px; border-bottom: 1px solid #F3F4F6; }
+  .fin-table tbody td:last-child { text-align: right; }
+  .green { color: var(--green); font-weight: 600; }
+  .red { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--muted); }
+  .tech-grid { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
+  .tech-block-dark { background: var(--navy); border-radius: 14px; padding: 32px 28px; color: #fff; }
+  .athl-pct { font-family: Georgia, serif; font-size: 96px; font-weight: 700; color: #F87171; line-height: 1; letter-spacing: -4px; }
+  .tech-sub { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .tech-row { display: flex; justify-content: space-between; font-size: 13px; }
+  .tech-row .lbl { color: rgba(255,255,255,0.45); }
+  .tech-row .val { color: #fff; font-weight: 600; }
+  .tech-bullets { background: var(--white); border-left: 5px solid var(--accent); border-radius: 0 14px 14px 0; padding: 28px 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .tech-bullets h4 { font-family: Georgia, serif; font-size: 17px; margin-bottom: 16px; color: var(--text); }
+  .tech-bullets ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .tech-bullets ul li::before { content: '\25C8'; color: var(--accent); margin-right: 10px; }
+  .tech-bullets ul li { font-size: 14px; color: #374151; }
+  .chart-wrapper { background: var(--white); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+  footer { background: var(--navy); border-top: 3px solid var(--accent); padding: 28px 56px; color: rgba(255,255,255,0.45); font-size: 12.5px; }
+  footer strong { color: rgba(255,255,255,0.7); }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .sources { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+  @media (max-width: 640px) {
+    .hero { padding: 28px 20px 24px 28px; }
+    .hero-top { flex-wrap: wrap; }
+    .hero-title h1 { font-size: 28px; }
+    .competitive-grid, .future-grid, .tables-row, .tech-grid { grid-template-columns: 1fr; }
+    .section { padding: 0 16px 32px; }
+    .athl-pct { font-size: 64px; }
+    .mcap-big { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-top">
+    <div class="logo-box">
+      <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="40" fill="#fff"/>
+        <path d="M22 62 L22 20 Q22 14 28 14 L44 14 Q56 14 56 26 Q56 34 48 36 L56 62 L46 62 L39 38 L32 38 L32 62 Z" fill="#00C805"/>
+        <path d="M32 20 L32 32 L42 32 Q49 32 49 26 Q49 20 42 20 Z" fill="#007A03"/>
+      </svg>
+    </div>
+    <div class="hero-title">
+      <h1>Robinhood Markets <span class="ticker-badge">HOOD</span></h1>
+      <p class="hero-subtitle">Análisis fundamental y técnico &middot; Mayo 2026 &middot; NASDAQ</p>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">$76.23</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">~$66 B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ventas Q1'26 YoY</div>
+      <div class="stat-value positive">+15%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">EPS Q1'26 YoY</div>
+      <div class="stat-value positive">+3%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Distancia a ATH</div>
+      <div class="stat-value negative">&#8722;50.5%</div>
+    </div>
+  </div>
+</header>
+
+<div class="section" style="padding-top:48px">
+  <h2 class="section-title">&#191;A qu&#233; se <span>dedica</span>?</h2>
+  <div class="desc-card">
+    Robinhood Markets (NASDAQ: HOOD) es una <span class="hl">plataforma de servicios financieros</span> que revolucion&#243; el sector en 2015 al introducir el <span class="hl">trading sin comisiones</span> en acciones, ETFs, opciones, futuros y criptomonedas. Con sede en Menlo Park (California), atiende a m&#225;s de <span class="hl">27.4 millones de clientes</span> con activos bajo custodia superiores a $307 mil millones. Su ecosistema hoy va mucho m&#225;s all&#225; del brokerage: incluye <span class="hl">Robinhood Gold</span> (suscripci&#243;n premium con 4.3 M de abonados), <span class="hl">Robinhood Banking</span> (cuenta bancaria con 40% de tasa de dep&#243;sito directo), la <span class="hl">Gold Credit Card</span> (800 K tarjetas, $15 B en volumen anualizado), <span class="hl">Robinhood Strategies</span> (carteras gestionadas por IA), y la plataforma RIA <span class="hl">TradePMR</span> (adquirida en 2025, $41 B en activos gestionados). La compa&#241;&#237;a es el &#250;nico broker y fiduciario designado por el Tesoro de EE.UU. para el programa <span class="hl">Trump Accounts</span> (5.5 M de cuentas de ahorro infantiles abiertas).
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Posici&#243;n <span>competitiva</span></h2>
+  <div class="competitive-grid">
+    <div class="subsector-cards">
+      <div class="subsector-card">
+        <h4>Brokerage m&#243;vil Gen Z / Millennials</h4>
+        <span class="pos">#1</span><span class="quota">~30% cuota en nuevas cuentas retail</span>
+        <p>Plataforma mobile-first que convirti&#243; al inversor joven en su usuario natural. eToro y Webull atacan el mismo segmento pero con menor penetraci&#243;n en EE.UU.</p>
+      </div>
+      <div class="subsector-card">
+        <h4>Trading de opciones minorista</h4>
+        <span class="pos">#2</span><span class="quota">Opciones: $260 M de ingresos en Q1'26</span>
+        <p>L&#237;der en volum&#233;tria de opciones retail, aunque Schwab/Thinkorswim domina el segmento de traders m&#225;s sofisticados. La eliminaci&#243;n del PDT Rule (junio 2026) es catalizador directo.</p>
+      </div>
+      <div class="subsector-card">
+        <h4>Prediction Markets / Contratos de eventos</h4>
+        <span class="pos">#1</span><span class="quota">$3 B en volumen mensual (abril 2026)</span>
+        <p>Primera plataforma regulada masiva en contratos de eventos pol&#237;ticos y deportivos. Nuevo segmento de alt&#237;simo crecimiento (+320% YoY en ingresos).</p>
+      </div>
+      <div class="subsector-card">
+        <h4>Plataformas RIA</h4>
+        <span class="pos">#3</span><span class="quota">$41 B en AUM v&#237;a TradePMR</span>
+        <p>Entrante reciente al espacio institucional. Schwab y Fidelity tienen escala superior, pero Robinhood apuesta por RIAs independientes medianos en r&#225;pido crecimiento.</p>
+      </div>
+    </div>
+    <div class="rival-block">
+      <h3>Charles Schwab (SCHW)</h3>
+      <span class="threat-tag">La mayor amenaza estructural</span>
+      <ul>
+        <li>46 millones de cuentas vs. 27.4 M de HOOD &mdash; escala 1.7x superior en clientes</li>
+        <li>$11.6 billones en activos bajo custodia vs. $307 B de HOOD</li>
+        <li>Thinkorswim: la plataforma de opciones m&#225;s avanzada del mercado retail</li>
+        <li>Schwab tambi&#233;n elimin&#243; comisiones en 2019, neutralizando el diferenciador hist&#243;rico</li>
+        <li>Marca de confianza multi-generacional que captura al Millennial que madura</li>
+        <li>Adquisici&#243;n de Forge Global: acceso a mercados privados donde HOOD no compite</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Potencial futuro <span>del sector</span></h2>
+  <div class="future-grid">
+    <div class="future-card">
+      <span class="icon">&#9650;</span>
+      <h4>Gran Transferencia de Riqueza</h4>
+      <p>Se estima que ~$84 billones pasar&#225;n de Boomers a Millennials y Gen Z en los pr&#243;ximos 20 a&#241;os. Robinhood est&#225; posicionado como la plataforma financiera central de exactamente esas generaciones, con 40% de tasa de adhesi&#243;n en nuevos clientes.</p>
+    </div>
+    <div class="future-card">
+      <span class="icon">&#9679;</span>
+      <h4>Eliminaci&#243;n del PDT Rule</h4>
+      <p>La SEC aprob&#243; en abril 2026 eliminar el requisito de $25.000 m&#237;nimos para day traders, efectivo desde el 4 de junio de 2026. Este cambio es un catalizador de primer orden: aumentar&#225; dr&#225;sticamente el volumen de trading y los ingresos por transacciones en opciones y equity.</p>
+    </div>
+    <div class="future-card">
+      <span class="icon">&#9632;</span>
+      <h4>Diversificaci&#243;n hacia fintech completo</h4>
+      <p>Banking, Gold Card, Strategies y TradePMR transforman a HOOD de broker puro a plataforma financiera integrada. Los ingresos por suscripciones (Gold: $50 M en Q1'26, +32% YoY) generan recurrencia no vinculada a volatilidad de mercado.</p>
+    </div>
+  </div>
+  <div class="risks-block">
+    <strong>&#9888; Riesgos a vigilar:</strong>
+    <span class="rk">Ca&#237;da del volumen de crypto</span> &middot; Dependencia de PFOF ante posibles regulaciones &middot; <span class="rk">Tasas de inter&#233;s a la baja</span> comprimiendo NIR &middot; <span class="rk">Regulaci&#243;n de prediction markets</span> en m&#250;ltiples estados &middot; Competencia de grandes bancos en trading 0-comisi&#243;n &middot; <span class="rk">Beta 3.0+</span>: altamente sensible a ca&#237;das de mercado
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Datos <span>fundamentales</span></h2>
+  <div class="market-cap-banner">
+    <div>
+      <div class="mcap-label">Market Capitalization</div>
+      <div class="mcap-big">$66 B</div>
+    </div>
+    <div class="mcap-metrics">
+      <div class="mcap-metric"><div class="val">$76.23</div><div class="lbl">Precio (29/05/26)</div></div>
+      <div class="mcap-metric"><div class="val">$0.38</div><div class="lbl">EPS diluted Q1'26</div></div>
+      <div class="mcap-metric"><div class="val">50%</div><div class="lbl">EBITDA Ajust. Margin</div></div>
+      <div class="mcap-metric"><div class="val">$307 B</div><div class="lbl">Total Platform Assets</div></div>
+      <div class="mcap-metric"><div class="val">4.3 M</div><div class="lbl">Gold Suscriptores</div></div>
+    </div>
+  </div>
+  <div class="tables-row">
+    <div class="fin-table dark">
+      <table>
+        <thead>
+          <tr><th colspan="2">Q1 2026 &middot; &#218;ltimo trimestre (reportado 28/04/2026)</th></tr>
+          <tr><th>M&#233;trica</th><th>Valor &middot; YoY</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ingresos totales netos</td><td class="green">$1.07 B &middot; +15%</td></tr>
+          <tr><td>Ingresos por transacciones</td><td class="green">$623 M &middot; +7%</td></tr>
+          <tr><td>&nbsp;&nbsp;&#8594; Opciones</td><td class="green">$260 M &middot; +8%</td></tr>
+          <tr><td>&nbsp;&nbsp;&#8594; Crypto</td><td class="red">$134 M &middot; &#8722;47%</td></tr>
+          <tr><td>&nbsp;&nbsp;&#8594; Acciones (equity)</td><td class="green">$82 M &middot; +46%</td></tr>
+          <tr><td>&nbsp;&nbsp;&#8594; Prediction Markets</td><td class="green">$147 M &middot; +320%</td></tr>
+          <tr><td>Net Interest Revenue (NIR)</td><td class="green">$359 M &middot; +24%</td></tr>
+          <tr><td>Otros (Gold, banking...)</td><td class="green">$85 M &middot; +57%</td></tr>
+          <tr><td>EPS diluido (GAAP)</td><td class="green">$0.38 &middot; +3%</td></tr>
+          <tr><td>Net Income</td><td class="green">$346 M &middot; +3%</td></tr>
+          <tr><td>EBITDA Ajustado</td><td class="green">$534 M &middot; +14%</td></tr>
+          <tr><td>Net Deposits</td><td class="green">$18 B &middot; +22% anualiz.</td></tr>
+          <tr><td>Total Platform Assets</td><td class="green">$307.3 B &middot; +39%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fin-table accent-head">
+      <table>
+        <thead>
+          <tr><th colspan="2">Q2 2026 &middot; Previsi&#243;n (reporta ~05/08/2026)</th></tr>
+          <tr><th>M&#233;trica</th><th>Consenso analistas</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ingresos totales</td><td class="neutral">~$1.19 B</td></tr>
+          <tr><td>EPS diluido</td><td class="neutral">~$0.41</td></tr>
+          <tr><td>EBITDA Ajustado margen</td><td class="neutral">&gt;50% estimado</td></tr>
+          <tr><td>Gold Suscriptores</td><td class="neutral">&gt;4.5 M esperado</td></tr>
+          <tr><td>Net Deposits (guidance)</td><td class="neutral">$5 B+ en abril MTD</td></tr>
+          <tr><td>Opciones + equity volume</td><td class="neutral">Mes m&#225;s alto del a&#241;o</td></tr>
+          <tr><td>Catalizador clave Q2</td><td class="neutral">PDT Rule (desde 04/06/26)</td></tr>
+          <tr><td>Guidance OpEx 2026</td><td class="neutral">$2.70&#8211;$2.825 B</td></tr>
+          <tr><td>Trump Accounts</td><td class="neutral">Cost-plus, revenues &gt; costs</td></tr>
+          <tr><td>Gold Card ARR</td><td class="neutral">$100 M ARR (&gt;1 M cards)</td></tr>
+          <tr><td>Retirement Assets</td><td class="neutral">&gt;$30 B</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">An&#225;lisis t&#233;cnico &#8212; <span>Distancia a m&#225;ximos</span></h2>
+  <div class="tech-grid">
+    <div class="tech-block-dark">
+      <div class="athl-pct">&#8722;50%</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:4px;">vs. ATH de cierre</div>
+      <div class="tech-sub">
+        <div class="tech-row"><span class="lbl">Cierre actual</span><span class="val">$76.23</span></div>
+        <div class="tech-row"><span class="lbl">ATH cierre</span><span class="val">$153.86 (06/10/25)</span></div>
+        <div class="tech-row"><span class="lbl">M&#225;x. 52 semanas</span><span class="val">$153.86</span></div>
+        <div class="tech-row"><span class="lbl">Beta</span><span class="val">3.03</span></div>
+        <div class="tech-row"><span class="lbl">Retorno 1 a&#241;o</span><span class="val" style="color:var(--accent)">+66.5%</span></div>
+        <div class="tech-row"><span class="lbl">Precio objetivo (cons.)</span><span class="val" style="color:var(--accent)">$98.44</span></div>
+      </div>
+    </div>
+    <div class="tech-bullets">
+      <h4>Lectura t&#233;cnica &middot; Mayo 2026</h4>
+      <ul>
+        <li>Tras el ATH de $153.86 en octubre 2025, HOOD corrigi&#243; ~50% en ca&#237;da abrupta; consistente con su beta &gt;3 en contextos de aversi&#243;n al riesgo.</li>
+        <li>Soporte clave identificado en zona $66&#8211;$68 (demanda institucional); el rebote desde m&#237;nimos de correcci&#243;n fue del +15% hasta niveles actuales.</li>
+        <li>Resistencia inmediata en $90 (nivel de oferta estructural) y segunda resistencia en $99 (gap de precio a rellenar post-earnings de Q4'25).</li>
+        <li>La eliminaci&#243;n del PDT rule (4 junio 2026) es el pr&#243;ximo catalizador binario de corto plazo: podr&#237;a impulsar volumen y re-rating del m&#250;ltiplo.</li>
+        <li>Volatilidad impl&#237;cita elevada: opciones descuentan movimiento del &#177;10% post-earnings del 5 agosto 2026.</li>
+        <li>Consenso de 27 analistas (S&amp;P Global): rating "Buy", precio objetivo $98.44 — upside del +29% desde niveles actuales.</li>
+        <li>Riesgo asim&#233;trico: si crypto permanece deprimido en H2 2026, el consenso de FCF de $2.75 B para el a&#241;o completo podr&#237;a revisarse a la baja.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Gr&#225;fico de <span>cotizaci&#243;n</span></h2>
+  <div class="chart-wrapper">
+    <iframe
+      src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3AHOOD&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+      width="100%"
+      height="560"
+      frameborder="0"
+      allowtransparency="true"
+      scrolling="no">
+    </iframe>
+  </div>
+</div>
+
+<footer>
+  <strong>An&#225;lisis generado el 29 de mayo de 2026.</strong> Datos con fines informativos &#250;nicamente. No constituye asesoramiento de inversi&#243;n.
+  <div class="sources">
+    <strong>Fuentes consultadas:</strong>
+    <a href="https://investors.robinhood.com/news-releases/news-release-details/robinhood-reports-first-quarter-2026-results" target="_blank">&#9658; Robinhood Q1 2026 Earnings Release (28/04/2026) &mdash; investors.robinhood.com</a>
+    <a href="https://www.sec.gov/Archives/edgar/data/0001783879/000178387926000062/hood-20260331.htm" target="_blank">&#9658; Robinhood Form 10-Q Q1 2026 &mdash; SEC EDGAR</a>
+    <a href="https://www.tradingview.com/symbols/NASDAQ-HOOD/" target="_blank">&#9658; HOOD precio y ATH &mdash; TradingView</a>
+    <a href="https://stockanalysis.com/stocks/hood/forecast/" target="_blank">&#9658; Consenso analistas y precio objetivo &mdash; StockAnalysis</a>
+    <a href="https://247wallst.com/companies/hood/earnings/" target="_blank">&#9658; HOOD earnings history &mdash; 24/7 Wall St.</a>
+    <a href="https://finance.yahoo.com/news/robinhood-schwab-brokerage-stock-better-131300142.html" target="_blank">&#9658; Posici&#243;n competitiva Robinhood vs Schwab &mdash; Yahoo Finance / Zacks</a>
+    <a href="https://www.tikr.com/blog/robinhood-stock-fell-13-after-q1-2026-earnings-heres-why-the-selloff-may-be-overdone" target="_blank">&#9658; An&#225;lisis t&#233;cnico y FCF proyectado &mdash; TIKR</a>
+  </div>
+</footer>
+
+</body>
+</html>
