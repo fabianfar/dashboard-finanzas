@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBM · Análisis Fundamental y Técnico · Junio 2026</title>
+<style>
+  :root {
+    --navy:  #0a0f1e;
+    --navy2: #0d1526;
+    --accent: #0f62fe;
+    --accent2: #4589ff;
+    --light: #f4f6fb;
+    --white: #ffffff;
+    --green: #24a148;
+    --red:   #da1e28;
+    --text:  #161616;
+    --muted: #6f6f6f;
+    --border: #e0e0e0;
+    --card-shadow: 0 2px 16px rgba(15,98,254,.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ────────────────────────────────────────── */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 44px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(15,98,254,.18) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
+  }
+  .logo-box {
+    width: 110px;
+    height: 110px;
+    background: var(--white);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 14px;
+    box-shadow: 0 4px 24px rgba(15,98,254,.25);
+  }
+  .hero-title-block { flex: 1; min-width: 0; }
+  .hero-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-title-row h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 44px;
+    color: var(--white);
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  .ticker-badge {
+    border: 1.5px solid var(--accent2);
+    color: var(--accent2);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+    background: rgba(15,98,254,.12);
+  }
+  .hero-subtitle {
+    color: #8ab4f8;
+    font-size: 14px;
+    margin-top: 6px;
+    letter-spacing: .3px;
+  }
+
+  /* stat-cards strip */
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    border: 1.5px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 20px;
+    flex: 1;
+    min-width: 130px;
+    background: rgba(15,98,254,.08);
+  }
+  .stat-card .sc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8ab4f8;
+    margin-bottom: 4px;
+  }
+  .stat-card .sc-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    font-family: Georgia, serif;
+  }
+  .stat-card .sc-sub {
+    font-size: 11px;
+    color: #8ab4f8;
+    margin-top: 2px;
+  }
+  .sc-pos { color: #42be65 !important; }
+  .sc-neg { color: #ff8389 !important; }
+
+  /* ── SECTIONS ────────────────────────────────────── */
+  .section { max-width: 1100px; margin: 40px auto; padding: 0 28px; }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+  }
+
+  /* ── DESCRIPTION ─────────────────────────────────── */
+  .desc-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 28px 32px;
+    box-shadow: var(--card-shadow);
+    line-height: 1.8;
+    font-size: 15px;
+    color: #333;
+  }
+  .desc-card .hl { color: var(--accent); font-weight: 700; }
+
+  /* ── COMPETITIVE POSITION ────────────────────────── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+  .sub-cards { display: flex; flex-direction: column; gap: 14px; }
+  .sub-card {
+    background: var(--white);
+    border-radius: 12px;
+    border-left: 6px solid var(--accent);
+    padding: 16px 20px;
+    box-shadow: var(--card-shadow);
+  }
+  .sub-card .sc-sector {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--accent);
+  }
+  .sub-card .sc-pos-label {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: Georgia, serif;
+    color: var(--navy);
+    margin: 2px 0;
+  }
+  .sub-card .sc-share { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .sub-card .sc-note { font-size: 13px; color: #444; }
+  .rival-block {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 28px 24px;
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .rival-block .rival-name {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 4px;
+  }
+  .rival-block .rival-tag {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8ab4f8;
+    margin-bottom: 18px;
+  }
+  .rival-block ul { padding-left: 18px; }
+  .rival-block ul li {
+    font-size: 13.5px;
+    color: #c0d4f8;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .rival-block ul li strong { color: var(--accent2); }
+
+  /* ── POTENTIAL ────────────────────────────────────── */
+  .pot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  .pot-card {
+    background: var(--white);
+    border-radius: 12px;
+    border-top: 4px solid var(--accent);
+    padding: 22px 22px;
+    box-shadow: var(--card-shadow);
+  }
+  .pot-card .pot-icon {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: var(--accent);
+  }
+  .pot-card .pot-title {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .pot-card p { font-size: 13.5px; color: #444; line-height: 1.65; }
+  .risks-block {
+    background: var(--navy2);
+    border-radius: 12px;
+    padding: 18px 26px;
+    color: #c0d4f8;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .risks-block .risks-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8ab4f8;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .risks-block .rk { color: var(--accent2); font-weight: 700; }
+
+  /* ── FUNDAMENTALS ─────────────────────────────────── */
+  .fund-mcap {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 22px 30px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .fund-mcap .mcap-big {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .fund-mcap .mcap-label { font-size: 12px; color: #8ab4f8; text-transform: uppercase; letter-spacing: 1px; }
+  .fund-meta { display: flex; gap: 36px; flex-wrap: wrap; }
+  .fund-meta-item .fmi-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .fund-meta-item .fmi-lbl { font-size: 11px; color: #8ab4f8; }
+  .tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; font-size: 13.5px; }
+  .tbl-head-dark thead tr { background: var(--navy); color: var(--white); }
+  .tbl-head-accent thead tr { background: var(--accent); color: var(--white); }
+  thead th { padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px; }
+  tbody tr { background: var(--white); border-bottom: 1px solid var(--border); }
+  tbody tr:nth-child(even) { background: #f0f4ff; }
+  tbody td { padding: 10px 14px; }
+  td.green { color: var(--green); font-weight: 700; }
+  td.red { color: var(--red); font-weight: 700; }
+  .tbl-caption {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* ── TECHNICAL ────────────────────────────────────── */
+  .tech-row {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .tech-big {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 30px 24px;
+    color: var(--white);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .tech-pct {
+    font-family: Georgia, serif;
+    font-size: 82px;
+    font-weight: 700;
+    color: #ff8389;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .tech-meta-row { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .tech-meta-item { font-size: 12px; color: #8ab4f8; }
+  .tech-meta-item strong { color: var(--white); }
+  .tech-analysis {
+    background: var(--white);
+    border-radius: 14px;
+    border-left: 6px solid var(--accent);
+    padding: 24px 28px;
+    box-shadow: var(--card-shadow);
+  }
+  .tech-analysis h3 {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .tech-analysis ul { list-style: none; padding: 0; }
+  .tech-analysis ul li {
+    padding: 7px 0;
+    border-bottom: 1px solid #eef2ff;
+    font-size: 13.5px;
+    color: #333;
+    padding-left: 20px;
+    position: relative;
+  }
+  .tech-analysis ul li::before {
+    content: '▶';
+    color: var(--accent);
+    font-size: 10px;
+    position: absolute;
+    left: 0;
+    top: 10px;
+  }
+  .tech-analysis ul li:last-child { border-bottom: none; }
+
+  /* ── CHART ─────────────────────────────────────────── */
+  .chart-wrap {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+  }
+  .chart-wrap iframe { display: block; border: none; width: 100%; height: 560px; }
+
+  /* ── FOOTER ─────────────────────────────────────────── */
+  footer {
+    background: var(--navy);
+    color: #8ab4f8;
+    padding: 28px 48px;
+    margin-top: 50px;
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .footer-date { font-size: 14px; color: var(--white); font-weight: 700; margin-bottom: 10px; }
+
+  /* ── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .comp-grid { grid-template-columns: 1fr; }
+    .tables-row { grid-template-columns: 1fr; }
+    .pot-grid { grid-template-columns: 1fr; }
+    .tech-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: 28px 18px 24px; }
+    .hero-top { flex-wrap: wrap; }
+    .hero-title-row h1 { font-size: 30px; }
+    .stat-strip { flex-direction: column; }
+    .section { padding: 0 14px; }
+    .fund-meta { gap: 18px; }
+    .tech-pct { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ A) HERO -->
+<header class="hero">
+  <div class="hero-top">
+    <!-- IBM Logo SVG inline -->
+    <div class="logo-box">
+      <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" width="90" height="36">
+        <!-- IBM 8-bar stripe logo recreation -->
+        <!-- Letter I -->
+        <rect x="0"   y="0"  width="38" height="10" fill="#0f62fe"/>
+        <rect x="12"  y="14" width="14" height="10" fill="#0f62fe"/>
+        <rect x="12"  y="28" width="14" height="10" fill="#0f62fe"/>
+        <rect x="12"  y="42" width="14" height="10" fill="#0f62fe"/>
+        <rect x="0"   y="56" width="38" height="10" fill="#0f62fe"/>
+        <!-- Letter B -->
+        <rect x="46"  y="0"  width="38" height="10" fill="#0f62fe"/>
+        <rect x="46"  y="14" width="30" height="10" fill="#0f62fe"/>
+        <rect x="78"  y="18" width="6"  height="2"  fill="#0f62fe"/>
+        <rect x="46"  y="28" width="38" height="10" fill="#0f62fe"/>
+        <rect x="46"  y="42" width="30" height="10" fill="#0f62fe"/>
+        <rect x="78"  y="46" width="6"  height="2"  fill="#0f62fe"/>
+        <rect x="46"  y="56" width="38" height="10" fill="#0f62fe"/>
+        <!-- Letter M -->
+        <rect x="92"  y="0"  width="14" height="10" fill="#0f62fe"/>
+        <rect x="112" y="0"  width="14" height="10" fill="#0f62fe"/>
+        <rect x="152" y="0"  width="14" height="10" fill="#0f62fe"/>
+        <rect x="92"  y="14" width="14" height="10" fill="#0f62fe"/>
+        <rect x="118" y="14" width="8"  height="10" fill="#0f62fe"/>
+        <rect x="146" y="14" width="20" height="10" fill="#0f62fe"/>
+        <rect x="92"  y="28" width="14" height="10" fill="#0f62fe"/>
+        <rect x="152" y="28" width="14" height="10" fill="#0f62fe"/>
+        <rect x="92"  y="42" width="14" height="10" fill="#0f62fe"/>
+        <rect x="152" y="42" width="14" height="10" fill="#0f62fe"/>
+        <rect x="92"  y="56" width="14" height="10" fill="#0f62fe"/>
+        <rect x="152" y="56" width="14" height="10" fill="#0f62fe"/>
+      </svg>
+    </div>
+    <div class="hero-title-block">
+      <div class="hero-title-row">
+        <h1>International Business Machines</h1>
+        <span class="ticker-badge">NYSE: IBM</span>
+      </div>
+      <p class="hero-subtitle">Análisis fundamental y técnico · Junio 2026</p>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="sc-label">Cotización</div>
+      <div class="sc-value">$297.80</div>
+      <div class="sc-sub">Cierre 29 may 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">Market Cap</div>
+      <div class="sc-value">$279.9B</div>
+      <div class="sc-sub">NYSE · ~939M acciones</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">Ventas Q1 2026 YoY</div>
+      <div class="sc-value sc-pos">+9.5%</div>
+      <div class="sc-sub">$15.92B reportado</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">EPS Q1 2026 YoY</div>
+      <div class="sc-value sc-pos">+19.4%</div>
+      <div class="sc-sub">Op. EPS $1.91 vs $1.60</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">Dist. a ATH cierre</div>
+      <div class="sc-value sc-neg">−4.2%</div>
+      <div class="sc-sub">ATH $310.91 · 12 nov 2025</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ B) DESCRIPCIÓN -->
+<div class="section">
+  <h2 class="section-title">¿A qué se dedica?</h2>
+  <div class="desc-card">
+    <p>
+      <span class="hl">International Business Machines (IBM)</span>, fundada en 1911 y con sede en Armonk, Nueva York, es hoy
+      el principal proveedor global de soluciones de <span class="hl">nube híbrida</span> e <span class="hl">Inteligencia Artificial</span>
+      para grandes empresas. Opera a través de tres segmentos: <span class="hl">Software</span> (el más rentable, liderado por
+      <span class="hl">Red Hat</span>, watsonx, HashiCorp y las plataformas de automatización), <span class="hl">Consultoría</span>
+      (IBM Consulting, que ayuda a los clientes a transformar operaciones con IA y cloud), e <span class="hl">Infraestructura</span>
+      (mainframes IBM Z, servidores Power y servicios de almacenamiento). Su libro de negocio de IA generativa acumulado
+      superó los <span class="hl">$7.5B inception-to-date</span> a Q1 2026, con watsonx como plataforma central de gobernanza
+      y despliegue de IA empresarial.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ C) POSICIÓN COMPETITIVA -->
+<div class="section">
+  <h2 class="section-title">Posición competitiva</h2>
+  <div class="comp-grid">
+    <div class="sub-cards">
+
+      <div class="sub-card">
+        <div class="sc-sector">Nube híbrida empresarial</div>
+        <div class="sc-pos-label">#1</div>
+        <div class="sc-share">Cuota estimada: ~30–35% en plataformas hybrid open-source</div>
+        <div class="sc-note">Red Hat OpenShift es el estándar de facto en Kubernetes empresarial. Principal rival: <strong>VMware by Broadcom</strong>.</div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sc-sector">Mainframes & Computación de misión crítica</div>
+        <div class="sc-pos-label">#1</div>
+        <div class="sc-share">Cuota: >90% del mercado mainframe global</div>
+        <div class="sc-note">IBM Z17 con salto del 51% en ingresos en Q1 2026. Sin competencia directa real; posición de monopolio histórico.</div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sc-sector">IA empresarial (gobernanza y plataformas)</div>
+        <div class="sc-pos-label">#2–3</div>
+        <div class="sc-share">Cuota en crecimiento; watsonx con foco en IA regulada</div>
+        <div class="sc-note">Disputa con <strong>Microsoft Azure AI / Copilot</strong> y Google Vertex. IBM destaca en entornos regulados (banca, gobierno).</div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sc-sector">Consultoría tecnológica (IT Services)</div>
+        <div class="sc-pos-label">#2</div>
+        <div class="sc-share">Ingresos consulting ~$20B anuales</div>
+        <div class="sc-note">Líder indiscutible: <strong>Accenture</strong> con mayor presencia en gestión estratégica. IBM supera en profundidad de IA + cloud.</div>
+      </div>
+
+    </div>
+
+    <div class="rival-block">
+      <div class="rival-name">Microsoft</div>
+      <div class="rival-tag">La mayor amenaza estructural</div>
+      <ul>
+        <li><strong>Azure + OpenAI:</strong> Microsoft integra GPT-4/o en toda su suite empresarial (Office, Teams, Dynamics), atacando directamente el mercado de IA corporativa de IBM.</li>
+        <li><strong>Copilot for Enterprise:</strong> Compite con watsonx Assistant en automatización de workflows y agentes IA para el Fortune 500.</li>
+        <li><strong>GitHub Copilot & Dev Tools:</strong> Erosiona el negocio de transformación digital de IBM Consulting al automatizar parte del trabajo de código.</li>
+        <li><strong>Presupuesto y escala:</strong> Gasta >$50B/año en capex de IA, con 10× más recursos para I+D que IBM en este segmento.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ D) POTENCIAL FUTURO -->
+<div class="section">
+  <h2 class="section-title">Potencial futuro del sector</h2>
+  <div class="pot-grid">
+    <div class="pot-card">
+      <div class="pot-icon">▲</div>
+      <div class="pot-title">Auge de la IA Agentica Empresarial</div>
+      <p>IBM estima que la IA agentica impulsará más de 1.000 millones de nuevas aplicaciones. Watsonx está posicionado para capturar el gasto en despliegue, gobernanza y seguridad de agentes de IA en entornos híbridos regulados — un mercado que crecerá de $5B en 2025 a más de $50B en 2030.</p>
+    </div>
+    <div class="pot-card">
+      <div class="pot-icon">●</div>
+      <div class="pot-title">Confluent + Datos en Tiempo Real</div>
+      <p>La adquisición de Confluent ($11.6B, completada en Q1 2026) integra streaming de datos en tiempo real en la plataforma de IA de IBM. Las empresas necesitan datos frescos para sus modelos: IBM pasa de ser proveedor de modelos a ser la infraestructura de datos que los alimenta, un mercado adyacente de $20B+.</p>
+    </div>
+    <div class="pot-card">
+      <div class="pot-icon">■</div>
+      <div class="pot-title">Quantum-Safe Cryptography & Regulación IA</div>
+      <p>La implementación del EU AI Act exige gobernanza, auditabilidad y explicabilidad — fortalezas core de IBM. Además, el IBM Quantum System Two prepara a bancos y gobiernos para la era post-quántica, con contratos plurianuales de cifrado resistente a la computación cuántica.</p>
+    </div>
+  </div>
+  <div class="risks-block">
+    <div class="risks-label">⚠ Riesgos a vigilar</div>
+    <span class="rk">Presión de divisas</span> sobre márgenes de Consulting ·
+    <span class="rk">Hyperscalers (AWS, Azure, GCP)</span> expandiendo servicios profesionales ·
+    <span class="rk">Dilución Confluent</span> de ~$600M en 2026 ·
+    <span class="rk">Ciclo mainframe</span> descendente post-Z17 en 2027–28 ·
+    <span class="rk">Consulting débil</span> creciendo solo low-single digits vs expectativas
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ E) DATOS FUNDAMENTALES -->
+<div class="section">
+  <h2 class="section-title">Datos fundamentales</h2>
+
+  <div class="fund-mcap">
+    <div>
+      <div class="mcap-label">Market Capitalization</div>
+      <div class="mcap-big">$279.9B</div>
+    </div>
+    <div class="fund-meta">
+      <div class="fund-meta-item">
+        <div class="fmi-val">$297.80</div>
+        <div class="fmi-lbl">Precio cotización</div>
+      </div>
+      <div class="fund-meta-item">
+        <div class="fmi-val">~24.5×</div>
+        <div class="fmi-lbl">P/E Forward (FY2026)</div>
+      </div>
+      <div class="fund-meta-item">
+        <div class="fmi-val">$11.29</div>
+        <div class="fmi-lbl">EPS TTM</div>
+      </div>
+      <div class="fund-meta-item">
+        <div class="fmi-val">$1.69/tr.</div>
+        <div class="fmi-lbl">Dividendo trimestral</div>
+      </div>
+      <div class="fund-meta-item">
+        <div class="fmi-val">2.27%</div>
+        <div class="fmi-lbl">Dividend Yield</div>
+      </div>
+      <div class="fund-meta-item">
+        <div class="fmi-val">$66.4B</div>
+        <div class="fmi-lbl">Deuda total</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-row">
+    <!-- Último trimestre -->
+    <div>
+      <div class="tbl-caption">Q1 2026 · Último trimestre reportado (22 abr 2026)</div>
+      <table class="tbl-head-dark">
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th>Q1 2026</th>
+            <th>YoY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ingresos totales</td><td>$15.92B</td><td class="green">+9.5%</td></tr>
+          <tr><td>Software</td><td>$7.05B</td><td class="green">+11%</td></tr>
+          <tr><td>— Red Hat</td><td>~$1.9B</td><td class="green">+13%</td></tr>
+          <tr><td>— Datos & IA</td><td>componente</td><td class="green">+19%</td></tr>
+          <tr><td>Consultoría</td><td>~$5.3B</td><td class="green">+2%</td></tr>
+          <tr><td>Infraestructura</td><td>$3.33B</td><td class="green">+15%</td></tr>
+          <tr><td>— IBM Z mainframe</td><td>pico de ciclo</td><td class="green">+51%</td></tr>
+          <tr><td>EPS GAAP</td><td>$1.28</td><td class="green">+14.3%</td></tr>
+          <tr><td>EPS Op. (non-GAAP)</td><td>$1.91</td><td class="green">+19.4%</td></tr>
+          <tr><td>FCF</td><td>$2.22B</td><td class="green">+13%</td></tr>
+          <tr><td>Margen EBITDA ajust.</td><td>25.0%</td><td class="green">+170 bps</td></tr>
+          <tr><td>Book negocio GenAI (acum.)</td><td>>$7.5B</td><td class="green">Récord</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Próximo trimestre -->
+    <div>
+      <div class="tbl-caption">Q2 2026 · Previsión consenso (reporta 22 jul 2026)</div>
+      <table class="tbl-head-accent">
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th>Estimado</th>
+            <th>vs Q2 2025</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ingresos totales</td><td>$18.05B</td><td class="green">+~9% est.</td></tr>
+          <tr><td>Software</td><td>~$7.5B</td><td class="green">+11% est.</td></tr>
+          <tr><td>Consultoría</td><td>~$5.2B</td><td class="green">+0.6% est.</td></tr>
+          <tr><td>Infraestructura</td><td>~$3.7B</td><td class="green">+0.3% est.</td></tr>
+          <tr><td>EPS Op. (consensus)</td><td>$3.06</td><td class="green">+~16% est.</td></tr>
+          <tr><td>EBITDA (consensus)</td><td>~$4.5B</td><td class="green">+est.</td></tr>
+          <tr><td>Guidance FY 2026</td><td>>5% CC</td><td>—</td></tr>
+          <tr><td>FCF FY 2026</td><td>+$1B YoY</td><td>—</td></tr>
+          <tr><td>Margen op. exp.</td><td>+100 bps</td><td>—</td></tr>
+          <tr><td>Software FY 2026</td><td>>10% CC</td><td>—</td></tr>
+          <tr><td>Price target prom. (28 anal.)</td><td>$281.42</td><td>—</td></tr>
+          <tr><td>Rating consenso</td><td>BUY 77%</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ F) ANÁLISIS TÉCNICO -->
+<div class="section">
+  <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+  <div class="tech-row">
+    <div class="tech-big">
+      <div class="tech-pct">−4.2%</div>
+      <div class="tech-meta-row">
+        <div class="tech-meta-item">Cierre actual: <strong>$297.80</strong></div>
+        <div class="tech-meta-item">ATH cierre: <strong>$310.91</strong></div>
+        <div class="tech-meta-item">Fecha ATH: <strong>12 nov 2025</strong></div>
+        <div class="tech-meta-item">Máx. intradía 52s: <strong>$324.90</strong></div>
+        <div class="tech-meta-item">Mín. 52 semanas: <strong>$212.34</strong></div>
+        <div class="tech-meta-item">Media 52 semanas: <strong>$271.22</strong></div>
+      </div>
+    </div>
+    <div class="tech-analysis">
+      <h3>Lectura técnica</h3>
+      <ul>
+        <li>IBM cotiza solo un <strong>4.2% por debajo de su ATH de cierre</strong> ($310.91), mostrando notable resiliencia frente a la debilidad del sector tech en 2026.</li>
+        <li>El stock recuperó desde mínimos de $212.34 (+40%), impulsado por los resultados de Q1 2026 y el ciclo del mainframe Z17.</li>
+        <li><strong>Soporte clave:</strong> zona $270–275 (media de 52 semanas de $271.22). Una caída bajo ese nivel cambiaría la estructura alcista.</li>
+        <li><strong>Resistencia inmediata:</strong> $310–315 (zona de ATH de cierre e intradía). Ruptura confirmaría nuevo impulso alcista.</li>
+        <li>La caída post-earnings de Q1 (-6.6% al día siguiente) fue absorbida rápidamente, señal de compra institucional en debilidad.</li>
+        <li><strong>Próximo catalizador:</strong> reporte Q2 2026 el <strong>22 de julio 2026</strong>. Los analistas esperan $18.05B en ingresos y EPS op. de $3.06. Una guía formal de alza podría desbloquear nuevo ATH.</li>
+        <li>Beta de 0.68: defensivo. Outperformance relativa frente al S&P 500 YTD en 2026 pese a su caída nominal.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ G) GRÁFICO -->
+<div class="section">
+  <h2 class="section-title">Gráfico de cotización — 24 meses</h2>
+  <div class="chart-wrap">
+    <iframe
+      src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3AIBM&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+      allowtransparency="true"
+      frameborder="0"
+      scrolling="no">
+    </iframe>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ H) FOOTER -->
+<footer>
+  <div class="footer-date">📅 Análisis generado: 1 de junio de 2026</div>
+  <div>
+    <strong>Fuentes consultadas:</strong><br>
+    · <a href="https://www.macrotrends.net/stocks/charts/IBM/ibm/stock-price-history" target="_blank">MacroTrends — IBM Historical Stock Price</a><br>
+    · <a href="https://companiesmarketcap.com/ibm/marketcap/" target="_blank">CompaniesMarketCap — IBM Market Cap</a><br>
+    · <a href="https://247wallst.com/companies/ibm/earnings" target="_blank">24/7 Wall St. — IBM Q1 2026 Earnings Report</a><br>
+    · <a href="https://www.cnbc.com/2026/04/22/ibm-q1-earnings-report-2026.html" target="_blank">CNBC — IBM Q1 2026 Earnings Press Release</a><br>
+    · <a href="https://www.chartmill.com/stock/quote/IBM/analyst-ratings" target="_blank">ChartMill — IBM Analyst Ratings & Q2 2026 Estimates</a><br>
+    · <a href="https://www.tikr.com/blog/ibms-ai-backlog-hit-30-as-the-stock-slides-in-2026-heres-what-investors-should-watch-next" target="_blank">TIKR — IBM AI Backlog Analysis</a><br>
+    · <a href="https://matrixbcg.com/blogs/competitors/ibm" target="_blank">MatrixBCG — IBM Competitive Landscape</a><br>
+    · <a href="https://tech-insider.org/ibm-q1-2026-earnings-revenue-software-growth/" target="_blank">Tech Insider — IBM Q1 2026 Full Breakdown</a>
+  </div>
+  <br>
+  <div style="color:#6f8fc8; font-size:11.5px;">
+    ⚠ Este informe es exclusivamente informativo y no constituye asesoramiento de inversión. Datos sujetos a variaciones de mercado.
+  </div>
+</footer>
+
+</body>
+</html>
