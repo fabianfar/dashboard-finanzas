@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JPM · JPMorgan Chase & Co. — Análisis Fundamental</title>
+<style>
+  :root {
+    --navy:   #003087;
+    --navy2:  #001f5c;
+    --accent: #C8A951;
+    --accent2:#E8C96A;
+    --light:  #F4F6FA;
+    --white:  #ffffff;
+    --text:   #1a1a2e;
+    --muted:  #5a6478;
+    --green:  #1a7f4b;
+    --red:    #c0392b;
+    --border: #dde3ee;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Calibri, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ─────────────────────────────────────────────────── */
+  .hero {
+    background: var(--navy2);
+    border-left: 14px solid var(--accent);
+    padding: 40px 48px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    right: -80px; top: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,81,.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: nowrap;
+  }
+  .logo-box {
+    width: 110px; height: 110px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,.25);
+  }
+  .hero-name {
+    flex: 1;
+    min-width: 0;
+  }
+  .hero-name-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .hero-name h1 {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -.5px;
+  }
+  .ticker-badge {
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .hero-subtitle {
+    color: rgba(255,255,255,.6);
+    font-size: 14px;
+    margin-top: 6px;
+    letter-spacing: .3px;
+  }
+
+  /* stat strip */
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(200,169,81,.35);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 130px;
+    backdrop-filter: blur(4px);
+  }
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .pos { color: #4cde8a; }
+  .neg { color: #ff7070; }
+
+  /* ── SECTIONS ─────────────────────────────────────────────── */
+  .section {
+    max-width: 1140px;
+    margin: 36px auto;
+    padding: 0 28px;
+  }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: var(--navy);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title span { font-size: 18px; }
+
+  /* ── DESCRIPCIÓN ──────────────────────────────────────────── */
+  .desc-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 16px rgba(0,48,135,.07);
+    line-height: 1.75;
+  }
+  .hl { color: var(--navy); font-weight: 600; }
+  .hl-acc { color: #8b6914; font-weight: 600; }
+
+  /* ── POSICIÓN COMPETITIVA ─────────────────────────────────── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
+  }
+  .sub-cards { display: flex; flex-direction: column; gap: 14px; }
+  .sub-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 10px rgba(0,48,135,.06);
+  }
+  .sub-card h4 { font-size: 14px; color: var(--navy); margin-bottom: 4px; font-weight: 700; }
+  .sub-card .pos-badge {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    letter-spacing: .4px;
+  }
+  .sub-card p { font-size: 13px; color: var(--muted); }
+
+  .rival-block {
+    background: var(--navy2);
+    border-radius: 14px;
+    padding: 28px 26px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rival-block .rival-name {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: var(--accent);
+  }
+  .rival-block .rival-tag {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 4px;
+  }
+  .rival-block .rival-slug {
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+    font-style: italic;
+    border-bottom: 1px solid rgba(200,169,81,.3);
+    padding-bottom: 12px;
+  }
+  .rival-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .rival-block ul li {
+    font-size: 13px;
+    color: rgba(255,255,255,.8);
+    padding-left: 18px;
+    position: relative;
+  }
+  .rival-block ul li::before {
+    content: "▸";
+    position: absolute; left: 0;
+    color: var(--accent);
+  }
+
+  /* ── POTENCIAL FUTURO ─────────────────────────────────────── */
+  .future-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .future-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 22px 22px;
+    box-shadow: 0 2px 12px rgba(0,48,135,.06);
+  }
+  .future-card .fc-icon { font-size: 22px; margin-bottom: 10px; }
+  .future-card h4 { font-size: 15px; color: var(--navy); font-weight: 700; margin-bottom: 8px; }
+  .future-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .risk-block {
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-size: 13px;
+    color: rgba(255,255,255,.7);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .risk-block strong { color: rgba(255,255,255,.9); margin-right: 4px; }
+  .risk-kw { color: var(--accent); font-weight: 600; }
+  .risk-sep { color: rgba(255,255,255,.3); }
+
+  /* ── FUNDAMENTALES ────────────────────────────────────────── */
+  .fund-mcap {
+    background: var(--navy2);
+    border-radius: 14px;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .fund-mcap .mcap-num {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .fund-mcap .mcap-label { font-size: 13px; color: rgba(255,255,255,.5); margin-top: 4px; }
+  .fund-metrics {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .fund-metric { text-align: center; }
+  .fund-metric .fm-val { font-size: 22px; font-weight: 700; color: #fff; }
+  .fund-metric .fm-lbl { font-size: 11px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .6px; margin-top: 2px; }
+
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .q-table { border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,48,135,.08); }
+  .q-table table { width: 100%; border-collapse: collapse; }
+  .q-table th {
+    padding: 12px 16px;
+    font-size: 12px;
+    text-align: left;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+  }
+  .q-table.past th { background: var(--navy2); color: rgba(255,255,255,.8); }
+  .q-table.next th { background: var(--accent); color: var(--navy2); }
+  .q-table td {
+    padding: 11px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+  }
+  .q-table tr:last-child td { border-bottom: none; }
+  .q-table td.metric { font-weight: 600; color: var(--navy); font-size: 13px; }
+  .q-table td.yoy-pos { color: var(--green); font-weight: 600; }
+  .q-table td.yoy-neg { color: var(--red); font-weight: 600; }
+
+  /* ── TÉCNICO ──────────────────────────────────────────────── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+  }
+  .tech-left {
+    background: var(--navy2);
+    border-radius: 14px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: center;
+  }
+  .tech-pct {
+    font-family: Georgia, serif;
+    font-size: 82px;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .tech-pct-label { font-size: 13px; color: rgba(255,255,255,.5); margin-top: -6px; }
+  .tech-stats { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .tech-stat { font-size: 13px; color: rgba(255,255,255,.7); }
+  .tech-stat strong { color: var(--accent); }
+
+  .tech-right {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 14px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 12px rgba(0,48,135,.07);
+  }
+  .tech-right h4 { font-family: Georgia, serif; font-size: 18px; color: var(--navy); margin-bottom: 14px; }
+  .tech-right ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .tech-right ul li {
+    font-size: 14px;
+    color: var(--text);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .tech-right ul li::before {
+    content: "◆";
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 9px;
+    top: 5px;
+  }
+
+  /* ── CHART ────────────────────────────────────────────────── */
+  .chart-section {
+    max-width: 1140px;
+    margin: 36px auto;
+    padding: 0 28px;
+  }
+  .chart-wrap {
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,48,135,.10);
+    background: #fff;
+  }
+  .chart-wrap iframe {
+    display: block;
+    width: 100%;
+    height: 560px;
+    border: none;
+  }
+
+  /* ── FOOTER ───────────────────────────────────────────────── */
+  .footer {
+    background: var(--navy2);
+    color: rgba(255,255,255,.5);
+    font-size: 12px;
+    padding: 28px 48px;
+    margin-top: 48px;
+    line-height: 1.7;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+  .footer-grid { display: flex; gap: 48px; flex-wrap: wrap; }
+  .footer-col h5 { color: rgba(255,255,255,.75); font-size: 12px; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
+
+  /* ── RESPONSIVE ───────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .comp-grid, .tables-grid, .tech-grid, .future-cards { grid-template-columns: 1fr; }
+    .hero-top { flex-wrap: wrap; }
+    .hero { padding: 28px 24px; border-left-width: 8px; }
+    .hero-name h1 { font-size: 30px; }
+    .stat-strip { gap: 8px; }
+    .section { padding: 0 16px; }
+    .fund-mcap { padding: 20px 20px; gap: 20px; }
+    .tech-pct { font-size: 60px; }
+  }
+  @media (max-width: 640px) {
+    .hero-top { flex-direction: column; align-items: flex-start; }
+    .stat-card { min-width: 45%; }
+    .fund-metrics { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- A · HERO                                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-top">
+
+    <!-- Logo SVG inline -->
+    <div class="logo-box">
+      <svg width="86" height="86" viewBox="0 0 86 86" xmlns="http://www.w3.org/2000/svg">
+        <!-- Blue square background -->
+        <rect width="86" height="86" rx="12" fill="#003087"/>
+        <!-- White diagonal stripe (JPM style) -->
+        <polygon points="0,86 86,0 86,22 22,86" fill="rgba(255,255,255,0.08)"/>
+        <!-- "JPM" text -->
+        <text x="43" y="50" font-family="Georgia,serif" font-size="28" font-weight="700"
+              text-anchor="middle" fill="#ffffff" letter-spacing="-1">JPM</text>
+        <!-- Gold underline accent -->
+        <rect x="18" y="58" width="50" height="3" rx="1.5" fill="#C8A951"/>
+        <!-- Sub text -->
+        <text x="43" y="72" font-family="Arial,sans-serif" font-size="7.5" font-weight="400"
+              text-anchor="middle" fill="rgba(255,255,255,0.6)" letter-spacing="0.5">JPMORGAN CHASE</text>
+      </svg>
+    </div>
+
+    <div class="hero-name">
+      <div class="hero-name-row">
+        <h1>JPMorgan Chase &amp; Co.</h1>
+        <span class="ticker-badge">NYSE: JPM</span>
+      </div>
+      <p class="hero-subtitle">Análisis fundamental y técnico · Junio 2026</p>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">$296.44</div>
+      <div class="stat-sub">NYSE · 1 Jun 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">~$798B</div>
+      <div class="stat-sub">Mayor banco EE.UU. por activos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ventas Q1'26 YoY</div>
+      <div class="stat-value pos">+10%</div>
+      <div class="stat-sub">$50.5B vs $45.9B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">EPS Q1'26 YoY</div>
+      <div class="stat-value pos">+17%</div>
+      <div class="stat-sub">$5.94 vs $5.07</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a Máx. Histórico</div>
+      <div class="stat-value neg">−12.1%</div>
+      <div class="stat-sub">ATH $337.25 · 5 Ene 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- B · DESCRIPCIÓN                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span>🏛</span> ¿A qué se dedica?</div>
+  <div class="desc-card">
+    <p>
+      <span class="hl">JPMorgan Chase &amp; Co.</span> es la <span class="hl-acc">institución financiera más grande de Estados Unidos</span> 
+      y una de las mayores del mundo, con más de <span class="hl">$4.0 billones en activos totales</span>. 
+      Opera a través de cuatro grandes segmentos: <span class="hl">Consumer &amp; Community Banking (CCB)</span>, que sirve a más de 
+      80 millones de hogares con cuentas, hipotecas y tarjetas de crédito; <span class="hl">Commercial &amp; Investment Bank (CIB)</span>, 
+      referente global en banca de inversión, trading de renta fija y variable, y pagos corporativos; 
+      <span class="hl">Commercial Banking</span>, orientado a medianas y grandes empresas; y 
+      <span class="hl-acc">Asset &amp; Wealth Management (AWM)</span>, con $4.8 billones en activos bajo gestión (AUM). 
+      Su división de <span class="hl">J.P. Morgan Payments</span> procesa más de $10 billones diarios en flujos globales, 
+      coronándose como el mayor procesador de pagos del mundo para empresas. Con presencia en más de <span class="hl">100 países</span>, 
+      combina la escala de un banco universal con la agilidad de una plataforma digital de primer nivel.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- C · POSICIÓN COMPETITIVA                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span>🏆</span> Posición competitiva</div>
+  <div class="comp-grid">
+    <div class="sub-cards">
+
+      <div class="sub-card">
+        <span class="pos-badge">#1 GLOBAL</span>
+        <h4>Banca de Inversión</h4>
+        <p>Líder mundial en comisiones de IB durante múltiples años consecutivos. En Q1 2026, las comisiones de IB crecieron <strong>+28% YoY</strong>. Competidor más cercano: Goldman Sachs (GS), con foco en M&amp;A y renta fija.</p>
+      </div>
+
+      <div class="sub-card">
+        <span class="pos-badge">#1 EE.UU.</span>
+        <h4>Banca de Consumo &amp; Pagos</h4>
+        <p>Mayor banco minorista de EE.UU. por depósitos. J.P. Morgan Payments registró su mejor trimestre histórico: <strong>$5.1B de ingresos (+12% YoY)</strong>. Rival principal: Bank of America (BAC) en depósitos minoristas.</p>
+      </div>
+
+      <div class="sub-card">
+        <span class="pos-badge">#1 MERCADOS</span>
+        <h4>Trading &amp; Mercados de Capitales</h4>
+        <p>Revenue récord de Markets de <strong>$11.6B en Q1 2026 (+20% YoY)</strong>. Liderazgo en Renta Fija y crecimiento del 17% en Equity Markets. Principal competidor: Morgan Stanley en equity trading.</p>
+      </div>
+
+      <div class="sub-card">
+        <span class="pos-badge">#1 TOP-3</span>
+        <h4>Gestión de Activos (AWM)</h4>
+        <p>AUM de <strong>$4.8 billones (+16% YoY)</strong>. Ingresos AWM creciendo a doble dígito. Rival: BlackRock en gestión pasiva; Morgan Stanley Wealth en clientes de alto patrimonio.</p>
+      </div>
+
+    </div>
+
+    <div class="rival-block">
+      <div class="rival-tag">Rival principal</div>
+      <div class="rival-name">Bank of America</div>
+      <div class="rival-slug">La mayor amenaza estructural</div>
+      <ul>
+        <li>Segunda mayor institución financiera de EE.UU. por activos (~$3.3B), con masa crítica en banca minorista (67M clientes) que rivaliza directamente con CCB de JPM.</li>
+        <li>Merrill Lynch otorga a BAC una poderosa división de gestión de patrimonio con más de 3.000 asesores que compiten con J.P. Morgan Wealth Management.</li>
+        <li>BofA Global Research es reconocido como uno de los equipos de análisis financiero más sólidos de Wall Street, generando flujo de clientes institucionales que presiona el CIB de JPM.</li>
+        <li>Diferencial clave: JPM supera a BAC en rentabilidad (ROTCE 23% vs ~14%), eficiencia operativa e IB fees, pero BAC ofrece mayor exposición a subida de tasas por su enorme cartera de depósitos a tipo fijo.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- D · POTENCIAL FUTURO                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span>🚀</span> Potencial futuro del sector (2026–2030)</div>
+  <div class="future-cards">
+
+    <div class="future-card">
+      <div class="fc-icon">▲</div>
+      <h4>Superciclo de pagos digitales e IA</h4>
+      <p>La infraestructura de pagos globales procesará >$3 cuatrillones anuales para 2030. JPM, con su plataforma de Payments récord, invierte >$17B anuales en tecnología e IA para automatizar operaciones, detectar fraude y personalizar ofertas a millones de clientes en tiempo real.</p>
+    </div>
+
+    <div class="future-card">
+      <div class="fc-icon">●</div>
+      <h4>Boom en gestión de patrimonio &amp; privatización de mercados</h4>
+      <p>La "gran transferencia de riqueza" (>$68B en EE.UU. en las próximas décadas) impulsa la captación de AUM. JPM está posicionado con su red de private bankers, plataforma de inversión digital y crecimiento en mercados privados (Private Credit, Real Assets), donde los retornos son mayores.</p>
+    </div>
+
+    <div class="future-card">
+      <div class="fc-icon">■</div>
+      <h4>Desregulación financiera y expansión de IB</h4>
+      <p>El entorno post-2024 de potencial flexibilización de Basilea III y desregulación bajo la nueva administración libera capital. Esto podría incrementar buybacks, M&amp;A corporativo (mayor volumen para IB) y expansión de la cartera de préstamos comerciales, pilares de crecimiento orgánico para JPM.</p>
+    </div>
+
+  </div>
+
+  <div class="risk-block">
+    <strong>⚠ Riesgos a vigilar:</strong>
+    <span class="risk-kw">Ciclo crediticio</span><span class="risk-sep"> · </span>
+    <span class="risk-kw">Compresión de NII</span> si bajan tasas<span class="risk-sep"> · </span>
+    <span class="risk-kw">Regulación Basel III</span> y requisitos de capital<span class="risk-sep"> · </span>
+    <span class="risk-kw">Competencia fintech</span> en pagos y préstamos<span class="risk-sep"> · </span>
+    <span class="risk-kw">Geopolítica</span> y exposición a mercados emergentes<span class="risk-sep"> · </span>
+    <span class="risk-kw">Riesgo de crédito</span> en tarjetas (NCOs $2.3B/trimestre)
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- E · FUNDAMENTALES                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span>📊</span> Datos fundamentales</div>
+
+  <div class="fund-mcap">
+    <div>
+      <div class="mcap-num">$798B</div>
+      <div class="mcap-label">Market Capitalización · Jun 2026</div>
+    </div>
+    <div class="fund-metrics">
+      <div class="fund-metric">
+        <div class="fm-val">23%</div>
+        <div class="fm-lbl">ROTCE</div>
+      </div>
+      <div class="fund-metric">
+        <div class="fm-val">14.3x</div>
+        <div class="fm-lbl">P/E (TTM)</div>
+      </div>
+      <div class="fund-metric">
+        <div class="fm-val">2.0%</div>
+        <div class="fm-lbl">Dividend Yield</div>
+      </div>
+      <div class="fund-metric">
+        <div class="fm-val">14.3%</div>
+        <div class="fm-lbl">CET1 Ratio</div>
+      </div>
+      <div class="fund-metric">
+        <div class="fm-val">$4.8T</div>
+        <div class="fm-lbl">AUM (AWM)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-grid">
+
+    <!-- Último trimestre -->
+    <div class="q-table past">
+      <table>
+        <thead>
+          <tr>
+            <th colspan="3">Q1 2026 · Último trimestre reportado (14 Abr 2026)</th>
+          </tr>
+          <tr>
+            <th style="width:46%">Métrica</th>
+            <th>Resultado</th>
+            <th>YoY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="metric">Ingresos Totales (Managed)</td><td>$50.5B</td><td class="yoy-pos">+10%</td></tr>
+          <tr><td class="metric">Net Income</td><td>$16.5B</td><td class="yoy-pos">+13%</td></tr>
+          <tr><td class="metric">EPS Diluido</td><td>$5.94</td><td class="yoy-pos">+17%</td></tr>
+          <tr><td class="metric">CIB Revenue</td><td>$23.4B</td><td class="yoy-pos">+19%</td></tr>
+          <tr><td class="metric">Markets Revenue</td><td>$11.6B 🏆</td><td class="yoy-pos">+20%</td></tr>
+          <tr><td class="metric">IB Fees</td><td>$2.88B</td><td class="yoy-pos">+28%</td></tr>
+          <tr><td class="metric">CCB Revenue</td><td>$19.6B</td><td class="yoy-pos">+7%</td></tr>
+          <tr><td class="metric">AWM Revenue (AUM)</td><td>$4.8T AUM</td><td class="yoy-pos">+16%</td></tr>
+          <tr><td class="metric">Net Interest Income</td><td>$25.5B</td><td class="yoy-pos">+9%</td></tr>
+          <tr><td class="metric">Gastos Totales</td><td>$26.9B</td><td class="yoy-neg">+14%</td></tr>
+          <tr><td class="metric">Credit Costs</td><td>$2.5B</td><td class="yoy-pos">−24%</td></tr>
+          <tr><td class="metric">Guidance NII 2026</td><td colspan="2">~$103B (año completo)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Próximo trimestre -->
+    <div class="q-table next">
+      <table>
+        <thead>
+          <tr>
+            <th colspan="3">Q2 2026 · Previsión (reporta 13 Jul 2026)</th>
+          </tr>
+          <tr>
+            <th style="width:46%">Métrica</th>
+            <th>Consenso</th>
+            <th>Nota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="metric">Ingresos Totales</td><td>~$49.47B</td><td style="font-size:12px;color:#5a6478">▲ rev. +1.18%</td></tr>
+          <tr><td class="metric">EPS Consenso</td><td>~$5.48</td><td style="font-size:12px;color:#5a6478">vs $5.24 Q2'25</td></tr>
+          <tr><td class="metric">EPS YoY implícito</td><td class="yoy-pos">+4.6%</td><td style="font-size:12px;color:#5a6478">normalizado</td></tr>
+          <tr><td class="metric">Markets (estimado)</td><td>Fuerte</td><td style="font-size:12px;color:#5a6478">Volatilidad alta</td></tr>
+          <tr><td class="metric">IB Fees (pipeline)</td><td>Resiliente</td><td style="font-size:12px;color:#5a6478">Dimon: "sólido"</td></tr>
+          <tr><td class="metric">Net Interest Income</td><td>~$25B</td><td style="font-size:12px;color:#5a6478">Guía $103B/año</td></tr>
+          <tr><td class="metric">Credit Costs</td><td>Estables</td><td style="font-size:12px;color:#5a6478">NCOs ~$2.3B</td></tr>
+          <tr><td class="metric">Price Target Medio</td><td>$344</td><td style="font-size:12px;color:#5a6478">+16% upside</td></tr>
+          <tr><td class="metric">Rating Consenso</td><td>BUY (74%)</td><td style="font-size:12px;color:#5a6478">31 analistas</td></tr>
+          <tr><td class="metric">Fecha de Reporte</td><td colspan="2">13 de Julio 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- F · TÉCNICO                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span>📈</span> Análisis técnico — Distancia a máximos históricos</div>
+  <div class="tech-grid">
+
+    <div class="tech-left">
+      <div>
+        <div class="tech-pct">−12.1%</div>
+        <div class="tech-pct-label">Distancia al ATH de cierre</div>
+      </div>
+      <div class="tech-stats">
+        <div class="tech-stat">Cierre actual: <strong>$296.44</strong></div>
+        <div class="tech-stat">ATH cierre: <strong>$337.25</strong> (5 Ene 2026)</div>
+        <div class="tech-stat">Máx. 52 sem.: <strong>$337.25</strong></div>
+        <div class="tech-stat">Mín. 52 sem.: <strong>$260.31</strong></div>
+        <div class="tech-stat">P/E TTM: <strong>14.3x</strong></div>
+        <div class="tech-stat">Beta: <strong>0.91</strong></div>
+      </div>
+    </div>
+
+    <div class="tech-right">
+      <h4>Lectura técnica</h4>
+      <ul>
+        <li><strong>Contexto de corrección ordenada:</strong> JPM corrigió desde el ATH de $337.25 (5 enero 2026) hasta zona de $260 en abril 2026 (−22%), coincidiendo con turbulencias macro por aranceles. La recuperación hasta ~$296 representa un rebote del +14% desde mínimos.</li>
+        <li><strong>Zona de soporte clave:</strong> El área $285–290 actúa como soporte técnico relevante (anterior resistencia de 2025 convertida en soporte). Una ruptura bajo $285 abriría objetivo en $265–270.</li>
+        <li><strong>Resistencia inmediata:</strong> $300–305 es el primer techo técnico significativo. Si se supera con volumen, la siguiente resistencia está en $315–320.</li>
+        <li><strong>Recuperación hacia ATH:</strong> Para recuperar el ATH de $337.25 se requiere un movimiento adicional del +13.8%. El consenso de analistas proyecta precio objetivo de $344 en 12 meses, lo que implica retorno al ATH y nuevo máximo.</li>
+        <li><strong>Próximo catalizador:</strong> Resultados Q2 2026 el <strong>13 de julio 2026</strong>. Un EPS superior a $5.48 (consenso) podría ser el detonante de la ruptura hacia zona de $310–320.</li>
+        <li><strong>Señal técnica positiva:</strong> Mantiene medias móviles ascendentes en temporalidad semanal. El MACD semanal muestra divergencia alcista desde los mínimos de abril 2026.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- G · GRÁFICO TRADINGVIEW                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chart-section">
+  <div class="section-title"><span>🖥</span> Gráfico de cotización — Últimos 24 meses (semanal)</div>
+  <div class="chart-wrap">
+    <iframe
+      src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3AJPM&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+      allowtransparency="true"
+      frameborder="0"
+      scrolling="no">
+    </iframe>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- H · FOOTER                                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h5>Análisis generado</h5>
+      <p>1 de junio de 2026<br>
+      Datos de mercado: cierre NYSE 1 Jun 2026<br>
+      Último trimestre: Q1 2026 (reportado 14 Abr 2026)</p>
+    </div>
+    <div class="footer-col">
+      <h5>Fuentes consultadas</h5>
+      <p>
+        <a href="https://www.sec.gov/Archives/edgar/data/19617/000162828026025013/a1q26_earningsxpresentat.htm" target="_blank">SEC 8-K JPM Q1 2026 Earnings Presentation</a><br>
+        <a href="https://www.jpmorganchase.com/content/dam/jpmc/jpmorgan-chase-and-co/investor-relations/documents/quarterly-earnings/2025/4th-quarter/d868c7ef-1670-465d-ba75-c2b36ddbcc6b.pdf" target="_blank">JPMorgan Chase Q4 2025 Press Release</a><br>
+        <a href="https://tickeron.com/blogs/jpmorgan-chase-jpm-delivers-strong-q1-2026-results-amid-economic-uncertainties-12551/" target="_blank">Tickeron · Q1 2026 Results Analysis</a><br>
+        <a href="https://www.chartmill.com/stock/quote/JPM/analyst-ratings" target="_blank">ChartMill · Analyst Ratings &amp; Estimates</a><br>
+        <a href="https://www.tikr.com/blog/can-jpmorgan-chase-stock-reach-400-in-2026" target="_blank">TIKR · Price Target Analysis</a><br>
+        <a href="https://robinhood.com/us/en/stocks/JPM/" target="_blank">Robinhood · Precio actual &amp; 52-week range</a><br>
+        <a href="https://www.tradingview.com/symbols/NYSE-JPM/" target="_blank">TradingView · ATH y datos técnicos</a>
+      </p>
+    </div>
+    <div class="footer-col">
+      <h5>Aviso legal</h5>
+      <p>Este informe es de carácter informativo y no constituye<br>
+      asesoramiento de inversión. Los datos fundamentales<br>
+      provienen de fuentes públicas. Verifique siempre con<br>
+      fuentes primarias antes de tomar decisiones financieras.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
