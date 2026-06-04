@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realty Income (O) — Análisis Fundamental y Técnico · Junio 2026</title>
+<style>
+  :root {
+    --navy: #1B3A5C;
+    --navy-deep: #122740;
+    --accent: #C8963E;
+    --accent-light: #E8B86D;
+    --light: #F5F6F8;
+    --white: #FFFFFF;
+    --text: #1A1A2E;
+    --text-muted: #5A6478;
+    --green: #1A7F4B;
+    --red: #C0392B;
+    --border: #E2E6EE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 48px 52px 36px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(200,150,62,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+  .logo-box {
+    flex-shrink: 0;
+    width: 110px; height: 110px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .hero-title-block { flex: 1; min-width: 0; }
+  .hero-name-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .ticker-badge {
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-family: "Segoe UI", Calibri, monospace;
+    background: rgba(200,150,62,0.08);
+  }
+  .hero-subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 13.5px;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Stat cards strip */
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(200,150,62,0.35);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 130px;
+    backdrop-filter: blur(4px);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    font-family: Georgia, serif;
+    line-height: 1.1;
+  }
+  .stat-value.positive { color: #4ECCA3; }
+  .stat-value.negative { color: #FF7675; }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px;
+  }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 26px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ─── DESCRIPCIÓN ─── */
+  .desc-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+  }
+  .desc-card p {
+    color: #3A4460;
+    line-height: 1.75;
+  }
+  .highlight { color: var(--accent); font-weight: 600; }
+
+  /* ─── POSICIÓN COMPETITIVA ─── */
+  .competitive-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+  }
+  .subsector-cards { display: flex; flex-direction: column; gap: 12px; }
+  .subsector-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .subsector-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .subsector-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 12px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .rank-badge {
+    background: var(--navy);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .subsector-note { font-size: 13px; color: #5A6478; }
+
+  .rival-block {
+    background: var(--navy-deep);
+    border-radius: 14px;
+    padding: 28px 24px;
+    color: white;
+  }
+  .rival-block h3 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: var(--accent-light);
+    margin-bottom: 4px;
+  }
+  .rival-tagline {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .rival-bullets { list-style: none; }
+  .rival-bullets li {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.78);
+    padding: 6px 0;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .rival-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ─── POTENCIAL FUTURO ─── */
+  .catalyst-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .catalyst-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 22px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .catalyst-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .catalyst-title {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .catalyst-text { font-size: 13.5px; color: #4A5568; line-height: 1.6; }
+
+  .risk-block {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 16px 24px;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.75);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .risk-label {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .risk-kw { color: var(--accent-light); font-weight: 600; }
+
+  /* ─── DATOS FUNDAMENTALES ─── */
+  .mktcap-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .mktcap-main {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .mktcap-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+  .metrics-row {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .metric-item { }
+  .metric-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .metric-lbl { font-size: 12px; color: var(--text-muted); }
+
+  .tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .data-table {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+    border: 1px solid var(--border);
+  }
+  .table-head {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .table-head.dark { background: var(--navy); color: white; }
+  .table-head.accent { background: var(--accent); color: white; }
+  .data-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .data-table td {
+    padding: 10px 18px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #FAFBFD; }
+  .td-label { color: var(--text-muted); }
+  .td-val { font-weight: 600; text-align: right; }
+  .td-yoy { text-align: right; font-size: 12.5px; padding-left: 4px; }
+  .yoy-pos { color: var(--green); font-weight: 700; }
+  .yoy-neg { color: var(--red); font-weight: 700; }
+
+  /* ─── ANÁLISIS TÉCNICO ─── */
+  .technical-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+  }
+  .ath-block {
+    background: var(--navy-deep);
+    border-radius: 14px;
+    padding: 32px 28px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .ath-pct {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 88px;
+    font-weight: 700;
+    color: var(--accent-light);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .ath-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 20px;
+  }
+  .ath-details { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+  .ath-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+  }
+  .ath-row span:last-child { color: white; font-weight: 600; }
+
+  .technical-card {
+    background: var(--white);
+    border-left: 5px solid var(--accent);
+    border-radius: 12px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .tech-title {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    color: var(--navy);
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .tech-bullets { list-style: none; }
+  .tech-bullets li {
+    padding: 7px 0;
+    padding-left: 20px;
+    position: relative;
+    font-size: 14px;
+    color: #3D4A6B;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .tech-bullets li:last-child { border-bottom: none; }
+  .tech-bullets li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 9px;
+    top: 11px;
+  }
+
+  /* ─── GRÁFICO TRADINGVIEW ─── */
+  .chart-section {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .chart-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chart-header-title {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .chart-badge {
+    background: var(--navy);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.8px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy-deep);
+    color: rgba(255,255,255,0.5);
+    padding: 28px 52px;
+    font-size: 12.5px;
+    border-top: 3px solid var(--accent);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-sources { margin-top: 12px; display: flex; flex-direction: column; gap: 3px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 640px) {
+    .hero { padding: 28px 20px 24px 20px; border-left-width: 6px; }
+    .hero-top { flex-wrap: wrap; }
+    .hero-name { font-size: 28px; }
+    .competitive-grid,
+    .catalyst-grid,
+    .technical-grid,
+    .tables-row { grid-template-columns: 1fr; }
+    .section { padding: 28px 16px; }
+    .ath-pct { font-size: 64px; }
+    .mktcap-main { font-size: 32px; }
+    footer { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     A · HERO
+══════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-top">
+    <!-- LOGO SVG INLINE -->
+    <div class="logo-box">
+      <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" width="90" height="90">
+        <!-- Fondo blanco con círculo navy suave -->
+        <circle cx="55" cy="55" r="52" fill="#F5F6F8"/>
+        <!-- Letra "O" estilizada con degradado -->
+        <defs>
+          <linearGradient id="oGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1B3A5C"/>
+            <stop offset="100%" style="stop-color:#2A5080"/>
+          </linearGradient>
+        </defs>
+        <!-- Aro exterior navy -->
+        <circle cx="55" cy="55" r="34" fill="none" stroke="url(#oGrad)" stroke-width="11"/>
+        <!-- Acento dorado pequeño en la parte superior del aro -->
+        <path d="M 55 21 A 34 34 0 0 1 80 36" fill="none" stroke="#C8963E" stroke-width="11" stroke-linecap="round"/>
+        <!-- Punto central dorado -->
+        <circle cx="55" cy="55" r="5" fill="#C8963E"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="hero-name-row">
+        <h1 class="hero-name">Realty Income</h1>
+        <span class="ticker-badge">NYSE: O</span>
+      </div>
+      <p class="hero-subtitle">Análisis fundamental y técnico &nbsp;·&nbsp; Junio 2026</p>
+    </div>
+  </div>
+
+  <!-- STAT STRIP -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">$61.28</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">$57.2B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Revenue Q1 '26 YoY</div>
+      <div class="stat-value positive">+12.2%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">AFFO/sh Q1 '26 YoY</div>
+      <div class="stat-value positive">+6.6%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a ATH cierre</div>
+      <div class="stat-value negative">−8.1%</div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════
+     B · ¿A QUÉ SE DEDICA?
+══════════════════════════════════════════════ -->
+<div style="background: var(--light);">
+<div class="section">
+  <h2 class="section-title">¿A qué se dedica?</h2>
+  <div class="desc-card">
+    <p>
+      Realty Income Corporation es un <span class="highlight">REIT (Real Estate Investment Trust)</span> de arrendamiento neto triple (triple-net lease) fundado en 1969 y con sede en San Diego, California. Posee más de <span class="highlight">15.500 propiedades comerciales</span> en los 50 estados de EE.UU., Reino Unido y ocho países europeos, arrendadas a largo plazo a operadores de primer nivel de 89 industrias distintas. 
+      Su modelo de negocio —las <span class="highlight">NNN leases</span>— traslada gastos operativos (impuestos, seguros, mantenimiento) a los inquilinos, generando flujos de caja predecibles. La compañía es conocida como <span class="highlight">"The Monthly Dividend Company®"</span>: ha pagado <span class="highlight">671 dividendos mensuales consecutivos</span> y lleva más de 31 años aumentando su dividendo anualmente, siendo miembro del índice S&amp;P 500 Dividend Aristocrats. En 2025 amplió su plataforma de capital privado con fondos con Apollo Global Management y GIC (Singapur), diversificando sus fuentes de financiación más allá de los mercados públicos.
+    </p>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     C · POSICIÓN COMPETITIVA
+══════════════════════════════════════════════ -->
+<div style="background: #EEF0F5;">
+<div class="section">
+  <h2 class="section-title">Posición competitiva</h2>
+  <div class="competitive-grid">
+    <div class="subsector-cards">
+
+      <div class="subsector-card">
+        <div class="subsector-name">Net Lease REIT – Escala global</div>
+        <div class="subsector-meta">
+          <span class="rank-badge">#1 MUNDIAL</span>
+          <span>Cuota: ~40% del segmento large-cap NNN</span>
+        </div>
+        <div class="subsector-note">Único REIT NNN con presencia activa en Europa y capitalización bursátil > $50B. NNN REIT y Agree Realty son puramente domésticos.</div>
+      </div>
+
+      <div class="subsector-card">
+        <div class="subsector-name">Retail Triple-Net (EE.UU.)</div>
+        <div class="subsector-meta">
+          <span class="rank-badge">#1</span>
+          <span>79.4% de la renta anualizada</span>
+        </div>
+        <div class="subsector-note">Inquilinos como Dollar General, Walgreens, 7-Eleven, FedEx. Diversificación de 1.565 clientes en 89 industrias.</div>
+      </div>
+
+      <div class="subsector-card">
+        <div class="subsector-name">Industrial &amp; Logística NNN</div>
+        <div class="subsector-meta">
+          <span class="rank-badge">#2</span>
+          <span>~14.5% de la renta anualizada</span>
+        </div>
+        <div class="subsector-note">En expansión. Compite con Prologis (líder absoluto en industrial, pero con leases diferentes) y STAG Industrial en NNN industrial puro.</div>
+      </div>
+
+      <div class="subsector-card">
+        <div class="subsector-name">Dividendos Mensuales / Aristócratas</div>
+        <div class="subsector-meta">
+          <span class="rank-badge">#2 STREAK</span>
+          <span>31 años consecutivos de aumento</span>
+        </div>
+        <div class="subsector-note">NNN REIT supera con 36 años de aumentos consecutivos, aunque con market cap (~$9B) muy inferior al de Realty Income ($57B).</div>
+      </div>
+
+    </div>
+
+    <div class="rival-block">
+      <h3>NNN REIT (NNN)</h3>
+      <div class="rival-tagline">La mayor amenaza estructural</div>
+      <ul class="rival-bullets">
+        <li>36 años de aumentos consecutivos de dividendo vs. 31 de Realty Income: récord histórico difícil de superar en posicionamiento de marca.</li>
+        <li>Yield más atractivo (~5.7%) con menor capitalización (~$9B), apelando a inversores income que priorizan retorno sobre escala.</li>
+        <li>Modelo 100% retail NNN en EE.UU.: más puro y fácil de valorar que el mix global de O.</li>
+        <li>Menor exposición a riesgo cambiario (€, £) y de ejecución internacional que supone el crecimiento europeo de Realty Income.</li>
+        <li>BBB+/Baa1 ratings: base de inversores institucionales sólida aunque inferior a A3/A- de O.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     D · POTENCIAL FUTURO DEL SECTOR
+══════════════════════════════════════════════ -->
+<div style="background: var(--light);">
+<div class="section">
+  <h2 class="section-title">Potencial futuro del sector</h2>
+  <div class="catalyst-grid">
+    <div class="catalyst-card">
+      <span class="catalyst-icon">▲</span>
+      <div class="catalyst-title">Demanda estructural de income</div>
+      <p class="catalyst-text">La cohorte más joven del baby boom llega a la jubilación en 2026. Se estima que ~$50 billones en activos de inversión actuales y proyectados buscan vehículos de renta fiable en EE.UU. Los REIT NNN de alta calidad con dividendo mensual capturan este flujo de manera directa.</p>
+    </div>
+    <div class="catalyst-card">
+      <span class="catalyst-icon">●</span>
+      <div class="catalyst-title">$14T de real estate corporativo monetizable</div>
+      <p class="catalyst-text">Las corporaciones globales tienen ~$14 billones en inmuebles en sus balances listos para operaciones sale-leaseback. Realty Income, con rating A3/A-, capital privado (Apollo, GIC) y presencia en Europa y México, es uno de los pocos compradores a escala suficiente para transacciones de >$1B.</p>
+    </div>
+    <div class="catalyst-card">
+      <span class="catalyst-icon">■</span>
+      <div class="catalyst-title">Capital privado &amp; tasas a la baja</div>
+      <p class="catalyst-text">La expansión de la plataforma de capital privado ($1.7B Core Plus Fund, venture $1B con Apollo) añade ingresos por comisiones sin dilución accionarial. Un entorno de tasas decrecientes reduce el coste de capital y comprime spreads de cap rate, favoreciendo las valoraciones de REIT.</p>
+    </div>
+  </div>
+  <div class="risk-block">
+    <span class="risk-label">⚠ Riesgos</span>
+    <span>
+      <span class="risk-kw">tasas altas prolongadas</span> · 
+      <span class="risk-kw">morosidad de inquilinos</span> (exposición a retail/cines) · 
+      <span class="risk-kw">riesgo cambiario €/£</span> en Europa · 
+      dilución por emisión de acciones · 
+      <span class="risk-kw">desaceleración macro</span> · 
+      competencia en adquisiciones eleva cap rates de entrada
+    </span>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     E · DATOS FUNDAMENTALES
+══════════════════════════════════════════════ -->
+<div style="background: #EEF0F5;">
+<div class="section">
+  <h2 class="section-title">Datos fundamentales</h2>
+
+  <!-- Market Cap card -->
+  <div class="mktcap-card">
+    <div>
+      <div class="mktcap-label">Market Cap</div>
+      <div class="mktcap-main">$57.2B</div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-item">
+        <div class="metric-val">$61.28</div>
+        <div class="metric-lbl">Precio (NYSE: O)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">~$4.97B</div>
+        <div class="metric-lbl">Renta anualizada contractual</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">5.28%</div>
+        <div class="metric-lbl">Dividend Yield (trailing)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">$0.270/mes</div>
+        <div class="metric-lbl">Dividendo mensual</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">98.9%</div>
+        <div class="metric-lbl">Ocupación Q1 2026</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">A3 / A-</div>
+        <div class="metric-lbl">Rating crediticio</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-row">
+    <!-- Último trimestre -->
+    <div class="data-table">
+      <div class="table-head dark">Q1 2026 · Último trimestre reportado (may-2026)</div>
+      <table>
+        <tr>
+          <td class="td-label">Revenue total</td>
+          <td class="td-val">$1,548.7M</td>
+          <td class="td-yoy yoy-pos">+12.2% YoY</td>
+        </tr>
+        <tr>
+          <td class="td-label">AFFO por acción</td>
+          <td class="td-val">$1.13</td>
+          <td class="td-yoy yoy-pos">+6.6% YoY</td>
+        </tr>
+        <tr>
+          <td class="td-label">EPS diluido (GAAP)</td>
+          <td class="td-val">$0.33</td>
+          <td class="td-yoy yoy-pos">+17.9% YoY</td>
+        </tr>
+        <tr>
+          <td class="td-label">AFFO disponible a comunes</td>
+          <td class="td-val">$1,060M</td>
+          <td class="td-yoy yoy-pos">↑ vs $949M</td>
+        </tr>
+        <tr>
+          <td class="td-label">Inversión desplegada</td>
+          <td class="td-val">$2.77B</td>
+          <td class="td-yoy">Yield 7.1%</td>
+        </tr>
+        <tr>
+          <td class="td-label">Net Debt / EBITDA</td>
+          <td class="td-val">5.2x</td>
+          <td class="td-yoy">Mejora desde 5.4x</td>
+        </tr>
+        <tr>
+          <td class="td-label">Recaptura de alquiler</td>
+          <td class="td-val">103.4%</td>
+          <td class="td-yoy yoy-pos">↑ vs 100%</td>
+        </tr>
+        <tr>
+          <td class="td-label">Dividendo trimestral</td>
+          <td class="td-val">$0.810/sh</td>
+          <td class="td-yoy">71.7% payout AFFO</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Próximo trimestre -->
+    <div class="data-table">
+      <div class="table-head accent">Q2 2026 · Previsión (reporta ~ago-2026)</div>
+      <table>
+        <tr>
+          <td class="td-label">Revenue consenso</td>
+          <td class="td-val">~$1.55–1.60B</td>
+          <td class="td-yoy yoy-pos">+10–13% YoY</td>
+        </tr>
+        <tr>
+          <td class="td-label">AFFO/sh consenso</td>
+          <td class="td-val">~$1.10–1.12</td>
+          <td class="td-yoy yoy-pos">+4–6% YoY</td>
+        </tr>
+        <tr>
+          <td class="td-label">AFFO guidance FY2026</td>
+          <td class="td-val">$4.41–$4.44</td>
+          <td class="td-yoy yoy-pos">+3.0–3.7% YoY</td>
+        </tr>
+        <tr>
+          <td class="td-label">Inversión FY guidance</td>
+          <td class="td-val">$9.5B</td>
+          <td class="td-yoy yoy-pos">↑ desde $8B</td>
+        </tr>
+        <tr>
+          <td class="td-label">Ocupación guidance</td>
+          <td class="td-val">~98.5%</td>
+          <td class="td-yoy">Estable</td>
+        </tr>
+        <tr>
+          <td class="td-label">Same-store rent growth</td>
+          <td class="td-val">1.0–1.3%</td>
+          <td class="td-yoy">FY 2026</td>
+        </tr>
+        <tr>
+          <td class="td-label">Precio objetivo consenso</td>
+          <td class="td-val">$68.50</td>
+          <td class="td-yoy">24 analistas</td>
+        </tr>
+        <tr>
+          <td class="td-label">Recomendación consenso</td>
+          <td class="td-val">Hold</td>
+          <td class="td-yoy">Jefferies: Buy</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     F · ANÁLISIS TÉCNICO
+══════════════════════════════════════════════ -->
+<div style="background: var(--light);">
+<div class="section">
+  <h2 class="section-title">Análisis técnico — Distancia a máximos históricos</h2>
+  <div class="technical-grid">
+    <div class="ath-block">
+      <div style="font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:4px;">Distancia al ATH cierre</div>
+      <div class="ath-pct">−8.1%</div>
+      <div class="ath-label">desde el máximo histórico de cierre</div>
+      <div class="ath-details">
+        <div class="ath-row"><span>Cierre actual</span><span>$61.28</span></div>
+        <div class="ath-row"><span>ATH cierre</span><span>$66.68 (2-mar-2026)</span></div>
+        <div class="ath-row"><span>Máx. intradía 52s</span><span>$67.94</span></div>
+        <div class="ath-row"><span>Mín. 52 semanas</span><span>$55.57</span></div>
+        <div class="ath-row"><span>Rango 52s</span><span>$55.57 – $67.94</span></div>
+      </div>
+    </div>
+
+    <div class="technical-card">
+      <div class="tech-title">📊 Lectura técnica</div>
+      <ul class="tech-bullets">
+        <li><strong>Corrección ordenada desde ATH:</strong> la acción retrocede ~8% desde el máximo del 2 de marzo en $66.68, perdiendo terreno en una tendencia bajista de corto plazo que comenzó en mayo 2026.</li>
+        <li><strong>Soporte clave:</strong> zona $60.00–$60.62 (mínimo intradía reciente). Ruptura de este nivel abriría camino hacia $58–$57, próximo soporte técnico relevante.</li>
+        <li><strong>Resistencia inmediata:</strong> $63.50–$64.00 (promedio móvil 50d estimado). Recuperar ese nivel sería señal de cambio de tendencia de corto plazo.</li>
+        <li><strong>Resistencia mayor:</strong> zona $66.50–$67.94 (ATH cierre e intradía). Ruptura al alza requeriría catalizadores de tasa o guidance excepcional.</li>
+        <li><strong>MACD en territorio negativo</strong> (desde 28-may-2026): indicador de momentum en zona vendedora de corto plazo. Momentum cruzó el cero el 29-may-2026.</li>
+        <li><strong>Upside hasta consenso:</strong> precio objetivo promedio de analistas $68.50 implica un potencial de +11.8% desde niveles actuales, con rango $60–$69.</li>
+        <li><strong>Próximo catalizador:</strong> publicación resultados Q2 2026 (estimado agosto 2026). Datos de tasa de interés de la Fed y CPI pueden actuar como catalizadores exógenos clave para el sector REIT.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     G · GRÁFICO TRADINGVIEW
+══════════════════════════════════════════════ -->
+<div style="background: #EEF0F5; padding: 0 0 40px;">
+<div class="section" style="padding-top: 0;">
+  <h2 class="section-title" style="padding-top:40px;">Gráfico de cotización — 24 meses</h2>
+  <div class="chart-section">
+    <div class="chart-header">
+      <span class="chart-header-title">Realty Income Corporation</span>
+      <span class="chart-badge">NYSE: O · SEMANAL</span>
+    </div>
+    <iframe
+      src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3AO&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+      width="100%"
+      height="560"
+      frameborder="0"
+      allowtransparency="true"
+      scrolling="no"
+      style="display:block;">
+    </iframe>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     H · FOOTER
+══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong style="color:rgba(255,255,255,0.8);">Realty Income Corporation (NYSE: O)</strong><br>
+      Informe generado el <strong style="color:var(--accent);">4 de junio de 2026</strong>.<br>
+      Este análisis es de carácter informativo y no constituye asesoramiento financiero.
+    </div>
+    <div>
+      <strong style="color:rgba(255,255,255,0.8);">Fuentes consultadas</strong>
+      <div class="footer-sources">
+        <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000726728&type=8-K&dateb=&owner=include&count=10" target="_blank">SEC EDGAR — Realty Income 8-K Q1 2026</a>
+        <a href="https://www.macrotrends.net/stocks/charts/O/realty-income/stock-price-history" target="_blank">MacroTrends — Historial de precio y ATH</a>
+        <a href="https://www.investing.com/news/transcripts/earnings-call-transcript-realty-incomes-q1-2026-revenue-beats-expectations-93CH-4665980" target="_blank">Investing.com — Transcript Q1 2026 Earnings Call</a>
+        <a href="https://www.marketscreener.com" target="_blank">MarketScreener — Consenso analistas ($68.50 target)</a>
+        <a href="https://www.fool.com/investing/2026/04/01/realty-income-is-great-but-nnn-does-one-thing-bett/" target="_blank">Motley Fool — Comparativa Realty Income vs NNN REIT</a>
+        <a href="https://tickeron.com/ticker/O/" target="_blank">Tickeron — Análisis técnico y señales MACD</a>
+        <a href="https://quartr.com/companies/realty-income-corporation_3481" target="_blank">Quartr — Guidance 2026 y métricas operativas</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
