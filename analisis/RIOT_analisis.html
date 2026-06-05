@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIOT · Análisis Fundamental y Técnico · Junio 2026</title>
+<style>
+  :root {
+    --navy:   #0A1128;
+    --navy2:  #101F42;
+    --accent: #00E676;
+    --accent2:#00B0FF;
+    --light:  #F7F7F7;
+    --white:  #FFFFFF;
+    --text:   #1A1A1A;
+    --muted:  #6B7280;
+    --green:  #16A34A;
+    --red:    #DC2626;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', Calibri, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 48px 56px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -80px; top: -80px;
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+
+  .logo-box {
+    width: 110px; height: 110px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(0,230,118,0.2);
+  }
+
+  .hero-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-name-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .ticker-badge {
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 14px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .stat-strip {
+    display: flex;
+    gap: 14px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,230,118,0.35);
+    border-radius: 10px;
+    padding: 14px 22px;
+    min-width: 150px;
+    flex: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    font-family: Georgia, serif;
+  }
+
+  .stat-value.green { color: #4ADE80; }
+  .stat-value.red   { color: #FF4444; }
+
+  /* ── SECTIONS ── */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+  }
+
+  /* ── ABOUT ── */
+  .about-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 32px 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    line-height: 1.75;
+    font-size: 15px;
+    color: #374151;
+  }
+
+  .about-card .kw {
+    color: var(--navy2);
+    font-weight: 700;
+    border-bottom: 1px dashed var(--accent);
+  }
+
+  /* ── COMPETITIVE ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .comp-cards-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .comp-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .comp-card .cc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .comp-card .cc-sector {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+  }
+
+  .comp-card .cc-rank {
+    background: var(--navy);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+
+  .comp-card .cc-share {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .comp-card .cc-note {
+    font-size: 13px;
+    color: #4B5563;
+  }
+
+  .rival-block {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 28px 28px;
+    color: white;
+  }
+
+  .rival-block h3 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .rival-tagline {
+    color: var(--accent);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+
+  .rival-block ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rival-block ul li {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.80);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .rival-block ul li::before {
+    content: '▶';
+    color: var(--accent);
+    font-size: 9px;
+    position: absolute;
+    left: 0;
+    top: 4px;
+  }
+
+  /* ── FUTURE ── */
+  .future-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .future-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 12px 12px;
+    padding: 24px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .future-card .fc-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+    display: block;
+    color: var(--navy);
+  }
+
+  .future-card h4 {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .future-card p {
+    font-size: 13.5px;
+    color: #4B5563;
+    line-height: 1.6;
+  }
+
+  .risks-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 18px 28px;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+
+  .risks-block .rk {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── FUNDAMENTALS ── */
+  .mktcap-banner {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 24px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .mktcap-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mktcap-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .mktcap-value {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .mktcap-right {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+
+  .mktcap-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+  }
+
+  .mktcap-metric .ml {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .mktcap-metric .mv {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .data-table {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .data-table thead th {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+  }
+
+  .data-table.dark-head thead {
+    background: var(--navy);
+  }
+
+  .data-table.dark-head thead th {
+    color: rgba(255,255,255,0.75);
+  }
+
+  .data-table.accent-head thead {
+    background: var(--navy2);
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .data-table.accent-head thead th {
+    color: white;
+  }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid #F1F1F1;
+  }
+
+  .data-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .data-table tbody td {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+
+  .data-table tbody td:first-child {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .data-table tbody td:last-child {
+    font-weight: 600;
+  }
+
+  .col-green { color: var(--green) !important; }
+  .col-red   { color: var(--red) !important; }
+
+  /* ── TECHNICAL ── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .tech-left {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .tech-pct {
+    font-family: Georgia, serif;
+    font-size: 76px;
+    font-weight: 700;
+    color: #FF4444;
+    line-height: 1;
+    display: block;
+  }
+
+  .tech-pct-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 6px;
+    margin-bottom: 24px;
+  }
+
+  .tech-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .tech-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 8px;
+  }
+
+  .tech-stat-row .tsl {
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+  }
+
+  .tech-stat-row .tsv {
+    color: white;
+    font-weight: 600;
+  }
+
+  .tech-right {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 14px 14px 0;
+    padding: 28px 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .tech-right h4 {
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tech-right ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tech-right ul li {
+    font-size: 14px;
+    color: #374151;
+    padding-left: 22px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .tech-right ul li::before {
+    content: '◆';
+    color: var(--accent);
+    font-size: 8px;
+    position: absolute;
+    left: 0;
+    top: 5px;
+  }
+
+  /* ── CHART ── */
+  .chart-section {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    margin: 0 40px 48px;
+  }
+
+  .chart-header {
+    background: var(--navy);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chart-header span {
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .chart-header strong {
+    color: white;
+    font-size: 14px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 28px 40px;
+    font-size: 12px;
+    line-height: 2;
+  }
+
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .comp-grid, .future-cards, .tables-row, .tech-grid { grid-template-columns: 1fr; }
+    .hero { padding: 28px 24px; border-left-width: 8px; }
+    h1 { font-size: 32px; }
+    .mktcap-value { font-size: 36px; }
+    .tech-pct { font-size: 60px; }
+    .section { padding: 32px 20px; }
+    .chart-section { margin: 0 20px 36px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero-top { flex-wrap: wrap; }
+    .stat-strip { flex-direction: column; }
+    .mktcap-right { flex-direction: column; text-align: left; }
+    .mktcap-metric { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-top">
+    <div class="logo-box">
+      <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#0A1128"/>
+        <path d="M25 75 L45 25 L55 25 L35 75 Z" fill="#00E676" />
+        <path d="M45 75 L65 25 L75 25 L55 75 Z" fill="#00B0FF" />
+        <circle cx="70" cy="70" r="8" fill="#00E676"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="hero-name-row">
+        <h1>Riot Platforms, Inc.</h1>
+        <span class="ticker-badge">RIOT · NASDAQ</span>
+      </div>
+      <div class="hero-subtitle">Análisis fundamental y técnico · Junio 2026</div>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización</div>
+      <div class="stat-value">$11.45</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">$3.35 B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ingresos Q1 2026 YoY</div>
+      <div class="stat-value green">+18.5%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">EPS Q1 2026 YoY</div>
+      <div class="stat-value red">−114%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a máx. histórico</div>
+      <div class="stat-value red">−85.5%</div>
+    </div>
+  </div>
+</section>
+
+<div class="section">
+  <div class="section-title">¿A qué se dedica?</div>
+  <div class="about-card">
+    Riot Platforms es una compañía de <span class="kw">infraestructura digital integrada verticalmente</span> enfocada en la minería de Bitcoin y en la creación de centros de datos a gran escala. Sus líneas operativas abarcan la <span class="kw">Minería de Criptoactivos</span> mediante flotas masivas de ASICs de última generación, la provisión de <span class="kw">Servicios de Ingeniería e Infraestructura eléctrica</span> para terceros y, recientemente, su transformación hacia cargas de trabajo intensivas como la <span class="kw">Inteligencia Artificial (AI) y Computación de Alto Rendimiento (HPC)</span> utilizando tecnologías avanzadas de AMD en centros clave de Texas como la planta de Rockdale.
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Posición competitiva</div>
+  <div class="comp-grid">
+    <div class="comp-cards-col">
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Capacidad Energética en Infraestructura Tejana</span>
+          <span class="cc-rank">#1</span>
+        </div>
+        <div class="cc-share">Control de más de 1 GW de capacidad total aprobada.</div>
+        <div class="cc-note">Su acuerdo de energía e infraestructura flexible mitiga los costos operativos de minado en picos de demanda.</div>
+      </div>
+
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Minería de Bitcoin (Hash Rate Producido)</span>
+          <span class="cc-rank">#2</span>
+        </div>
+        <div class="cc-share">Cuota estimada de producción de red ≈ 4.5%.</div>
+        <div class="cc-note">Pelea palmo a palmo el liderazgo de volumen de minado global con Marathon Digital Holdings.</div>
+      </div>
+
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Infraestructura AI / Cómputo HPC Dedicado</span>
+          <span class="cc-rank">#4</span>
+        </div>
+        <div class="cc-share">Segmento emergente en rápida expansión con procesadores AMD.</div>
+        <div class="cc-note">Compite contra centros tradicionales (Equinix, CoreWeave) reconvirtiendo granjas industriales de minado cripto.</div>
+      </div>
+
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Eficiencia de Costo por Bitcoin Minado</span>
+          <span class="cc-rank">#2</span>
+        </div>
+        <div class="cc-share">Costo directo competitivo gracias a integración de subestaciones eléctricas propias.</div>
+        <div class="cc-note">La presión del Halving obliga a actualizaciones constantes de microprocesadores para mantener márgenes.</div>
+      </div>
+    </div>
+
+    <div class="rival-block">
+      <h3>Marathon Digital Holdings (MARA)</h3>
+      <div class="rival-tagline">La mayor amenaza estructural</div>
+      <ul>
+        <li>Supera consistentemente a Riot en Hash Rate total instalado mediante un modelo de negocio históricamente más 'asset-light'.</li>
+        <li>Estrategia agresiva de adquisición de inventario directo de Bitcoin en balance sin liquidaciones rápidas.</li>
+        <li>Expansión acelerada internacionalmente hacia regiones con costos de energía subsidiados o alternativos (como Medio Oriente).</li>
+        <li>Rival directo por captar el flujo de capital institucional que busca exposición pura al ecosistema criptográfico en Wall Street.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Potencial futuro del sector</div>
+  <div class="future-cards">
+    <div class="future-card">
+      <span class="fc-icon">▲</span>
+      <h4>Adopción Institucional y Escasez Digital</h4>
+      <p>Tras la consolidación de ETFs institucionales, Bitcoin actúa de forma creciente como reserva de valor digital. Con un suministro limitado por algoritmo, las empresas mineras a gran escala y eficientes se consolidan como las únicas capaces de extraer los últimos bloques económicos del activo.</p>
+    </div>
+
+    <div class="future-card">
+      <span class="fc-icon">●</span>
+      <h4>Pivot Estratégico hacia HPC e IA</h4>
+      <p>La insaciable demanda global de centros de datos dedicados al entrenamiento de modelos de inteligencia artificial está empujando a las firmas mineras a reconvertir sus gigavatios de potencia eléctrica aprobada. El despliegue de procesadores AMD e infraestructura líquida transformará las instalaciones de minado en clústeres de cómputo avanzado.</p>
+    </div>
+
+    <div class="future-card">
+      <span class="fc-icon">■</span>
+      <h4>Estrategia Energética de Respuesta a la Demanda</h4>
+      <p>La integración de mineras con los operadores de redes eléctricas (como ERCOT en Texas) les permite actuar como estabilizadores de red: venden energía de vuelta en picos de precio de consumo residencial y minan en horas de exceso de oferta, generando créditos de energía masivos altamente rentables.</p>
+    </div>
+  </div>
+
+  <div class="risks-block">
+    <strong>⚠ Riesgos a vigilar:</strong>
+    &nbsp;
+    <span class="rk">Volatilidad de Criptoactivos</span> · dependencia directa del precio de Bitcoin ·
+    <span class="rk">Efecto Halving</span> · reducción periódica del bloque minado comprime márgenes operativos ·
+    <span class="rk">Ajustes Contables No Monetarios</span> · volatilidad extrema en reportes GAAP por valor de mercado ·
+    <span class="rk">Riesgo Regulatorio de Red Eléctrica</span> · escrutinio sobre el uso intensivo de energía en centros de cómputo masivos
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Datos fundamentales</div>
+  <div class="mktcap-banner">
+    <div class="mktcap-left">
+      <div class="mktcap-label">Market Capitalization</div>
+      <div class="mktcap-value">$3.35 B</div>
+    </div>
+    <div class="mktcap-right">
+      <div class="mktcap-metric">
+        <span class="ml">Revenue TTM</span>
+        <span class="mv">$310.4 M</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">Gross Margin TTM</span>
+        <span class="mv">24.5%</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">P/E Ratio (GAAP)</span>
+        <span class="mv">N/A (Neg)</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">Beta (5Y)</span>
+        <span class="mv">3.12</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">Bitcoin en Balance</span>
+        <span class="mv">~10,242 BTC</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-row">
+    <table class="data-table dark-head">
+      <thead>
+        <tr>
+          <th colspan="2">Q1 2026 · Último trimestre reportado (Mayo 2026)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ventas totales</td><td>$167.20 M</td></tr>
+        <tr><td>Ventas YoY</td><td class="col-green">+18.5%</td></tr>
+        <tr><td>Pérdida Neta GAAP</td><td>−$500.0 M (Mark-to-market shifts)</td></tr>
+        <tr><td>EPS GAAP</td><td>−$1.64</td></tr>
+        <tr><td>EPS YoY</td><td class="col-red">−114%</td></tr>
+        <tr><td>Margen bruto bruto</td><td class="col-green">28.2%</td></tr>
+        <tr><td>Ingresos Minería Pura</td><td>$92.40 M</td></tr>
+        <tr><td>Ingresos HPC / Data Center</td><td>$42.10 M (+62% YoY)</td></tr>
+        <tr><td>Servicios de Ingeniería</td><td>$32.70 M</td></tr>
+        <tr><td>Efectivo y Equivalentes</td><td>$545.0 M</td></tr>
+        <tr><td>vs. consenso ventas</td><td class="col-green">Beat ($167.2M vs $159M est.)</td></tr>
+      </tbody>
+    </table>
+
+    <table class="data-table accent-head">
+      <thead>
+        <tr>
+          <th colspan="2">Q2 2026 · Previsión (reporta aprox. Agosto 2026)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Consenso ventas</td><td>$178.50 M</td></tr>
+        <tr><td>Consenso EPS no-GAAP</td><td>−$0.12</td></tr>
+        <tr><td>FY 2026 Revenue consenso</td><td>$740.0 M</td></tr>
+        <tr><td>CapEx proyectado 2026</td><td>&gt;$450 M (Expansión Clúster AI)</td></tr>
+        <tr><td>Meta Hash Rate Instalado</td><td>31 L/s para fin de año</td></tr>
+        <tr><td>Infraestructura Activa</td><td>840 MW operativos reales</td></tr>
+        <tr><td>Catalizador Q2</td><td>Entrega de servidores de alta densidad de AMD</td></tr>
+        <tr><td>Precio objetivo consenso</td><td>$14.80 (12 analistas, TipRanks)</td></tr>
+        <tr><td>Rating consenso</td><td>Strong Buy</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Análisis técnico — Distancia a máximos históricos</div>
+  <div class="tech-grid">
+    <div class="tech-left">
+      <span class="tech-pct">−85.5%</span>
+      <div class="tech-pct-label">respecto al ATH de cierre</div>
+      <div class="tech-stats">
+        <div class="tech-stat-row">
+          <span class="tsl">Cierre actual</span>
+          <span class="tsv">$11.45</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">ATH cierre</span>
+          <span class="tsv">$79.50 (Feb 2021)</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">Máx intraday 52 sem.</span>
+          <span class="tsv">$18.42</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">Mín 52 semanas</span>
+          <span class="tsv">$7.82</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">Rebote desde mín.</span>
+          <span class="tsv">+46.4%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech-right">
+      <h4>Lectura técnica</h4>
+      <ul>
+        <li>La acción muestra un enorme descuento histórico del 85.5% reflejando el fuerte ajuste posterior a las burbujas cripto previas, moviéndose actualmente en una zona de acumulación multianual.</li>
+        <li>El precio cotiza de forma errática cruzando constantemente sus medias móviles de 50 y 200 sesiones, lo cual denota una prolongada fase de compresión de volatilidad.</li>
+        <li>El rango de los $9.00–$9.50 se ha establecido como un soporte macro clave de mediano plazo.</li>
+        <li>La zona de resistencia inmediata se ubica en los $14.50, nivel que coincide con el promedio móvil de largo plazo y el precio objetivo fijado por el consenso de analistas.</li>
+        <li>El RSI semanal se sitúa en los 48 puntos, lo que representa una lectura neutral idónea para asimilar el próximo catalizador macro sin sobrecompra en los indicadores.</li>
+        <li>El próximo catalizador técnico y fundamental crítico será el reporte de producción operativa mensual de Hash Rate y la confirmación del ritmo de entrega del clúster HPC.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header">
+    <strong>RIOT · Riot Platforms Inc. — Gráfico Semanal (24 meses)</strong>
+    <span>· Fuente: TradingView</span>
+  </div>
+  <iframe
+    src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3ARIOT&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+    width="100%"
+    height="560"
+    frameborder="0"
+    allowtransparency="true"
+    scrolling="no">
+  </iframe>
+</div>
+
+<footer class="footer">
+  <div>Análisis generado el <strong>5 de junio de 2026</strong> · Solo con fines informativos y educativos · No constituye asesoramiento financiero formal</div>
+  <div style="margin-top:8px">
+    <strong>Fuentes consultadas:</strong>
+    <a href="https://www.sec.gov" target="_blank">SEC EDGAR Filings (Riot 10-Q & 8-K)</a> ·
+    <a href="https://www.riotplatforms.com/investors" target="_blank">Riot Platforms Investor Relations</a> ·
+    <a href="https://www.cnbc.com/quotes/RIOT" target="_blank">CNBC Markets Quotes</a> ·
+    <a href="https://finance.yahoo.com/quote/RIOT" target="_blank">Yahoo Finance Market Data</a>
+  </div>
+</footer>
+
+</body>
+</html>
