@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MU · Micron Technology — Análisis Fundamental y Técnico</title>
+<style>
+  :root {
+    --navy:   #0D1E36;
+    --accent: #00A3E0;
+    --accent2:#0077B6;
+    --light:  #F4F6FA;
+    --white:  #FFFFFF;
+    --green:  #1DB954;
+    --red:    #E63946;
+    --gray:   #6B7280;
+    --border: #E2E8F0;
+    --text:   #1A2332;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .hero {
+    background: linear-gradient(135deg, #0D1E36 0%, #0a1628 60%, #061020 100%);
+    border-left: 14px solid var(--accent);
+    padding: 48px 52px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 450px; height: 450px;
+    background: radial-gradient(circle, rgba(0,163,224,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+  .logo-box {
+    width: 110px; height: 110px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,163,224,0.25);
+  }
+  .hero-title-block { flex: 1; }
+  .hero-name-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-name-row h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 44px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .ticker-badge {
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .hero-subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+  .stat-strip {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(0,163,224,0.25);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 18px;
+    min-width: 140px;
+    flex: 1;
+  }
+  .stat-card .sc-label { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .stat-card .sc-value { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+  .stat-card .sc-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+  .sc-value.positive { color: #1DB954; }
+  .sc-value.negative { color: #E63946; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 40px 0; }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+  .desc-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    line-height: 1.8;
+    font-size: 14.5px;
+    color: #334155;
+  }
+  .desc-card em { font-style: normal; color: var(--accent2); font-weight: 600; }
+  .competitive-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+  .subsector-cards { display: flex; flex-direction: column; gap: 12px; }
+  .subsector-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .subsector-card .sc-info { flex: 1; }
+  .subsector-card .sc-name { font-weight: 700; font-size: 13.5px; color: var(--navy); margin-bottom: 3px; }
+  .subsector-card .sc-pos { font-size: 11px; color: var(--gray); }
+  .subsector-card .sc-badge { background: var(--accent); color: white; font-weight: 800; font-size: 13px; padding: 3px 10px; border-radius: 20px; white-space: nowrap; align-self: flex-start; }
+  .rival-block { background: var(--navy); border-radius: 12px; padding: 28px; color: white; }
+  .rival-block h3 { font-family: Georgia, serif; font-size: 20px; color: #fff; margin-bottom: 4px; }
+  .rival-tagline { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 20px; font-weight: 600; }
+  .rival-block ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .rival-block ul li { font-size: 13px; color: rgba(255,255,255,0.75); padding-left: 16px; position: relative; line-height: 1.5; }
+  .rival-block ul li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .catalyst-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+  .catalyst-card { background: var(--white); border-top: 4px solid var(--accent); border-radius: 10px; padding: 24px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .catalyst-card .cat-icon { font-size: 24px; margin-bottom: 10px; color: var(--accent); display: block; }
+  .catalyst-card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .catalyst-card p { font-size: 13px; color: #4A5568; line-height: 1.65; }
+  .risks-block { background: var(--navy); border-radius: 10px; padding: 16px 24px; font-size: 13px; color: rgba(255,255,255,0.65); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .risks-block strong { color: #fff; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap; }
+  .risks-block .risk-kw { color: var(--accent); }
+  .mktcap-card { background: var(--white); border-radius: 12px; padding: 20px 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 40px; margin-bottom: 24px; flex-wrap: wrap; }
+  .mktcap-main .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray); }
+  .mktcap-main .value { font-family: Georgia, serif; font-size: 46px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .mktcap-main .sub { font-size: 13px; color: var(--gray); margin-top: 4px; }
+  .mktcap-metrics { display: flex; gap: 32px; flex-wrap: wrap; flex: 1; }
+  .mm-item .mm-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.6px; }
+  .mm-item .mm-value { font-size: 18px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+  .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .data-table { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .data-table thead th { padding: 14px 18px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #fff; text-align: left; }
+  .data-table.dark thead { background: var(--navy); }
+  .data-table.accent thead { background: var(--accent2); }
+  .data-table tbody tr { border-bottom: 1px solid var(--border); }
+  .data-table tbody tr:last-child { border-bottom: none; }
+  .data-table tbody td { padding: 11px 18px; font-size: 13.5px; color: var(--text); }
+  .data-table tbody td:first-child { color: var(--gray); font-size: 12.5px; }
+  .td-pos { color: #1DB954 !important; font-weight: 700; }
+  .td-neg { color: #E63946 !important; font-weight: 700; }
+  .td-bold { font-weight: 700; color: var(--navy) !important; }
+  .technical-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+  .ath-block { background: var(--navy); border-radius: 12px; padding: 36px 28px; text-align: center; color: white; }
+  .ath-pct { font-family: Georgia, serif; font-size: 80px; line-height: 1; color: var(--accent); font-weight: 700; letter-spacing: -2px; }
+  .ath-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .ath-items { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+  .ath-item { display: flex; justify-content: space-between; font-size: 12.5px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .ath-item .ai-label { color: rgba(255,255,255,0.45); }
+  .ath-item .ai-val { color: #fff; font-weight: 600; }
+  .tech-analysis-card { background: var(--white); border-left: 6px solid var(--accent); border-radius: 0 12px 12px 0; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .tech-analysis-card h4 { font-family: Georgia, serif; font-size: 17px; color: var(--navy); margin-bottom: 18px; }
+  .tech-analysis-card ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .tech-analysis-card ul li { font-size: 13.5px; color: #334155; padding-left: 20px; position: relative; line-height: 1.55; }
+  .tech-analysis-card ul li::before { content: '▶'; position: absolute; left: 0; color: var(--accent); font-size: 9px; top: 3px; }
+  .tech-analysis-card ul li strong { color: var(--navy); }
+  .chart-section { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .chart-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .chart-header h3 { font-family: Georgia, serif; font-size: 16px; color: var(--navy); }
+  .chart-badge { background: var(--accent); color: #fff; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .chart-section iframe { display: block; border: none; }
+  footer { background: var(--navy); color: rgba(255,255,255,0.5); padding: 32px 52px; font-size: 12px; margin-top: 48px; }
+  footer .footer-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+  footer strong { color: rgba(255,255,255,0.8); }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .sources { margin-top: 16px; display: flex; flex-direction: column; gap: 4px; }
+  @media (max-width: 900px) {
+    .competitive-grid, .tables-grid, .technical-grid, .catalyst-grid { grid-template-columns: 1fr; }
+    .hero { padding: 28px 24px; border-left-width: 8px; }
+    .hero-name-row h1 { font-size: 28px; }
+    .ath-pct { font-size: 56px; }
+  }
+  @media (max-width: 640px) {
+    .hero-top { flex-wrap: wrap; }
+    .stat-strip { flex-wrap: wrap; }
+    .stat-card { min-width: calc(50% - 6px); }
+    .container { padding: 0 16px; }
+    .mktcap-card { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="hero-top">
+      <div class="logo-box">
+        <svg width="88" height="88" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
+          <rect width="88" height="88" rx="12" fill="#ffffff"/>
+          <rect x="14" y="14" width="60" height="60" rx="6" fill="#00A3E0" opacity="0.1"/>
+          <text x="44" y="52" text-anchor="middle" font-family="Georgia, serif" font-size="38" font-weight="700" fill="#0D1E36">M</text>
+          <rect x="22" y="62" width="44" height="3" rx="1.5" fill="#00A3E0"/>
+          <circle cx="20" cy="20" r="2.5" fill="#00A3E0" opacity="0.6"/>
+          <circle cx="68" cy="20" r="2.5" fill="#00A3E0" opacity="0.6"/>
+          <circle cx="20" cy="68" r="2.5" fill="#00A3E0" opacity="0.6"/>
+          <circle cx="68" cy="68" r="2.5" fill="#00A3E0" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="hero-title-block">
+        <div class="hero-name-row">
+          <h1>Micron Technology</h1>
+          <span class="ticker-badge">NASDAQ: MU</span>
+        </div>
+        <p class="hero-subtitle">Análisis fundamental y técnico · Junio 2026</p>
+      </div>
+    </div>
+    <div class="stat-strip">
+      <div class="stat-card">
+        <div class="sc-label">Cotización</div>
+        <div class="sc-value">$971</div>
+        <div class="sc-sub">4 Jun 2026 · NASDAQ</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Market Cap</div>
+        <div class="sc-value">$1.12 T</div>
+        <div class="sc-sub">Top 12 mundial</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Ventas Q2 FY26 YoY</div>
+        <div class="sc-value positive">+196%</div>
+        <div class="sc-sub">$23.86B vs $8.05B</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">EPS Q2 FY26 YoY</div>
+        <div class="sc-value positive">+~680%</div>
+        <div class="sc-sub">$12.20 non-GAAP</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Dist. ATH cierre</div>
+        <div class="sc-value negative">−8.7%</div>
+        <div class="sc-sub">ATH $1,064 · 2 Jun 26</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <div class="section-title"><span class="dot"></span> ¿A qué se dedica?</div>
+    <div class="desc-card">
+      Micron Technology (fundada en 1978, Boise, Idaho) es el <em>único fabricante de memoria con escala industrial 100% estadounidense</em> y uno de los tres gigantes mundiales del sector junto a Samsung y SK Hynix. Su negocio se divide en cuatro unidades: <em>DRAM</em> (79% de los ingresos, liderado por HBM para IA), <em>NAND / SSDs</em> (21%), soluciones de memoria para <em>móviles y automoción</em>, y la unidad embedded para IoT e industrial. Sus productos se comercializan bajo las marcas <em>Micron</em> y <em>Crucial</em>. El superciclo actual está impulsado por la demanda de <em>High Bandwidth Memory (HBM)</em> para GPUs de NVIDIA: toda la producción HBM de Micron para 2026 está vendida bajo contratos de largo plazo (LTAs), convirtiendo la memoria en un activo estratégico de la era de la inteligencia artificial.
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span> Posición competitiva</div>
+    <div class="competitive-grid">
+      <div class="subsector-cards">
+        <div class="subsector-card">
+          <div class="sc-info">
+            <div class="sc-name">HBM (High Bandwidth Memory)</div>
+            <div class="sc-pos">Cuota ~20-25% · Toda producción HBM 2026 vendida bajo LTAs · Rival: SK Hynix (~50% cuota, líder HBM3E)</div>
+          </div>
+          <div class="sc-badge">#3 → #2</div>
+        </div>
+        <div class="subsector-card">
+          <div class="sc-info">
+            <div class="sc-name">DRAM de Data Center</div>
+            <div class="sc-pos">Cuota ~25% · Crecimiento +207% YoY en Q2 FY26 · Rival: Samsung (~45% cuota global)</div>
+          </div>
+          <div class="sc-badge">#3</div>
+        </div>
+        <div class="subsector-card">
+          <div class="sc-info">
+            <div class="sc-name">NAND / SSDs Enterprise</div>
+            <div class="sc-pos">Cuota ~12-14% · Recuperación en curso con IA inferencia · Rival: Samsung, SanDisk/SNDK</div>
+          </div>
+          <div class="sc-badge">#4</div>
+        </div>
+        <div class="subsector-card">
+          <div class="sc-info">
+            <div class="sc-name">Único fabricante de memoria en EE.UU.</div>
+            <div class="sc-pos">Subsidios CHIPS Act $6.1B · Mega-fab en Clay, New York en construcción · Sin rival doméstico equivalente</div>
+          </div>
+          <div class="sc-badge">#1</div>
+        </div>
+      </div>
+      <div class="rival-block">
+        <div class="rival-tagline">La mayor amenaza estructural</div>
+        <h3>Samsung Electronics</h3>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:18px;">Memory Division — KRX: 005930</div>
+        <ul>
+          <li>Líder global en DRAM (~45% cuota) y NAND (~33%), con economías de escala superiores y verticalmente integrado en equipos de litografía EUV propios.</li>
+          <li>Su retraso en HBM3E en 2025 le costó contratos con NVIDIA, pero en 2026 está cerrando la brecha y compitiendo directamente por cuota de HBM con Micron.</li>
+          <li>Capacidad de subsidios masivos del gobierno surcoreano y acceso ilimitado a capital para campañas de precios agresivas en fases bajistas del ciclo memoria.</li>
+          <li>Segunda amenaza emergente: <strong style="color:#00A3E0">CXMT (China)</strong> escala producción de DRAM legacy con precios muy por debajo del mercado, riesgo estructural a 3-5 años en segmentos commodity.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span> Potencial futuro del sector (2026–2030)</div>
+    <div class="catalyst-grid">
+      <div class="catalyst-card">
+        <span class="cat-icon">▲</span>
+        <h4>Superciclo HBM impulsado por IA</h4>
+        <p>Cada nueva generación de GPU de NVIDIA incorpora más HBM y a mayor velocidad. HBM4 y HBM4E están en roadmap para 2027-2028, multiplicando el contenido por chip. El mercado global de HBM podría superar los $60B anuales hacia 2028. Micron tiene toda su producción HBM comprometida bajo contratos de largo plazo (LTAs).</p>
+      </div>
+      <div class="catalyst-card">
+        <span class="cat-icon">●</span>
+        <h4>Expansión soberana y CHIPS Act</h4>
+        <p>Los $6.1B en subsidios del CHIPS Act financian la nueva mega-fab en Clay, NY, con producción proyectada para 2028. La desglobalización fuerza a hyperscalers y gobiernos a priorizar suministro doméstico certificado. Micron es el único proveedor de HBM fabricado en EE.UU., una ventaja competitiva sistémica y geopolítica difícil de replicar.</p>
+      </div>
+      <div class="catalyst-card">
+        <span class="cat-icon">■</span>
+        <h4>Recuperación NAND + Edge AI</h4>
+        <p>El mercado de NAND enterprise para SSDs de centros de datos se recupera con los ciclos de inferencia IA. La IA en dispositivos (smartphones, autos autónomos) eleva el contenido de memoria embebida por unidad. Micron proyecta crecimiento de doble dígito en su unidad EBU (automoción e industrial) hacia 2027-2028.</p>
+      </div>
+    </div>
+    <div class="risks-block">
+      <strong>Riesgos a vigilar</strong>
+      <span>
+        <span class="risk-kw">Sobre-expansión capex</span> ($25B+ en FY26) ·
+        <span class="risk-kw">CXMT China</span> escalada DRAM legacy ·
+        <span class="risk-kw">Ciclo bajista</span> si demanda IA desacelera post-2026 ·
+        <span class="risk-kw">Restricciones exportación</span> a China ·
+        <span class="risk-kw">Dilución beneficios</span> por depreciación acelerada nuevas fabs
+      </span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span> Datos fundamentales</div>
+    <div class="mktcap-card">
+      <div class="mktcap-main">
+        <div class="label">Market Cap</div>
+        <div class="value">$1.12T</div>
+        <div class="sub">Empresa nº12 del mundo · P/E ~51x · EBITDA margin 49%</div>
+      </div>
+      <div class="mktcap-metrics">
+        <div class="mm-item">
+          <div class="mm-label">Empleados</div>
+          <div class="mm-value">53,000</div>
+        </div>
+        <div class="mm-item">
+          <div class="mm-label">Dividend Yield</div>
+          <div class="mm-value">0.38%</div>
+        </div>
+        <div class="mm-item">
+          <div class="mm-label">FCF Q2 FY26</div>
+          <div class="mm-value">$6.9B</div>
+        </div>
+        <div class="mm-item">
+          <div class="mm-label">Gross Margin Q2</div>
+          <div class="mm-value">75%</div>
+        </div>
+        <div class="mm-item">
+          <div class="mm-label">CapEx FY26e</div>
+          <div class="mm-value">&gt;$25B</div>
+        </div>
+      </div>
+    </div>
+    <div class="tables-grid">
+      <div class="data-table dark">
+        <table width="100%">
+          <thead>
+            <tr>
+              <th colspan="2">Q2 FY2026 · Último trimestre reportado</th>
+              <th style="text-align:right;">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Fecha cierre</td><td class="td-bold">26 Feb 2026</td><td></td></tr>
+            <tr><td>Ingresos totales</td><td class="td-bold">$23.86B</td><td class="td-pos">+196%</td></tr>
+            <tr><td>— DRAM</td><td>$18.8B (79%)</td><td class="td-pos">+207%</td></tr>
+            <tr><td>— NAND</td><td>$5.0B (21%)</td><td class="td-pos">+169%</td></tr>
+            <tr><td>EPS non-GAAP</td><td class="td-bold">$12.20</td><td class="td-pos">+~680%</td></tr>
+            <tr><td>Gross Margin</td><td>75%</td><td class="td-pos">+18 pp YoY</td></tr>
+            <tr><td>Op. Cash Flow</td><td>$11.90B</td><td class="td-pos">+202%</td></tr>
+            <tr><td>Dividendo trim.</td><td>+30% ↑ aprobado</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="data-table accent">
+        <table width="100%">
+          <thead>
+            <tr>
+              <th colspan="2">Q3 FY2026 · Previsión (reporta 24 Jun 2026)</th>
+              <th style="text-align:right;">vs Q2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Consenso analistas (rev.)</td><td class="td-bold">~$34.26B</td><td class="td-pos">+44%</td></tr>
+            <tr><td>Guidance MU revenue</td><td class="td-bold">$33.5B ±$750M</td><td class="td-pos">+40%</td></tr>
+            <tr><td>EPS consenso</td><td>~$19.00</td><td class="td-pos">+55%</td></tr>
+            <tr><td>Guidance EPS non-GAAP</td><td class="td-bold">$19.15 ±$0.40</td><td class="td-pos">+57%</td></tr>
+            <tr><td>Gross Margin guidance</td><td class="td-bold">~81%</td><td class="td-pos">+6 pp</td></tr>
+            <tr><td>CapEx Q3e</td><td>~$7B</td><td>—</td></tr>
+            <tr><td>Tax Rate</td><td>~15.1%</td><td>—</td></tr>
+            <tr><td>Nota CEO</td><td colspan="2" style="font-size:12px;color:#0a3a5c;font-style:italic;">"Significant records" en revenue, margen y FCF en Q3 — Sanjay Mehrotra</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span> Análisis técnico — Distancia a máximos históricos</div>
+    <div class="technical-grid">
+      <div class="ath-block">
+        <div class="ath-pct">−8.7%</div>
+        <div class="ath-label">respecto al ATH de cierre</div>
+        <div class="ath-items">
+          <div class="ath-item"><span class="ai-label">Cierre 4 Jun 2026</span><span class="ai-val">$971</span></div>
+          <div class="ath-item"><span class="ai-label">ATH cierre histórico</span><span class="ai-val">$1,064 (2 Jun 2026)</span></div>
+          <div class="ath-item"><span class="ai-label">Máx. intraday 52 sem.</span><span class="ai-val">$1,089.29</span></div>
+          <div class="ath-item"><span class="ai-label">Mín. 52 semanas</span><span class="ai-val">$101.70</span></div>
+          <div class="ath-item"><span class="ai-label">Rentabilidad 12 meses</span><span class="ai-val" style="color:#1DB954">+~946%</span></div>
+          <div class="ath-item"><span class="ai-label">Rentabilidad YTD 2026</span><span class="ai-val" style="color:#1DB954">+~262%</span></div>
+        </div>
+      </div>
+      <div class="tech-analysis-card">
+        <h4>Lectura técnica — MU semanal</h4>
+        <ul>
+          <li>El retroceso del 4 de junio (−7%) se produce en simpatía con el sell-off de Broadcom (AVGO) post-earnings, <strong>no por fundamentos propios de Micron</strong>. El contexto macro de la acción permanece alcista estructural.</li>
+          <li><strong>Soporte inmediato:</strong> zona $950–970, coincide con el rango de consolidación de mayo 2026. Pérdida sostenida de $950 abriría la puerta al nivel $895–910.</li>
+          <li><strong>Resistencia:</strong> $1,050–1,064 (zona ATH previo). Recuperación y cierre por encima confirmaría continuación del impulso primario alcista.</li>
+          <li><strong>Tendencia primaria semanal:</strong> firmemente alcista. El precio superó más de +1,000% desde el suelo de marzo 2025, con estructura de máximos y mínimos crecientes bien definida en timeframe semanal.</li>
+          <li><strong>Catalizador clave inminente:</strong> resultados Q3 FY2026 el <strong>24 de junio de 2026</strong>. El mercado de opciones descuenta volatilidad implícita del ±10% en el evento. Guidance record ampliamente esperado.</li>
+          <li>Valoración a ~11.7x P/E forward alta históricamente para Micron, pero analistas (UBS: $1,625; Morgan Stanley: $1,050; Raymond James: $1,100) justifican la prima por duración del superciclo HBM y LTAs firmados hasta 2028+.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span> Gráfico de cotización</div>
+    <div class="chart-section">
+      <div class="chart-header">
+        <h3>Micron Technology — MU · Velas semanales · 24 meses</h3>
+        <span class="chart-badge">TradingView · NASDAQ</span>
+      </div>
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=NASDAQ%3AMU&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+        width="100%"
+        height="560"
+        frameborder="0"
+        allowtransparency="true"
+        scrolling="no">
+      </iframe>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="footer-row">
+      <div>
+        <strong>Micron Technology (MU) — Análisis fundamental y técnico</strong><br>
+        Fecha del análisis: 5 de junio de 2026 · Datos al cierre del 4 de junio de 2026.<br>
+        Este informe es de carácter informativo y no constituye asesoramiento financiero.
+      </div>
+      <div style="text-align:right;">
+        <strong>NASDAQ: MU</strong><br>
+        Sector: Semiconductores · Industria: Memory<br>
+        Fundada: 1978 · HQ: Boise, Idaho, EE.UU.
+      </div>
+    </div>
+    <div class="sources">
+      <strong>Fuentes consultadas:</strong>
+      <a href="https://investors.micron.com/news-releases/news-release-details/micron-technology-inc-reports-results-second-quarter-fiscal-2026" target="_blank">↗ Micron Q2 FY2026 Earnings Release oficial (investors.micron.com)</a>
+      <a href="https://www.cnbc.com/2026/03/18/micron-mu-q2-earnings-report-2026.html" target="_blank">↗ CNBC — Cobertura resultados Q2 FY2026</a>
+      <a href="https://stockanalysis.com/stocks/mu/" target="_blank">↗ Stock Analysis — MU Financials &amp; History</a>
+      <a href="https://www.macrotrends.net/stocks/charts/MU/micron-technology/stock-price-history" target="_blank">↗ Macrotrends — MU All-Time High Price History</a>
+      <a href="https://tickeron.com/earnings/MU/" target="_blank">↗ Tickeron — MU Q3 FY2026 Earnings Preview &amp; Guidance</a>
+      <a href="https://www.investing.com/equities/micron-tech-earnings" target="_blank">↗ Investing.com — MU Earnings &amp; Analyst Consensus</a>
+      <a href="https://quartr.com/events/micron-technology-inc-mu-q2-2026_3Yxg298f" target="_blank">↗ Quartr — MU Q2 2026 Earnings Summary</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
