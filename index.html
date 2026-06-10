@@ -712,6 +712,23 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   </div>
 </div>
 
+<!-- FLUJO DE FONDOS -->
+<div class="section" id="tab-flujo" style="padding:0;overflow:hidden">
+  <div style="position:relative;width:100%;height:calc(100vh - 58px)">
+    <!-- Estado de carga visible hasta que el iframe responda -->
+    <div id="flujo-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#1a1a1a;z-index:1;pointer-events:none">
+      <div style="width:36px;height:36px;border:3px solid #333;border-top-color:#378ADD;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+      <span style="font-size:13px;color:#555">Cargando Flujo de Fondos…</span>
+    </div>
+    <iframe
+      id="flujo-frame"
+      title="Flujo de Fondos — Bonos & ONs"
+      style="width:100%;height:100%;border:none;display:block;background:#1a1a1a"
+      onload="var l=document.getElementById('flujo-loading');if(l)l.style.display='none'">
+    </iframe>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 var MONTHS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -959,7 +976,7 @@ function bootstrapApp() {
 
 
 // TABS
-var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'agenda',label:'Agenda de Pagos'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'}];
+var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'agenda',label:'Agenda de Pagos'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'},{id:'flujo',label:'Flujo de Fondos'}];
 function buildTabs(){
   var c=document.getElementById('tabs-container');var h='';
   for(var i=0;i<TABS.length;i++)h+='<button class="tab'+(TABS[i].id===activeTab?' active':'')+'" data-tab="'+TABS[i].id+'">'+TABS[i].label+'</button>';
@@ -978,6 +995,7 @@ function showTab(t){
   if(t==='analisis')renderAnalisis();
   if(t==='agenda')renderAgenda();
   if(t==='presupuesto')renderBudgetProgress();
+  if(t==='flujo'){var fr=document.getElementById('flujo-frame');if(fr&&!fr.dataset.loaded){fr.src='./flujo_fondos_bonos_ons.html';fr.dataset.loaded='1';}}
 }
 
 function bindEvents(){
