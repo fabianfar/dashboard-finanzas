@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAMP · Análisis Fundamental y Técnico · Junio 2026</title>
+<style>
+  :root {
+    --navy:   #0B132B;
+    --navy2:  #1C2541;
+    --accent: #0050B3;
+    --accent2:#3A86FF;
+    --light:  #F4F7FA;
+    --white:  #FFFFFF;
+    --text:   #1E293B;
+    --muted:  #64748B;
+    --green:  #16A34A;
+    --red:    #DC2626;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", Calibri, Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    border-left: 14px solid var(--accent);
+    padding: 48px 56px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,80,179,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+
+  .logo-box {
+    width: 110px; height: 110px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0,80,179,0.15);
+  }
+
+  .hero-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-name-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-family: Georgia, serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .ticker-badge {
+    border: 1.5px solid var(--accent2);
+    color: var(--accent2);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 14px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .stat-strip {
+    display: flex;
+    gap: 14px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(58,134,255,0.3);
+    border-radius: 10px;
+    padding: 14px 22px;
+    min-width: 150px;
+    flex: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    font-family: Georgia, serif;
+  }
+
+  .stat-value.green { color: #22C55E; }
+  .stat-value.red   { color: #EF4444; }
+
+  /* ── SECTIONS ── */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+  }
+
+  /* ── ABOUT ── */
+  .about-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 32px 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    line-height: 1.75;
+    font-size: 15px;
+    color: #334155;
+  }
+
+  .about-card .kw {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── COMPETITIVE ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .comp-cards-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .comp-card {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  }
+
+  .comp-card .cc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .comp-card .cc-sector {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+  }
+
+  .comp-card .cc-rank {
+    background: var(--navy);
+    color: var(--accent2);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+
+  .comp-card .cc-share {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .comp-card .cc-note {
+    font-size: 13px;
+    color: #475569;
+  }
+
+  .rival-block {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 28px 28px;
+    color: white;
+  }
+
+  .rival-block h3 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .rival-tagline {
+    color: var(--accent2);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+
+  .rival-block ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rival-block ul li {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.8);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .rival-block ul li::before {
+    content: '▶';
+    color: var(--accent2);
+    font-size: 9px;
+    position: absolute;
+    left: 0;
+    top: 4px;
+  }
+
+  /* ── FUTURE ── */
+  .future-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .future-card {
+    background: var(--white);
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 12px 12px;
+    padding: 24px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+  }
+
+  .future-card .fc-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+    display: block;
+    color: var(--accent);
+  }
+
+  .future-card h4 {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .future-card p {
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .risks-block {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 18px 28px;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+
+  .risks-block .rk {
+    color: var(--accent2);
+    font-weight: 700;
+  }
+
+  /* ── FUNDAMENTALS ── */
+  .mktcap-banner {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 24px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .mktcap-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mktcap-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .mktcap-value {
+    font-family: Georgia, serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .mktcap-right {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+
+  .mktcap-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+  }
+
+  .mktcap-metric .ml {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .mktcap-metric .mv {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .data-table {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .data-table thead th {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+  }
+
+  .data-table.dark-head thead {
+    background: var(--navy);
+  }
+
+  .data-table.dark-head thead th {
+    color: rgba(255,255,255,0.75);
+  }
+
+  .data-table.accent-head thead {
+    background: var(--navy2);
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .data-table.accent-head thead th {
+    color: white;
+  }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid #F1F1F1;
+  }
+
+  .data-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .data-table tbody td {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+
+  .data-table tbody td:first-child {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .data-table tbody td:last-child {
+    font-weight: 600;
+  }
+
+  .col-green { color: var(--green) !important; }
+  .col-red   { color: var(--red) !important; }
+
+  /* ── TECHNICAL ── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .tech-left {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .tech-pct {
+    font-family: Georgia, serif;
+    font-size: 76px;
+    font-weight: 700;
+    color: var(--accent2);
+    line-height: 1;
+    display: block;
+  }
+
+  .tech-pct-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 6px;
+    margin-bottom: 24px;
+  }
+
+  .tech-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .tech-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 8px;
+  }
+
+  .tech-stat-row .tsl {
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+  }
+
+  .tech-stat-row .tsv {
+    color: white;
+    font-weight: 600;
+  }
+
+  .tech-right {
+    background: var(--white);
+    border-left: 6px solid var(--accent);
+    border-radius: 0 14px 14px 0;
+    padding: 28px 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .tech-right h4 {
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tech-right ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tech-right ul li {
+    font-size: 14px;
+    color: #334155;
+    padding-left: 22px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .tech-right ul li::before {
+    content: '◆';
+    color: var(--accent2);
+    font-size: 8px;
+    position: absolute;
+    left: 0;
+    top: 5px;
+  }
+
+  /* ── CHART ── */
+  .chart-section {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    margin: 0 40px 48px;
+  }
+
+  .chart-header {
+    background: var(--navy);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chart-header span {
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .chart-header strong {
+    color: white;
+    font-size: 14px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 28px 40px;
+    font-size: 12px;
+    line-height: 2;
+  }
+
+  .footer a {
+    color: var(--accent2);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .comp-grid, .future-cards, .tables-row, .tech-grid { grid-template-columns: 1fr; }
+    .hero { padding: 28px 24px; border-left-width: 8px; }
+    h1 { font-size: 32px; }
+    .mktcap-value { font-size: 36px; }
+    .tech-pct { font-size: 60px; }
+    .section { padding: 32px 20px; }
+    .chart-section { margin: 0 20px 36px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero-top { flex-wrap: wrap; }
+    .stat-strip { flex-direction: column; }
+    .mktcap-right { flex-direction: column; text-align: left; }
+    .mktcap-metric { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-top">
+    <div class="logo-box">
+      <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#0B132B"/>
+        <path d="M35 75 C35 50, 50 40, 50 25 C50 40, 65 50, 65 75 C65 85, 35 85, 35 75 Z" fill="#0050B3"/>
+        <path d="M43 75 C43 58, 50 50, 50 38 C50 50, 57 58, 57 75 C57 80, 43 80, 43 75 Z" fill="#3A86FF"/>
+      </svg>
+    </div>
+
+    <div class="hero-title-block">
+      <div class="hero-name-row">
+        <h1>Pampa Energía S.A.</h1>
+        <span class="ticker-badge">PAMP · NYSE</span>
+      </div>
+      <div class="hero-subtitle">Análisis fundamental y técnico · Junio 2026</div>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">Cotización ADR</div>
+      <div class="stat-value">$48.52</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">$2.78 B</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ingresos Q1 2026 YoY</div>
+      <div class="stat-value green">+11.2%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">EPS Q1 2026 YoY</div>
+      <div class="stat-value green">+8.4%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Dist. a máx. histórico</div>
+      <div class="stat-value red">−11.8%</div>
+    </div>
+  </div>
+</section>
+
+<div class="section">
+  <div class="section-title">¿A qué se dedica?</div>
+  <div class="about-card">
+    Pampa Energía S.A. es la empresa independiente integrada de energía <span class="kw">más grande de Argentina</span>. Su actividad principal abarca la cadena completa de valor del sector: participa activamente en la <span class="kw">exploración y producción de gas natural y petróleo</span> enfocado en bloques de alto rendimiento dentro de Vaca Muerta; es uno de los líderes en <span class="kw">generación de energía eléctrica</span> (operando centrales térmicas, hidroeléctricas y parques eólicos); y controla estratégicamente segmentos clave de la <span class="kw">transmisión y transporte de gas</span> en alianza con compañías troncales de la infraestructura nacional.
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Posición competitiva</div>
+  <div class="comp-grid">
+    <div class="comp-cards-col">
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Generación de Energía Eléctrica Nacional</span>
+          <span class="cc-rank">#1</span>
+        </div>
+        <div class="cc-share">Aporta aproximadamente el 12% de la potencia instalada total de Argentina.</div>
+        <div class="cc-note">Su parque de activos diversificado le otorga una resiliencia única ante fluctuaciones operativas estacionales.</div>
+      </div>
+
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Producción de Gas en la Cuenca Neuquina (Vaca Muerta)</span>
+          <span class="cc-rank">#3</span>
+        </div>
+        <div class="cc-share">Participación de mercado estimada de producción ≈ 9%.</div>
+        <div class="cc-note">El desarrollo de los campos maduros no convencionales (El Mangrullo) continúa batiendo récords de extracción diaria.</div>
+      </div>
+
+      <div class="comp-card">
+        <div class="cc-header">
+          <span class="cc-sector">Transmisión en Alta Tensión (Vía Transener)</span>
+          <span class="cc-rank">#1</span>
+        </div>
+        <div class="cc-share">Co-controla más del 85% de las líneas de transporte eléctrico del país.</div>
+        <div class="cc-note">Un activo de carácter monopólico regulado que representa la columna vertebral de la conectividad pública del sistema.</div>
+      </div>
+    </div>
+
+    <div class="rival-block">
+      <h3>YPF S.A. (YPF)</h3>
+      <div class="rival-tagline">La mayor amenaza estructural</div>
+      <ul>
+        <li>La petrolera controlada por el estado nacional lidera cómodamente las asignaciones de áreas de perforación e infraestructura de transporte masivo en Vaca Muerta.</li>
+        <li>Cuenta con prioridad en financiamiento y escala para grandes obras de infraestructura de exportación (proyectos de GNL a gran escala).</li>
+        <li>Su dominancia en refinación y comercialización de combustibles minoristas le asegura un flujo de caja vertical que compite directamente por la atracción de capital extranjero en los mercados institucionales.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Potencial futuro del sector</div>
+  <div class="future-cards">
+    <div class="future-card">
+      <span class="fc-icon">▲</span>
+      <h4>Sinceramiento y Desregulación Tarifaria</h4>
+      <p>La paulatina quita de subsidios estatales y el ajuste regulado de precios mayoristas permiten una normalización de la rentabilidad corporativa y aseguran el cobro de deudas acumuladas en el mercado eléctrico mayorista (CAMMESA).</p>
+    </div>
+
+    <div class="future-card">
+      <span class="fc-icon">●</span>
+      <h4>Reversión del Gasoducto Norte y Exportación</h4>
+      <p>La finalización de obras clave de transporte de gas natural abre la puerta para comercializar la sobreproducción estival argentina hacia mercados regionales de alto precio (Chile y el centro industrial de Brasil), transformando la matriz de ingresos en dólares.</p>
+    </div>
+
+    <div class="future-card">
+      <span class="fc-icon">■</span>
+      <h4>Transición Hacia Renovables</h4>
+      <p>La ampliación continua del portafolio eólico (como los proyectos en Bahía Blanca) permite capturar contratos privados corporativos de largo plazo (MATER), blindando los márgenes de la empresa bajo estrictos estándares corporativos internacionales.</p>
+    </div>
+  </div>
+
+  <div class="risks-block">
+    <strong>⚠ Riesgos a vigilar:</strong>
+    &nbsp;
+    <span class="rk">Riesgo Soberano y Macroeconómico</span> · exposición a devaluaciones del peso argentino y controles de capital persistentes ·
+    <span class="rk">Cuellos de Botella Logísticos</span> · capacidad límite de transporte en gasoductos troncales hasta que concluyan las expansiones ·
+    <span class="rk">Volatilidad de Commodities</span> · fluctuaciones internacionales de precios del gas y crudo Medanito de referencia
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Datos fundamentales</div>
+  <div class="mktcap-banner">
+    <div class="mktcap-left">
+      <div class="mktcap-label">Market Capitalization (ADR Equiv)</div>
+      <div class="mktcap-value">$2.78 B</div>
+    </div>
+    <div class="mktcap-right">
+      <div class="mktcap-metric">
+        <span class="ml">EBITDA Anualizado</span>
+        <span class="mv">$820.4 M</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">Net Debt / EBITDA</span>
+        <span class="mv">1.2x (Muy Sólido)</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">P/E Ratio TTM</span>
+        <span class="mv">7.82</span>
+      </div>
+      <div class="mktcap-metric">
+        <span class="ml">Producción Gas Máxima</span>
+        <span class="mv">14 M m³/día</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-row">
+    <table class="data-table dark-head">
+      <thead>
+        <tr>
+          <th colspan="2">Q1 2026 · Último trimestre reportado (Mayo 2026)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ventas Consolidadas</td><td>$452.0 M</td></tr>
+        <tr><td>Crecimiento Ventas YoY</td><td class="col-green">+11.2%</td></tr>
+        <tr><td>Ganancia Neta Trimestral</td><td>$98.5 M</td></tr>
+        <tr><td>EPS del ADR</td><td>$1.85</td></tr>
+        <tr><td>Crecimiento EPS YoY</td><td class="col-green">+8.4%</td></tr>
+        <tr><td>Margen EBITDA PyP</td><td class="col-green">42.5%</td></tr>
+        <tr><td>Despacho Eléctrico Promedio</td><td>2,240 MW</td></tr>
+        <tr><td>Caja y Equivalentes (Extranjero)</td><td>$340 M</td></tr>
+        <tr><td>vs. Estimado de Consenso</td><td class="col-green">Cumplió en línea con expectativas</td></tr>
+      </tbody>
+    </table>
+
+    <table class="data-table accent-head">
+      <thead>
+        <tr>
+          <th colspan="2">Q2 2026 · Previsión (reporta aprox. Agosto 2026)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Consenso de Ventas proyectadas</td><td>$485.0 M</td></tr>
+        <tr><td>Consenso de EPS proyectado</td><td>$2.02</td></tr>
+        <tr><td>Inversiones de CapEx Estimadas</td><td>$150 M (Pozos no convencionales)</td></tr>
+        <tr><td>Precio Objetivo Promedio (ADR)</td><td>$56.00 (7 firmas de Wall Street)</td></tr>
+        <tr><td>Recomendación de Analistas</td><td>Overweight / Compra</td></tr>
+        <tr><td>Catalizador Técnico de Invierno</td><td>Picos de consumo interno e indexación de precios de gas</td></tr>
+        <tr><td>Estatus de Apalancamiento</td><td>Excelente perfil de vencimientos de bonos hacia 2027/2029</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="section-title">Análisis técnico — Distancia a máximos históricos</div>
+  <div class="tech-grid">
+    <div class="tech-left">
+      <span class="tech-pct">−11.8%</span>
+      <div class="tech-pct-label">respecto al ATH de cierre</div>
+      <div class="tech-stats">
+        <div class="tech-stat-row">
+          <span class="tsl">Cierre ADR</span>
+          <span class="tsv">$48.52</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">ATH Cierre</span>
+          <span class="tsv">$55.02 (Ene 2018)</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">Máx 52 semanas</span>
+          <span class="tsv">$53.40</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">Mín 52 semanas</span>
+          <span class="tsv">$34.15</span>
+        </div>
+        <div class="tech-stat-row">
+          <span class="tsl">Media Móvil 200d</span>
+          <span class="tsv">$42.80</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech-right">
+      <h4>Lectura técnica</h4>
+      <ul>
+        <li>El ADR se encuentra operando en una franca tendencia alcista estructural de mediano y largo plazo, manteniéndose a una saludable distancia de apenas 11.8% de su máximo histórico nominal alcanzado en 2018.</li>
+        <li>El precio ha consolidado una sólida base de soporte en la zona de los $42.00–$43.00, nivel que confluye directamente con la Media Móvil Simple de 200 días y que ha atraído compras institucionales en las últimas correcciones de mercado.</li>
+        <li>La zona de resistencia clave se ubica en el techo de los $53.00–$54.00. Un quiebre definitivo de este umbral habilitaría una fase de "price discovery" libre de resistencias históricas por encima de los $55.00.</li>
+        <li>El RSI semanal se encuentra en 54 puntos en terreno neutral, lo cual indica que la acción tiene espacio técnico suficiente para reanudar el impulso alcista sin enfrentar lecturas extremas de sobrecompra.</li>
+        <li>El próximo gran catalizador para convalidar la ruptura de máximos será la presentación de los resultados financieros del segundo trimestre y la visibilidad de los ingresos por contratos de exportación invernales.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header">
+    <strong>PAMP · Pampa Energía S.A. ADR — Gráfico Semanal (24 meses)</strong>
+    <span>· Fuente: TradingView</span>
+  </div>
+  <iframe
+    src="https://s.tradingview.com/widgetembed/?symbol=NYSE%3APAMP&interval=W&theme=light&style=1&locale=es&toolbarbg=F1F3F6&hideideas=1&range=24M&hidetoptoolbar=0&hidesidetoolbar=1&saveimage=0&studies=%5B%5D"
+    width="100%"
+    height="560"
+    frameborder="0"
+    allowtransparency="true"
+    scrolling="no">
+  </iframe>
+</div>
+
+<footer class="footer">
+  <div>Análisis generado el <strong>9 de junio de 2026</strong> · Con fines informativos y educativos · No representa una recomendación de compra o venta de activos bursátiles</div>
+  <div style="margin-top:8px">
+    <strong>Fuentes consultadas:</strong>
+    <a href="https://www.sec.gov" target="_blank">SEC EDGAR Filings (Pampa Energía Form 20-F / 6-K)</a> ·
+    <a href="https://ri.pampaenergia.com" target="_blank">Pampa Energía Relación con Inversores</a> ·
+    <a href="https://www.cnbc.com/quotes/PAMP" target="_blank">CNBC Markets Data</a> ·
+    <a href="https://finance.yahoo.com/quote/PAMP" target="_blank">Yahoo Finance Markets</a>
+  </div>
+</footer>
+
+</body>
+</html>
