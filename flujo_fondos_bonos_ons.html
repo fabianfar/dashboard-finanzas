@@ -209,12 +209,40 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
           <option value="GD46">GD46 — Global 2046 (NY)</option>
           <option value="BDC28">BDC28 — BODEN 2028</option>
           <option value="TVPA">TVPA — VAL.NEG.VINC.PBI USD ★</option>
+          <option value="AO27">AO27 — Bono del Tesoro USD LS 2027 ★</option>
+          <option value="AO28">AO28 — Bono del Tesoro USD LS 2028 ★</option>
+          <option value="AN29">AN29 — Bono Nación USD 2029 ★</option>
+          <option value="CUAP">CUAP — Cupón PBI USD ★</option>
         </optgroup>
         <optgroup label="Soberanos ARS">
           <option value="TX26">TX26 — Boncer 2026 2%</option>
           <option value="TX28">TX28 — Boncer 2028 2.25%</option>
+          <option value="TX31">TX31 — Boncer 2031 2%</option>
           <option value="TTS26">TTS26 — TAMAR 15/09/26 ★</option>
           <option value="TTD26">TTD26 — TAMAR 15/12/26 ★</option>
+        </optgroup>
+        <optgroup label="Soberanos ARS/CER — Descuento &amp; Par">
+          <option value="DICP">DICP — Descuento en Pesos ARS/CER ★</option>
+          <option value="DIP0">DIP0 — Descuento en Pesos CER (strip amort.) ★</option>
+          <option value="PARP">PARP — Par en Pesos ARS/CER ★</option>
+          <option value="PAP0">PAP0 — Par en Pesos CER (strip amort.) ★</option>
+        </optgroup>
+        <optgroup label="Soberanos ARS/CER — Bontes año">
+          <option value="TZX26">TZX26 — Bonte CER Nov-2026 ★</option>
+          <option value="TZX27">TZX27 — Bonte CER May-2027 ★</option>
+          <option value="TZX28">TZX28 — Bonte CER May-2028 ★</option>
+        </optgroup>
+        <optgroup label="Soberanos ARS/CER — Bontes mes/año">
+          <option value="TZXO6">TZXO6 — Bonte CER Oct-2026 ★</option>
+          <option value="TZXD6">TZXD6 — Bonte CER Dic-2026 ★</option>
+          <option value="TZXM7">TZXM7 — Bonte CER Mar-2027 ★</option>
+          <option value="TZXY7">TZXY7 — Bonte CER May-2027 ★</option>
+          <option value="TZXA7">TZXA7 — Bonte CER Ago-2027 ★</option>
+          <option value="TZXS7">TZXS7 — Bonte CER Sep-2027 ★</option>
+          <option value="TZXD7">TZXD7 — Bonte CER Dic-2027 ★</option>
+          <option value="TZXM8">TZXM8 — Bonte CER Mar-2028 ★</option>
+          <option value="TZXS8">TZXS8 — Bonte CER Sep-2028 ★</option>
+          <option value="TZXM9">TZXM9 — Bonte CER Mar-2029 ★</option>
         </optgroup>
         <optgroup label="Provinciales USD">
           <option value="BA37D">BA37D — Bs.As. Clase A 2037</option>
@@ -364,6 +392,88 @@ const INST = {
   YM39O: {n:'YPF Clase 39 2030',t:'ON',m:'USD',v:'2030-07-22',e:true,p:[['2026-07-22','R',0.04,0],['2027-01-22','R+A',0.04,0.10],['2027-07-22','R+A',0.04,0.10],['2028-01-22','R+A',0.04,0.10],['2028-07-22','R+A',0.04,0.10],['2029-01-22','R+A',0.04,0.10],['2029-07-22','R+A',0.04,0.10],['2030-01-22','R+A',0.04,0.20],['2030-07-22','R+A',0.04,0.20]]},
   YMCIO: {n:'YPF 2029',t:'ON',m:'USD',v:'2029-07-25',e:false,p:[['2026-07-25','R',0.04375,0],['2027-01-25','R+A',0.04375,0.10],['2027-07-25','R+A',0.04375,0.10],['2028-01-25','R+A',0.04375,0.10],['2028-07-25','R+A',0.04375,0.10],['2029-01-25','R+A',0.04375,0.10],['2029-07-25','R+A',0.04375,0.50]]},
   YMCJO: {n:'YPF 2033',t:'ON',m:'USD',v:'2033-07-25',e:false,p:[['2026-07-25','R',0.04875,0],['2027-01-25','R',0.04875,0],['2027-07-25','R',0.04875,0],['2028-01-25','R+A',0.04875,0.10],['2028-07-25','R+A',0.04875,0.10],['2029-01-25','R+A',0.04875,0.10],['2029-07-25','R+A',0.04875,0.10],['2030-01-25','R+A',0.04875,0.10],['2030-07-25','R+A',0.04875,0.10],['2031-01-25','R+A',0.04875,0.10],['2031-07-25','R+A',0.04875,0.10],['2032-01-25','R+A',0.04875,0.10],['2032-07-25','R+A',0.04875,0.10],['2033-01-25','R',0.04875,0],['2033-07-25','R+A',0.04875,0]]},
+
+  // ── Soberanos USD (nuevas series) ──────────────────────────────────────────
+  AO27: {n:'Bono del Tesoro USD LS 2027',t:'Soberano',m:'USD',v:'2027-07-09',e:true,p:[
+    ['2026-07-09','R',0.0225,0],['2027-01-09','R',0.0225,0],['2027-07-09','R+A',0.0225,1.0]]},
+  AO28: {n:'Bono del Tesoro USD LS 2028',t:'Soberano',m:'USD',v:'2028-01-09',e:true,p:[
+    ['2026-07-09','R',0.0225,0],['2027-01-09','R',0.0225,0],['2027-07-09','R',0.0225,0],
+    ['2028-01-09','R+A',0.0225,1.0]]},
+  AN29: {n:'Bono Nación USD 2029',t:'Soberano',m:'USD',v:'2029-07-09',e:true,p:[
+    ['2026-07-09','R',0.025,0],['2027-01-09','R',0.025,0],['2027-07-09','R',0.025,0],
+    ['2028-01-09','R',0.025,0],['2028-07-09','R',0.025,0],['2029-01-09','R',0.025,0],
+    ['2029-07-09','R+A',0.025,1.0]]},
+  CUAP: {n:'Cupón PBI USD',t:'Soberano',m:'USD',v:'2035-12-15',e:true,p:[
+    ['2035-12-15','A',0.0,1.0]]},
+
+  // ── Soberanos ARS/CER — Bonos con cupón ────────────────────────────────────
+  DICP: {n:'Descuento en Pesos ARS/CER',t:'Soberano',m:'ARS/CER',v:'2033-12-31',e:true,p:[
+    ['2026-06-30','R',0.02915,0],['2026-12-31','R',0.02915,0],
+    ['2027-06-30','R',0.02915,0],['2027-12-31','R',0.02915,0],
+    ['2028-06-30','R',0.02915,0],['2028-12-31','R+A',0.02915,0.0417],
+    ['2029-06-30','R',0.02915,0],['2029-12-31','R+A',0.02915,0.0833],
+    ['2030-06-30','R',0.02915,0],['2030-12-31','R+A',0.02915,0.0833],
+    ['2031-06-30','R',0.02915,0],['2031-12-31','R+A',0.02915,0.1250],
+    ['2032-06-30','R',0.02915,0],['2032-12-31','R+A',0.02915,0.1667],
+    ['2033-06-30','R',0.02915,0],['2033-12-31','R+A',0.02915,0.5000]]},
+  DIP0: {n:'Descuento en Pesos CER (strip amort.)',t:'Soberano',m:'ARS/CER',v:'2033-12-31',e:true,p:[
+    ['2028-12-31','A',0,0.0417],['2029-12-31','A',0,0.0833],['2030-12-31','A',0,0.0833],
+    ['2031-12-31','A',0,0.1250],['2032-12-31','A',0,0.1667],['2033-12-31','A',0,0.5000]]},
+  PARP: {n:'Par en Pesos ARS/CER',t:'Soberano',m:'ARS/CER',v:'2038-12-31',e:true,p:[
+    ['2026-06-30','R',0.0125,0],['2026-12-31','R',0.0125,0],
+    ['2027-06-30','R',0.0125,0],['2027-12-31','R+A',0.0125,0.0500],
+    ['2028-06-30','R',0.0125,0],['2028-12-31','R+A',0.0125,0.0500],
+    ['2029-06-30','R',0.0125,0],['2029-12-31','R+A',0.0125,0.0500],
+    ['2030-06-30','R',0.0125,0],['2030-12-31','R+A',0.0125,0.0500],
+    ['2031-06-30','R',0.0125,0],['2031-12-31','R+A',0.0125,0.1000],
+    ['2032-06-30','R',0.0125,0],['2032-12-31','R+A',0.0125,0.1000],
+    ['2033-06-30','R',0.0125,0],['2033-12-31','R+A',0.0125,0.1500],
+    ['2034-06-30','R',0.0125,0],['2034-12-31','R+A',0.0125,0.1500],
+    ['2035-06-30','R',0.0125,0],['2035-12-31','R+A',0.0125,0.1000],
+    ['2036-06-30','R',0.0125,0],['2036-12-31','R+A',0.0125,0.1000],
+    ['2037-06-30','R',0.0125,0],['2037-12-31','R',0.0125,0],
+    ['2038-06-30','R',0.0125,0],['2038-12-31','R+A',0.0125,0.1500]]},
+  PAP0: {n:'Par en Pesos CER (strip amort.)',t:'Soberano',m:'ARS/CER',v:'2038-12-31',e:true,p:[
+    ['2027-12-31','A',0,0.0500],['2028-12-31','A',0,0.0500],['2029-12-31','A',0,0.0500],
+    ['2030-12-31','A',0,0.0500],['2031-12-31','A',0,0.1000],['2032-12-31','A',0,0.1000],
+    ['2033-12-31','A',0,0.1500],['2034-12-31','A',0,0.1500],['2035-12-31','A',0,0.1000],
+    ['2036-12-31','A',0,0.1000],['2038-12-31','A',0,0.1500]]},
+  TX31: {n:'Boncer 2031 2%',t:'Soberano',m:'ARS/CER',v:'2031-11-09',e:false,p:[
+    ['2026-11-09','R',0.01,0],
+    ['2027-05-09','R',0.01,0],['2027-11-09','R',0.01,0],
+    ['2028-05-09','R',0.01,0],['2028-11-09','R',0.01,0],
+    ['2029-05-09','R',0.01,0],['2029-11-09','R+A',0.01,0.3333],
+    ['2030-05-09','R+A',0.01,0.3333],['2030-11-09','R+A',0.01,0.3334]]},
+
+  // ── Soberanos ARS/CER — Bontes CER año completo ────────────────────────────
+  TZX26: {n:'Bonte CER Nov-2026',t:'Soberano',m:'ARS/CER',v:'2026-11-09',e:true,p:[
+    ['2026-11-09','A',0,1.0]]},
+  TZX27: {n:'Bonte CER May-2027',t:'Soberano',m:'ARS/CER',v:'2027-05-09',e:true,p:[
+    ['2027-05-09','A',0,1.0]]},
+  TZX28: {n:'Bonte CER May-2028',t:'Soberano',m:'ARS/CER',v:'2028-05-09',e:true,p:[
+    ['2028-05-09','A',0,1.0]]},
+
+  // ── Soberanos ARS/CER — Bontes CER mes/año ─────────────────────────────────
+  TZXO6: {n:'Bonte CER Oct-2026',t:'Soberano',m:'ARS/CER',v:'2026-10-31',e:true,p:[
+    ['2026-10-31','A',0,1.0]]},
+  TZXD6: {n:'Bonte CER Dic-2026',t:'Soberano',m:'ARS/CER',v:'2026-12-31',e:true,p:[
+    ['2026-12-31','A',0,1.0]]},
+  TZXM7: {n:'Bonte CER Mar-2027',t:'Soberano',m:'ARS/CER',v:'2027-03-31',e:true,p:[
+    ['2027-03-31','A',0,1.0]]},
+  TZXY7: {n:'Bonte CER May-2027',t:'Soberano',m:'ARS/CER',v:'2027-05-31',e:true,p:[
+    ['2027-05-31','A',0,1.0]]},
+  TZXA7: {n:'Bonte CER Ago-2027',t:'Soberano',m:'ARS/CER',v:'2027-08-31',e:true,p:[
+    ['2027-08-31','A',0,1.0]]},
+  TZXS7: {n:'Bonte CER Sep-2027',t:'Soberano',m:'ARS/CER',v:'2027-09-30',e:true,p:[
+    ['2027-09-30','A',0,1.0]]},
+  TZXD7: {n:'Bonte CER Dic-2027',t:'Soberano',m:'ARS/CER',v:'2027-12-31',e:true,p:[
+    ['2027-12-31','A',0,1.0]]},
+  TZXM8: {n:'Bonte CER Mar-2028',t:'Soberano',m:'ARS/CER',v:'2028-03-31',e:true,p:[
+    ['2028-03-31','A',0,1.0]]},
+  TZXS8: {n:'Bonte CER Sep-2028',t:'Soberano',m:'ARS/CER',v:'2028-09-30',e:true,p:[
+    ['2028-09-30','A',0,1.0]]},
+  TZXM9: {n:'Bonte CER Mar-2029',t:'Soberano',m:'ARS/CER',v:'2029-03-31',e:true,p:[
+    ['2029-03-31','A',0,1.0]]},
 };
 
 const tenencia = {};
