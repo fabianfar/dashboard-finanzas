@@ -157,11 +157,137 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
 .bar-lbl { font-size: 9px; color: var(--text3); text-align: center; white-space: nowrap; }
 
 /* ── Footer ── */
-footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--text3); }
+.badge-lec { background:#1a1200; color:#e6b800; border-color:#5a4500; }
+
+/* pantalla: ocultar elementos de impresión */
+#print-cover, #print-resumen, #print-break, #print-detail-head { display:none; }
+
+/* ══ IMPRESIÓN / PDF ══════════════════════════════════════════════════════════ */
+@media print {
+  *   { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+  @page { size:A4 portrait; margin:14mm 13mm 16mm 13mm; }
+
+  /* ocultar UI interactiva */
+  .header-right,.panel,.gen-section,#filters-row,footer,
+  #chart-section,.nota-screen { display:none !important; }
+
+  /* mostrar elementos de impresión */
+  #print-cover        { display:flex   !important; }
+  #print-resumen      { display:block  !important; }
+  #print-break        { display:block  !important; page-break-before:always; }
+  #print-detail-head  { display:flex   !important; }
+
+  body   { background:#fff !important; color:#0a0a1a !important;
+           font-family:'Segoe UI',Arial,sans-serif !important; font-size:10px; }
+  .page  { max-width:100%; padding:0; }
+  header { display:none !important; }
+  .metrics { display:none !important; }
+
+  /* ── Portada / Encabezado ── */
+  #print-cover {
+    align-items:flex-start; justify-content:space-between;
+    padding-bottom:10px; border-bottom:2.5px solid #1a3a6e; margin-bottom:18px;
+  }
+  .pc-title  { font-size:18px; font-weight:800; color:#1a3a6e; letter-spacing:-.3px; }
+  .pc-sub    { font-size:9px;  color:#4a5a8a; margin-top:3px; letter-spacing:.6px; text-transform:uppercase; }
+  .pc-right  { text-align:right; }
+  .pc-lbl    { font-size:8px;  color:#7a8aaa; text-transform:uppercase; letter-spacing:.4px; }
+  .pc-client { font-size:13px; font-weight:700; color:#0a0a1a; margin:2px 0; }
+  .pc-date   { font-size:9px;  color:#4a5a8a; }
+
+  /* ── Resumen ejecutivo ── */
+  .re-intro {
+    background:#f3f6ff !important; border-left:4px solid #1a3a6e;
+    padding:10px 14px; margin-bottom:16px; border-radius:0 5px 5px 0;
+    font-size:10.5px; line-height:1.7; color:#1a1a3a;
+  }
+  .re-intro strong { color:#1a3a6e; }
+  .re-h { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em;
+           color:#1a3a6e; margin:16px 0 7px; padding-bottom:4px; border-bottom:1px solid #c5d0ee; }
+  /* KPIs */
+  .re-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+  .re-kpi  { background:#f3f6ff !important; border:1px solid #c5d0ee; border-radius:5px; padding:8px 10px; }
+  .re-kpi .kl { font-size:8px; text-transform:uppercase; letter-spacing:.06em; color:#5a6a8a; margin-bottom:3px; }
+  .re-kpi .kv { font-size:14px; font-weight:700; color:#1a3a6e; font-family:monospace; line-height:1.1; }
+  .re-kpi .ks { font-size:8.5px; color:#7a8aaa; margin-top:2px; }
+  /* Tabla anual */
+  .re-tbl   { width:100%; border-collapse:collapse; font-size:9.5px; margin-bottom:14px; }
+  .re-tbl th { background:#1a3a6e !important; color:#fff !important;
+               padding:5px 8px; font-weight:600; font-size:8.5px; }
+  .re-tbl th:first-child { text-align:left; }
+  .re-tbl td { padding:5px 8px; border-bottom:.5px solid #dce4f5; text-align:right; font-family:monospace; }
+  .re-tbl td:first-child { text-align:left; font-family:inherit; font-weight:600; }
+  .re-tbl tr:nth-child(even) td { background:#f7f9ff !important; }
+  .re-tbl .re-tot td { font-weight:700; background:#eaf0ff !important; border-top:1.5px solid #1a3a6e; }
+  .bar { display:inline-block; height:7px; border-radius:2px; vertical-align:middle; margin-right:5px; min-width:2px; }
+  /* Destacados */
+  .re-dest    { margin:0; padding:0; list-style:none; }
+  .re-dest li { padding:5px 0 5px 4px; border-bottom:.5px solid #e2eaf8; font-size:10px; line-height:1.55; }
+  .re-dest li:last-child { border-bottom:none; }
+  .re-dest strong { color:#1a3a6e; }
+
+  /* ── Cabecera de página de detalle ── */
+  #print-detail-head {
+    align-items:center; justify-content:space-between;
+    padding-bottom:8px; border-bottom:1.5px solid #1a3a6e; margin-bottom:12px;
+  }
+  .pdh-t { font-size:12px; font-weight:700; color:#1a3a6e; }
+  .pdh-s { font-size:9px; color:#4a5a8a; }
+
+  /* ── Tabla de flujo ── */
+  .flujo-outer,.flujo-inner { overflow:visible !important; display:block !important; }
+  .flujo-table { border-collapse:collapse; width:100%; font-size:8.5px; }
+  .flujo-table thead th { background:#1a3a6e !important; color:#fff !important;
+                          padding:5px; font-size:8px; border:.5px solid #1a3a6e; }
+  .flujo-table td    { border:.5px solid #e0e5f0; padding:3.5px 5px; }
+  .flujo-table tbody tr.alt td { background:#f7f9ff !important; }
+  .flujo-table .year-sep td {
+    background:#e5eeff !important; color:#1a3a6e !important;
+    font-weight:700; font-size:8.5px; padding:4px 6px; page-break-after:avoid;
+  }
+  .flujo-table .total-row td {
+    background:#1a3a6e !important; color:#fff !important; font-weight:700; border-top:1.5px solid #1a3a6e;
+  }
+  .num-dash { color:#bbb !important; }
+  /* badges */
+  .badge { font-size:7.5px; padding:1px 4px; }
+  .badge-sov  { background:#e5f4ed !important; color:#1a5f3c !important; border-color:#7dccaa !important; }
+  .badge-prov { background:#fff3e6 !important; color:#7a3800 !important; border-color:#f5a96a !important; }
+  .badge-on   { background:#e5eefa !important; color:#0a3060 !important; border-color:#7ec8f5 !important; }
+  .badge-lec  { background:#fffae0 !important; color:#5a4500 !important; border-color:#e6b800 !important; }
+  .badge-ra,.badge-r,.badge-a { font-size:7.5px; }
+  .ticker-code { font-weight:700; color:#1a3a6e !important; }
+  .inst-name   { color:#333 !important; }
+  /* disclaimer */
+  #nota-est { display:block !important; font-size:8px; color:#6a7aaa !important;
+              margin-top:10px; border-top:.5px solid #d0d8f0; padding-top:6px; }
+  #flujo-outer { display:block !important; }
+  #filters-row { display:none  !important; }
+}
 </style>
 </head>
 <body>
 <div class="page">
+
+  <!-- ══ SOLO IMPRESIÓN ════════════════════════════════════════════════════ -->
+  <div id="print-cover">
+    <div>
+      <div class="pc-title">ANÁLISIS DE FLUJO DE FONDOS</div>
+      <div class="pc-sub">Asesoría de Finanzas Personales · Planificación de Inversiones</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-lbl">Preparado para</div>
+      <div class="pc-client" id="pc-client">—</div>
+      <div class="pc-date"   id="pc-date">—</div>
+    </div>
+  </div>
+  <div id="print-resumen"></div>
+  <div id="print-break"></div>
+  <div id="print-detail-head">
+    <div class="pdh-t">DETALLE COMPLETO DE PAGOS FUTUROS</div>
+    <div class="pdh-s" id="pdh-s">—</div>
+  </div>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
   <header>
     <div class="header-left">
@@ -173,9 +299,9 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Exportar CSV
       </button>
-      <button class="btn" onclick="window.print()">
+      <button class="btn" onclick="imprimirInforme()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Imprimir
+        Informe PDF
       </button>
     </div>
   </header>
@@ -220,6 +346,7 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
           <option value="TX31">TX31 — Boncer 2031 2%</option>
           <option value="TTS26">TTS26 — TAMAR 15/09/26 ★</option>
           <option value="TTD26">TTD26 — TAMAR 15/12/26 ★</option>
+          <option value="TTJ26">TTJ26 — TAMAR 15/06/26 ★</option>
         </optgroup>
         <optgroup label="Soberanos ARS/CER — Descuento &amp; Par">
           <option value="DICP">DICP — Descuento en Pesos ARS/CER ★</option>
@@ -244,17 +371,33 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
           <option value="TZXS8">TZXS8 — Bonte CER Sep-2028 ★</option>
           <option value="TZXM9">TZXM9 — Bonte CER Mar-2029 ★</option>
         </optgroup>
+        <optgroup label="LECAP (Letras Capitalizables ARS)">
+          <option value="S31L6">S31L6 — LECAP 31-Jul-2026</option>
+          <option value="S14G6">S14G6 — LECAP 14-Ago-2026</option>
+          <option value="S31G6">S31G6 — LECAP 31-Ago-2026</option>
+          <option value="S15S6">S15S6 — LECAP 15-Sep-2026</option>
+          <option value="S30S6">S30S6 — LECAP 30-Sep-2026</option>
+          <option value="S30O6">S30O6 — LECAP 30-Oct-2026</option>
+          <option value="S30N6">S30N6 — LECAP 30-Nov-2026</option>
+        </optgroup>
         <optgroup label="Provinciales USD">
           <option value="BA37D">BA37D — Bs.As. Clase A 2037</option>
+          <option value="PR17">PR17 — Provincia Serie 17 ★</option>
         </optgroup>
         <optgroup label="ONs USD">
+          <option value="CLSIO">CLSIO — Celulosa Argentina Serie I ★</option>
+          <option value="CLI1O">CLI1O — CLI Serie 1 ★</option>
           <option value="CRCEO">CRCEO — Celulosa 2025</option>
           <option value="CSDOO">CSDOO — Cresud 2026</option>
           <option value="DNC3O">DNC3O — Edenor Clase 3 ★</option>
+          <option value="DNC7O">DNC7O — Edenor Clase 7 ★</option>
           <option value="GALI2">GALI2 — Galicia 2026</option>
           <option value="IRCP">IRCP — IRSA 2028</option>
           <option value="BMA5">BMA5 — Macro 2026</option>
+          <option value="MR35O">MR35O — Generacion Med. Clase 35 ★</option>
           <option value="MR39O">MR39O — Generacion Med 2031 ★</option>
+          <option value="MRCQO">MRCQO — Mercado Crédito ON Q ★</option>
+          <option value="MRCUO">MRCUO — Mercado Crédito ON U ★</option>
           <option value="MTCGO">MTCGO — Mastellone 2026</option>
           <option value="MSC1O">MSC1O — MSU Energy 2025</option>
           <option value="RUCDO">RUCDO — MSU Energy Cl.XII ★</option>
@@ -308,7 +451,8 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
     <button class="filter-btn" data-filter="A"   onclick="setFilter(this,'A')">Solo Amort.</button>
     <button class="filter-btn" data-filter="Soberano"  onclick="setFilter(this,'Soberano')">Soberanos</button>
     <button class="filter-btn" data-filter="Provincial" onclick="setFilter(this,'Provincial')">Provinciales</button>
-    <button class="filter-btn" data-filter="ON"  onclick="setFilter(this,'ON')">ONs</button>
+    <button class="filter-btn" data-filter="ON"    onclick="setFilter(this,'ON')">ONs</button>
+    <button class="filter-btn" data-filter="LECAP" onclick="setFilter(this,'LECAP')">LECAP</button>
     <input class="search-input" type="text" placeholder="Buscar ticker..." id="search-inp" oninput="renderTabla()"/>
   </div>
 
@@ -474,6 +618,45 @@ const INST = {
     ['2028-09-30','A',0,1.0]]},
   TZXM9: {n:'Bonte CER Mar-2029',t:'Soberano',m:'ARS/CER',v:'2029-03-31',e:true,p:[
     ['2029-03-31','A',0,1.0]]},
+
+  // ── ONs USD (nuevas) ───────────────────────────────────────────────────────
+  CLSIO: {n:'Celulosa Argentina Serie I',t:'ON',m:'USD',v:'2027-09-01',e:true,p:[
+    ['2026-09-01','R',0.0475,0],['2027-03-01','R',0.0475,0],['2027-09-01','R+A',0.0475,1.0]]},
+  CLI1O: {n:'CLI Serie 1',t:'ON',m:'USD',v:'2028-07-01',e:true,p:[
+    ['2026-07-01','R',0.045,0],['2027-01-01','R',0.045,0],['2027-07-01','R',0.045,0],
+    ['2028-01-01','R',0.045,0],['2028-07-01','R+A',0.045,1.0]]},
+  DNC7O: {n:'Edenor Clase 7',t:'ON',m:'USD',v:'2028-09-01',e:true,p:[
+    ['2026-09-01','R',0.04,0],['2027-03-01','R',0.04,0],
+    ['2027-09-01','R+A',0.04,0.333],['2028-03-01','R+A',0.04,0.333],['2028-09-01','R+A',0.04,0.334]]},
+  MR35O: {n:'Generacion Med. Clase 35',t:'ON',m:'USD',v:'2029-05-01',e:true,p:[
+    ['2026-11-01','R',0.04625,0],['2027-05-01','R',0.04625,0],
+    ['2027-11-01','R+A',0.04625,0.20],['2028-05-01','R+A',0.04625,0.20],
+    ['2028-11-01','R+A',0.04625,0.20],['2029-05-01','R+A',0.04625,0.40]]},
+  MRCQO: {n:'Mercado Crédito ON Q',t:'ON',m:'USD',v:'2027-07-15',e:true,p:[
+    ['2026-07-15','R',0.0425,0],['2027-01-15','R',0.0425,0],['2027-07-15','R+A',0.0425,1.0]]},
+  MRCUO: {n:'Mercado Crédito ON U',t:'ON',m:'USD',v:'2028-01-15',e:true,p:[
+    ['2026-07-15','R',0.045,0],['2027-01-15','R',0.045,0],
+    ['2027-07-15','R',0.045,0],['2028-01-15','R+A',0.045,1.0]]},
+
+  // ── Provincial USD (nueva) ─────────────────────────────────────────────────
+  PR17: {n:'Provincia Serie 17',t:'Provincial',m:'USD',v:'2030-06-01',e:true,p:[
+    ['2026-12-01','R+A',0.035,0.0435],['2027-06-01','R+A',0.035,0.0435],
+    ['2027-12-01','R+A',0.035,0.0435],['2028-06-01','R+A',0.035,0.0435],
+    ['2028-12-01','R+A',0.035,0.0435],['2029-06-01','R+A',0.035,0.0435],
+    ['2029-12-01','R+A',0.035,0.0435],['2030-06-01','R+A',0.035,0.6955]]},
+
+  // ── Soberano ARS/TAMAR (nueva) ─────────────────────────────────────────────
+  TTJ26: {n:'TAMAR 15/06/26',t:'Soberano',m:'ARS/TAMAR',v:'2026-06-15',e:true,p:[
+    ['2026-06-15','R+A',0.005,1.0]]},
+
+  // ── LECAP — Letras Capitalizables en Pesos (cero cupón, pago único) ────────
+  S31L6: {n:'LECAP 31-Jul-2026',t:'LECAP',m:'ARS',v:'2026-07-31',e:false,p:[['2026-07-31','A',0,1.0]]},
+  S14G6: {n:'LECAP 14-Ago-2026',t:'LECAP',m:'ARS',v:'2026-08-14',e:false,p:[['2026-08-14','A',0,1.0]]},
+  S31G6: {n:'LECAP 31-Ago-2026',t:'LECAP',m:'ARS',v:'2026-08-31',e:false,p:[['2026-08-31','A',0,1.0]]},
+  S15S6: {n:'LECAP 15-Sep-2026',t:'LECAP',m:'ARS',v:'2026-09-15',e:false,p:[['2026-09-15','A',0,1.0]]},
+  S30S6: {n:'LECAP 30-Sep-2026',t:'LECAP',m:'ARS',v:'2026-09-30',e:false,p:[['2026-09-30','A',0,1.0]]},
+  S30O6: {n:'LECAP 30-Oct-2026',t:'LECAP',m:'ARS',v:'2026-10-30',e:false,p:[['2026-10-30','A',0,1.0]]},
+  S30N6: {n:'LECAP 30-Nov-2026',t:'LECAP',m:'ARS',v:'2026-11-30',e:false,p:[['2026-11-30','A',0,1.0]]},
 };
 
 const tenencia = {};
@@ -484,9 +667,176 @@ let sortDir = 1;
 document.getElementById('gen-date').textContent = `Pagos futuros desde ${fmtF(HOY_STR)}  ·  Actualizado: ${fmtF(HOY_STR)}`;
 
 function tipoBadge(t) {
-  const m = {Soberano:['badge-sov','Soberano'],Provincial:['badge-prov','Provincial'],ON:['badge-on','ON']};
-  const [cls, lbl] = m[t] || ['badge-on',t];
+  const m = {
+    Soberano:  ['badge-sov',  'Soberano'],
+    Provincial:['badge-prov', 'Provincial'],
+    ON:        ['badge-on',   'ON'],
+    LECAP:     ['badge-lec',  'LECAP'],
+  };
+  const [cls, lbl] = m[t] || ['badge-on', t];
   return `<span class="badge ${cls}">${lbl}</span>`;
+}
+
+/* ══ INFORME PDF ═══════════════════════════════════════════════════════════ */
+function imprimirInforme() {
+  if (!Object.keys(tenencia).length) {
+    alert('Agregá al menos un instrumento antes de generar el informe.');
+    return;
+  }
+  if (!eventos_todos.length) {
+    alert('Primero generá la planilla de flujo (botón "Generar planilla").');
+    return;
+  }
+  const cliente = (prompt('Nombre del cliente para el informe:', '') || '').trim() || 'Inversor';
+  generarResumen(cliente);
+  window.print();
+}
+
+function fmtF(s) {
+  const [y,m,d] = s.split('-');
+  const mn = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${parseInt(d)}-${mn[parseInt(m)-1]}-${y}`;
+}
+function fmtM(n, mon) {
+  const s = mon === 'USD' ? 'U$S ' : '$ ';
+  return s + Math.round(n).toLocaleString('es-AR');
+}
+
+function generarResumen(cliente) {
+  const evs = eventos_todos;
+  const hoy = new Date(HOY_STR + 'T00:00:00');
+  const en3m  = new Date(hoy); en3m.setMonth(en3m.getMonth() + 3);
+  const en12m = new Date(hoy); en12m.setFullYear(en12m.getFullYear() + 1);
+
+  // KPIs
+  const totalFlow  = evs.reduce((s,e) => s+e.total, 0);
+  const totalRenta = evs.reduce((s,e) => s+e.renta, 0);
+  const totalAmort = evs.reduce((s,e) => s+e.amort, 0);
+  const flow3m     = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en3m).reduce((s,e) => s+e.total, 0);
+  const flow12m    = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en12m).reduce((s,e) => s+e.total, 0);
+  const prox       = evs[0];
+
+  // Por año
+  const porAnio = {};
+  for (const e of evs) {
+    const y = e.fecha.slice(0,4);
+    if (!porAnio[y]) porAnio[y] = {r:0, a:0, t:0, mon:e.moneda};
+    porAnio[y].r += e.renta; porAnio[y].a += e.amort; porAnio[y].t += e.total;
+  }
+  const anios = Object.keys(porAnio).sort();
+  const maxFlow = Math.max(...anios.map(y => porAnio[y].t));
+  const anioMax = anios.reduce((a,b) => porAnio[b].t > porAnio[a].t ? b : a, anios[0]);
+
+  // Instrumentos
+  const tickers   = [...new Set(evs.map(e => e.ticker))];
+  const monedas   = [...new Set(evs.map(e => e.moneda))];
+  const hayEst    = evs.some(e => e.est);
+  const prox30    = evs.filter(e => { const d=new Date(e.fecha+'T00:00:00'); return d>hoy && d<=new Date(hoy.getTime()+30*864e5); });
+  const pctRenta  = totalFlow > 0 ? (totalRenta/totalFlow*100).toFixed(0) : 0;
+  const pctAmort  = totalFlow > 0 ? (totalAmort/totalFlow*100).toFixed(0) : 0;
+
+  // Moneda de referencia para KPIs globales
+  const monRef = monedas.includes('USD') ? 'USD' : monedas[0] || 'ARS';
+
+  // Fechas
+  const hoyStr = hoy.toLocaleDateString('es-AR', {day:'2-digit',month:'long',year:'numeric'});
+
+  /* ── Portada ── */
+  document.getElementById('pc-client').textContent = cliente;
+  document.getElementById('pc-date').textContent   = 'Fecha: ' + hoyStr;
+  document.getElementById('pdh-s').textContent     = cliente + ' · ' + hoyStr;
+
+  /* ── Tabla anual ── */
+  let filas = '';
+  for (const y of anios) {
+    const d   = porAnio[y];
+    const pct = totalFlow > 0 ? (d.t/totalFlow*100).toFixed(1) : '0.0';
+    const w   = maxFlow > 0   ? Math.round(d.t/maxFlow*50)    : 0;
+    filas += `<tr>
+      <td><strong>${y}</strong></td>
+      <td style="color:#2563eb">${fmtM(d.r, d.mon)}</td>
+      <td style="color:#ea580c">${fmtM(d.a, d.mon)}</td>
+      <td><strong>${fmtM(d.t, d.mon)}</strong></td>
+      <td><span class="bar" style="width:${w}px;background:#1a3a6e"></span>${pct}%</td>
+    </tr>`;
+  }
+  const totRow = `<tr class="re-tot">
+    <td>TOTAL</td>
+    <td style="color:#2563eb">${fmtM(totalRenta, monRef)}</td>
+    <td style="color:#ea580c">${fmtM(totalAmort, monRef)}</td>
+    <td>${fmtM(totalFlow, monRef)}</td>
+    <td>100%</td>
+  </tr>`;
+
+  /* ── Destacados ── */
+  const dest = [];
+  if (prox30.length) {
+    const tkrs = [...new Set(prox30.map(e=>e.ticker))].join(', ');
+    const monto = prox30.reduce((s,e)=>s+e.total,0);
+    dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(monto,prox30[0].moneda)} de ${tkrs}. Verificá los datos bancarios.</li>`);
+  }
+  dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtM(prox.total, prox.moneda)}.</li>`);
+  dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(flow12m, monRef)}, que representa el ${totalFlow>0?(flow12m/totalFlow*100).toFixed(0):0}% del total a cobrar.</li>`);
+  dest.push(`<li>🏆 <strong>Año más productivo:</strong> <strong>${anioMax}</strong> concentra ${fmtM(porAnio[anioMax].t, monRef)} (${totalFlow>0?(porAnio[anioMax].t/totalFlow*100).toFixed(0):0}% del total).</li>`);
+  dest.push(`<li>💰 <strong>Composición del flujo:</strong> ${pctRenta}% son intereses (el "alquiler" de su capital) y ${pctAmort}% es devolución de su capital invertido.</li>`);
+  if (monedas.length > 1) {
+    dest.push(`<li>💱 <strong>Diversificación de monedas:</strong> Su cartera tiene pagos en ${monedas.join(' y ')}, lo que reduce el riesgo de concentración cambiaria.</li>`);
+  }
+  if (hayEst) {
+    dest.push(`<li>⚠️ <strong>Nota:</strong> Los tickers marcados con ★ tienen fechas o tasas estimadas. Se recomienda verificar contra los prospectos oficiales antes de tomar decisiones.</li>`);
+  }
+
+  /* ── Armar HTML ── */
+  const html = `
+    <div class="re-intro">
+      Este informe resume todos los pagos futuros que usted recibirá por sus inversiones en
+      <strong>${tickers.length} instrumento${tickers.length!==1?'s':''}</strong>
+      (${tickers.join(', ')}).
+      Distinguimos dos tipos de cobros: la <strong>renta o intereses</strong> —el pago periódico por prestar
+      su dinero— y la <strong>amortización o capital</strong> —la devolución del dinero que usted invirtió
+      originalmente—. El flujo total estimado asciende a <strong>${fmtM(totalFlow, monRef)}</strong>.
+    </div>
+
+    <div class="re-h">Métricas clave</div>
+    <div class="re-kpis">
+      <div class="re-kpi">
+        <div class="kl">Flujo total futuro</div>
+        <div class="kv">${fmtM(totalFlow, monRef)}</div>
+        <div class="ks">Renta + capital</div>
+      </div>
+      <div class="re-kpi">
+        <div class="kl">Próximos 90 días</div>
+        <div class="kv">${fmtM(flow3m, monRef)}</div>
+        <div class="ks">Cobros inminentes</div>
+      </div>
+      <div class="re-kpi">
+        <div class="kl">Próximos 12 meses</div>
+        <div class="kv">${fmtM(flow12m, monRef)}</div>
+        <div class="ks">Flujo anual</div>
+      </div>
+      <div class="re-kpi">
+        <div class="kl">Próximo pago</div>
+        <div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div>
+        <div class="ks">${prox.ticker} · ${fmtM(prox.total, prox.moneda)}</div>
+      </div>
+    </div>
+
+    <div class="re-h">Flujo proyectado por año</div>
+    <table class="re-tbl">
+      <thead><tr>
+        <th>Año</th>
+        <th style="text-align:right">Intereses</th>
+        <th style="text-align:right">Capital</th>
+        <th style="text-align:right">Total</th>
+        <th>% del total</th>
+      </tr></thead>
+      <tbody>${filas}${totRow}</tbody>
+    </table>
+
+    <div class="re-h">Puntos destacados de su inversión</div>
+    <ul class="re-dest">${dest.join('')}</ul>`;
+
+  document.getElementById('print-resumen').innerHTML = html;
 }
 function concBadge(c) {
   if (c==='R+A') return '<span class="badge badge-ra">Renta + Amort.</span>';
