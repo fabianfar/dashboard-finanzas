@@ -157,112 +157,136 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
 .bar-lbl { font-size: 9px; color: var(--text3); text-align: center; white-space: nowrap; }
 
 /* ── Footer ── */
+footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--text3); }
+
+/* ── Badge LECAP ── */
 .badge-lec { background:#1a1200; color:#e6b800; border-color:#5a4500; }
 
-/* pantalla: ocultar elementos de impresión */
-#print-cover, #print-resumen, #print-break, #print-detail-head { display:none; }
+/* ── Extras del gráfico ── */
+.bar-grp  { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; min-width:52px; }
+.bar-val  { font-size:8px; color:var(--text3); text-align:center; white-space:nowrap;
+            max-width:60px; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+.bar-leyenda { display:flex; gap:6px; justify-content:center; margin-top:8px; }
+.bar-ley-item{ font-size:9px; color:var(--text3); display:flex; align-items:center; gap:3px; }
+.bar-ley-box { width:10px; height:10px; border-radius:2px; }
+
+/* ── Screen: ocultar elementos de impresión ── */
+#print-cover, #print-resumen, #print-break, #print-detail-head, #print-footer { display:none; }
+.txt-print { display:none; }
 
 /* ══ IMPRESIÓN / PDF ══════════════════════════════════════════════════════════ */
 @media print {
-  *   { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
-  @page { size:A4 portrait; margin:14mm 13mm 16mm 13mm; }
+  * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+  @page { size:A4 portrait; margin:12mm 13mm 18mm 13mm; }
 
-  /* ocultar UI interactiva */
+  /* ── Ocultar UI web ── */
   .header-right,.panel,.gen-section,#filters-row,footer,
   #chart-section,.nota-screen { display:none !important; }
 
-  /* mostrar elementos de impresión */
-  #print-cover        { display:flex   !important; }
-  #print-resumen      { display:block  !important; }
-  #print-break        { display:block  !important; page-break-before:always; }
-  #print-detail-head  { display:flex   !important; }
+  /* ── Mostrar elementos de impresión ── */
+  #print-cover       { display:flex  !important; }
+  #print-resumen     { display:block !important; }
+  #print-break       { display:block !important; page-break-before:always; }
+  #print-detail-head { display:flex  !important; }
+  #print-footer      { display:block !important; position:fixed; bottom:4mm; left:0; right:0;
+                       text-align:center; font-size:8px; color:#8a9ab0;
+                       border-top:.5px solid #c8d4e8; padding-top:4px;
+                       background:#fff; font-style:italic; }
 
-  body   { background:#fff !important; color:#0a0a1a !important;
+  /* ── Base ── */
+  body   { background:#fff !important; color:#111 !important;
            font-family:'Segoe UI',Arial,sans-serif !important; font-size:10px; }
   .page  { max-width:100%; padding:0; }
   header { display:none !important; }
   .metrics { display:none !important; }
 
-  /* ── Portada / Encabezado ── */
+  /* ═══ PORTADA ═══ */
   #print-cover {
     align-items:flex-start; justify-content:space-between;
     padding-bottom:10px; border-bottom:2.5px solid #1a3a6e; margin-bottom:18px;
   }
   .pc-title  { font-size:18px; font-weight:800; color:#1a3a6e; letter-spacing:-.3px; }
-  .pc-sub    { font-size:9px;  color:#4a5a8a; margin-top:3px; letter-spacing:.6px; text-transform:uppercase; }
+  .pc-sub    { font-size:9px;  color:#4a5a8a; margin-top:3px; letter-spacing:.7px; text-transform:uppercase; }
   .pc-right  { text-align:right; }
-  .pc-lbl    { font-size:8px;  color:#7a8aaa; text-transform:uppercase; letter-spacing:.4px; }
-  .pc-client { font-size:13px; font-weight:700; color:#0a0a1a; margin:2px 0; }
+  .pc-lbl    { font-size:8px;  color:#8a9ab0; text-transform:uppercase; letter-spacing:.4px; }
+  .pc-client { font-size:13px; font-weight:700; color:#111; margin:2px 0; }
   .pc-date   { font-size:9px;  color:#4a5a8a; }
 
-  /* ── Resumen ejecutivo ── */
-  .re-intro {
-    background:#f3f6ff !important; border-left:4px solid #1a3a6e;
+  /* ═══ RESUMEN EJECUTIVO ═══ */
+  .re-intro { background:#f2f6ff !important; border-left:4px solid #1a3a6e;
     padding:10px 14px; margin-bottom:16px; border-radius:0 5px 5px 0;
-    font-size:10.5px; line-height:1.7; color:#1a1a3a;
-  }
+    font-size:10.5px; line-height:1.7; color:#1a1a3a; }
   .re-intro strong { color:#1a3a6e; }
   .re-h { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em;
-           color:#1a3a6e; margin:16px 0 7px; padding-bottom:4px; border-bottom:1px solid #c5d0ee; }
+    color:#1a3a6e; margin:16px 0 8px; padding-bottom:4px; border-bottom:1px solid #c0cce8; }
   /* KPIs */
   .re-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
-  .re-kpi  { background:#f3f6ff !important; border:1px solid #c5d0ee; border-radius:5px; padding:8px 10px; }
+  .re-kpi  { background:#f2f6ff !important; border:1px solid #c0cce8; border-radius:5px; padding:8px 10px; }
   .re-kpi .kl { font-size:8px; text-transform:uppercase; letter-spacing:.06em; color:#5a6a8a; margin-bottom:3px; }
   .re-kpi .kv { font-size:14px; font-weight:700; color:#1a3a6e; font-family:monospace; line-height:1.1; }
-  .re-kpi .ks { font-size:8.5px; color:#7a8aaa; margin-top:2px; }
+  .re-kpi .ks { font-size:8.5px; color:#8a9ab0; margin-top:2px; }
   /* Tabla anual */
-  .re-tbl   { width:100%; border-collapse:collapse; font-size:9.5px; margin-bottom:14px; }
-  .re-tbl th { background:#1a3a6e !important; color:#fff !important;
-               padding:5px 8px; font-weight:600; font-size:8.5px; }
+  .re-tbl  { width:100%; border-collapse:collapse; font-size:9.5px; margin-bottom:14px; }
+  .re-tbl th { background:#1a3a6e !important; color:#fff !important; padding:5px 8px; font-weight:600; font-size:8.5px; }
   .re-tbl th:first-child { text-align:left; }
-  .re-tbl td { padding:5px 8px; border-bottom:.5px solid #dce4f5; text-align:right; font-family:monospace; }
+  .re-tbl td { padding:5px 8px; border-bottom:.5px solid #d8e2f2; text-align:right; font-family:monospace; }
   .re-tbl td:first-child { text-align:left; font-family:inherit; font-weight:600; }
-  .re-tbl tr:nth-child(even) td { background:#f7f9ff !important; }
-  .re-tbl .re-tot td { font-weight:700; background:#eaf0ff !important; border-top:1.5px solid #1a3a6e; }
-  .bar { display:inline-block; height:7px; border-radius:2px; vertical-align:middle; margin-right:5px; min-width:2px; }
+  .re-tbl tr:nth-child(even) td { background:#f7faff !important; }
+  .re-tbl .re-tot td { font-weight:700; background:#e8f0ff !important; border-top:1.5px solid #1a3a6e; }
+  .bar2 { display:inline-block; height:7px; border-radius:2px; vertical-align:middle; margin-right:5px; min-width:2px; }
   /* Destacados */
   .re-dest    { margin:0; padding:0; list-style:none; }
-  .re-dest li { padding:5px 0 5px 4px; border-bottom:.5px solid #e2eaf8; font-size:10px; line-height:1.55; }
+  .re-dest li { padding:5px 0 5px 4px; border-bottom:.5px solid #dde8f8; font-size:10px; line-height:1.55; }
   .re-dest li:last-child { border-bottom:none; }
   .re-dest strong { color:#1a3a6e; }
 
-  /* ── Cabecera de página de detalle ── */
-  #print-detail-head {
-    align-items:center; justify-content:space-between;
-    padding-bottom:8px; border-bottom:1.5px solid #1a3a6e; margin-bottom:12px;
-  }
+  /* ═══ CABECERA PÁGINA DE DETALLE ═══ */
+  #print-detail-head { align-items:center; justify-content:space-between;
+    padding-bottom:8px; border-bottom:1.5px solid #1a3a6e; margin-bottom:12px; }
   .pdh-t { font-size:12px; font-weight:700; color:#1a3a6e; }
   .pdh-s { font-size:9px; color:#4a5a8a; }
 
-  /* ── Tabla de flujo ── */
+  /* ═══ TABLA DE FLUJO ═══ */
   .flujo-outer,.flujo-inner { overflow:visible !important; display:block !important; }
   .flujo-table { border-collapse:collapse; width:100%; font-size:8.5px; }
+  /* Header: azul oscuro + texto blanco */
   .flujo-table thead th { background:#1a3a6e !important; color:#fff !important;
-                          padding:5px; font-size:8px; border:.5px solid #1a3a6e; }
-  .flujo-table td    { border:.5px solid #e0e5f0; padding:3.5px 5px; }
-  .flujo-table tbody tr.alt td { background:#f7f9ff !important; }
+    padding:5px 6px; font-size:7.5px; border:.5px solid #1a3a6e; text-transform:uppercase; letter-spacing:.04em; }
+  /* Forzar todas las celdas a blanco puro primero */
+  .flujo-table tbody tr td {
+    background:#fff !important; color:#1a1a3a !important;
+    border:.5px solid #e0e8f5; padding:4px 6px; vertical-align:middle;
+  }
+  /* Filas alternadas: azul muy claro */
+  .flujo-table tbody tr.alt td { background:#f0f5ff !important; }
+  /* Separador de año */
   .flujo-table .year-sep td {
-    background:#e5eeff !important; color:#1a3a6e !important;
-    font-weight:700; font-size:8.5px; padding:4px 6px; page-break-after:avoid;
+    background:#dce8ff !important; color:#1a3a6e !important;
+    font-weight:700; font-size:8.5px; padding:5px 8px;
+    border:.5px solid #b8cef0 !important; page-break-after:avoid;
   }
+  /* Fila total */
   .flujo-table .total-row td {
-    background:#1a3a6e !important; color:#fff !important; font-weight:700; border-top:1.5px solid #1a3a6e;
+    background:#1a3a6e !important; color:#fff !important;
+    font-weight:700; border:.5px solid #0e2654 !important; padding:5px 6px;
   }
-  .num-dash { color:#bbb !important; }
-  /* badges */
-  .badge { font-size:7.5px; padding:1px 4px; }
-  .badge-sov  { background:#e5f4ed !important; color:#1a5f3c !important; border-color:#7dccaa !important; }
-  .badge-prov { background:#fff3e6 !important; color:#7a3800 !important; border-color:#f5a96a !important; }
-  .badge-on   { background:#e5eefa !important; color:#0a3060 !important; border-color:#7ec8f5 !important; }
-  .badge-lec  { background:#fffae0 !important; color:#5a4500 !important; border-color:#e6b800 !important; }
-  .badge-ra,.badge-r,.badge-a { font-size:7.5px; }
-  .ticker-code { font-weight:700; color:#1a3a6e !important; }
+  /* Montos: renta=verde, amort=naranja, total=azul oscuro */
+  .flujo-table td.num       { text-align:right; font-family:monospace; color:#1a5f3c !important; font-weight:600; }
+  .flujo-table td.num-dash  { text-align:right; font-family:monospace; color:#bbb !important; }
+  .flujo-table .total-row .num { color:#90e8c0 !important; }
+  /* Ticker y nombre */
+  .ticker-code { color:#1a3a6e !important; font-weight:700; }
   .inst-name   { color:#333 !important; }
-  /* disclaimer */
-  #nota-est { display:block !important; font-size:8px; color:#6a7aaa !important;
-              margin-top:10px; border-top:.5px solid #d0d8f0; padding-top:6px; }
+  /* Moneda */
+  .mon-txt { font-size:8px; color:#444 !important; font-weight:600; }
+  /* Ocultar badges; mostrar texto plano */
+  .badge     { display:none !important; }
+  .txt-print { display:inline !important; font-size:8px; color:#4a5a8a; font-weight:500; }
+  /* Disclaimer */
+  #nota-est { display:block !important; font-size:8px; color:#8a9ab0 !important;
+    margin-top:10px; border-top:.5px solid #c8d4e8; padding-top:6px; }
   #flujo-outer { display:block !important; }
-  #filters-row { display:none  !important; }
+  #filters-row { display:none !important; }
 }
 </style>
 </head>
@@ -287,6 +311,7 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
     <div class="pdh-t">DETALLE COMPLETO DE PAGOS FUTUROS</div>
     <div class="pdh-s" id="pdh-s">—</div>
   </div>
+  <div id="print-footer">Fabián Farías &nbsp;·&nbsp; Consultor Financiero</div>
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
   <header>
@@ -451,7 +476,7 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
     <button class="filter-btn" data-filter="A"   onclick="setFilter(this,'A')">Solo Amort.</button>
     <button class="filter-btn" data-filter="Soberano"  onclick="setFilter(this,'Soberano')">Soberanos</button>
     <button class="filter-btn" data-filter="Provincial" onclick="setFilter(this,'Provincial')">Provinciales</button>
-    <button class="filter-btn" data-filter="ON"    onclick="setFilter(this,'ON')">ONs</button>
+    <button class="filter-btn" data-filter="ON"  onclick="setFilter(this,'ON')">ONs</button>
     <button class="filter-btn" data-filter="LECAP" onclick="setFilter(this,'LECAP')">LECAP</button>
     <input class="search-input" type="text" placeholder="Buscar ticker..." id="search-inp" oninput="renderTabla()"/>
   </div>
@@ -619,7 +644,11 @@ const INST = {
   TZXM9: {n:'Bonte CER Mar-2029',t:'Soberano',m:'ARS/CER',v:'2029-03-31',e:true,p:[
     ['2029-03-31','A',0,1.0]]},
 
-  // ── ONs USD (nuevas) ───────────────────────────────────────────────────────
+  // ── Soberano ARS/TAMAR nueva ──────────────────────────────────────────────
+  TTJ26: {n:'TAMAR 15/06/26',t:'Soberano',m:'ARS/TAMAR',v:'2026-06-15',e:true,p:[
+    ['2026-06-15','R+A',0.005,1.0]]},
+
+  // ── ONs USD nuevas ────────────────────────────────────────────────────────
   CLSIO: {n:'Celulosa Argentina Serie I',t:'ON',m:'USD',v:'2027-09-01',e:true,p:[
     ['2026-09-01','R',0.0475,0],['2027-03-01','R',0.0475,0],['2027-09-01','R+A',0.0475,1.0]]},
   CLI1O: {n:'CLI Serie 1',t:'ON',m:'USD',v:'2028-07-01',e:true,p:[
@@ -638,18 +667,14 @@ const INST = {
     ['2026-07-15','R',0.045,0],['2027-01-15','R',0.045,0],
     ['2027-07-15','R',0.045,0],['2028-01-15','R+A',0.045,1.0]]},
 
-  // ── Provincial USD (nueva) ─────────────────────────────────────────────────
+  // ── Provincial USD nueva ──────────────────────────────────────────────────
   PR17: {n:'Provincia Serie 17',t:'Provincial',m:'USD',v:'2030-06-01',e:true,p:[
     ['2026-12-01','R+A',0.035,0.0435],['2027-06-01','R+A',0.035,0.0435],
     ['2027-12-01','R+A',0.035,0.0435],['2028-06-01','R+A',0.035,0.0435],
     ['2028-12-01','R+A',0.035,0.0435],['2029-06-01','R+A',0.035,0.0435],
     ['2029-12-01','R+A',0.035,0.0435],['2030-06-01','R+A',0.035,0.6955]]},
 
-  // ── Soberano ARS/TAMAR (nueva) ─────────────────────────────────────────────
-  TTJ26: {n:'TAMAR 15/06/26',t:'Soberano',m:'ARS/TAMAR',v:'2026-06-15',e:true,p:[
-    ['2026-06-15','R+A',0.005,1.0]]},
-
-  // ── LECAP — Letras Capitalizables en Pesos (cero cupón, pago único) ────────
+  // ── LECAP — Letras Capitalizables (cero cupón, pago único al vencimiento) ─
   S31L6: {n:'LECAP 31-Jul-2026',t:'LECAP',m:'ARS',v:'2026-07-31',e:false,p:[['2026-07-31','A',0,1.0]]},
   S14G6: {n:'LECAP 14-Ago-2026',t:'LECAP',m:'ARS',v:'2026-08-14',e:false,p:[['2026-08-14','A',0,1.0]]},
   S31G6: {n:'LECAP 31-Ago-2026',t:'LECAP',m:'ARS',v:'2026-08-31',e:false,p:[['2026-08-31','A',0,1.0]]},
@@ -667,176 +692,13 @@ let sortDir = 1;
 document.getElementById('gen-date').textContent = `Pagos futuros desde ${fmtF(HOY_STR)}  ·  Actualizado: ${fmtF(HOY_STR)}`;
 
 function tipoBadge(t) {
-  const m = {
-    Soberano:  ['badge-sov',  'Soberano'],
-    Provincial:['badge-prov', 'Provincial'],
-    ON:        ['badge-on',   'ON'],
-    LECAP:     ['badge-lec',  'LECAP'],
-  };
+  const m = {Soberano:['badge-sov','Soberano'],Provincial:['badge-prov','Provincial'],
+              ON:['badge-on','ON'], LECAP:['badge-lec','LECAP']};
   const [cls, lbl] = m[t] || ['badge-on', t];
   return `<span class="badge ${cls}">${lbl}</span>`;
 }
-
-/* ══ INFORME PDF ═══════════════════════════════════════════════════════════ */
-function imprimirInforme() {
-  if (!Object.keys(tenencia).length) {
-    alert('Agregá al menos un instrumento antes de generar el informe.');
-    return;
-  }
-  if (!eventos_todos.length) {
-    alert('Primero generá la planilla de flujo (botón "Generar planilla").');
-    return;
-  }
-  const cliente = (prompt('Nombre del cliente para el informe:', '') || '').trim() || 'Inversor';
-  generarResumen(cliente);
-  window.print();
-}
-
-function fmtF(s) {
-  const [y,m,d] = s.split('-');
-  const mn = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return `${parseInt(d)}-${mn[parseInt(m)-1]}-${y}`;
-}
-function fmtM(n, mon) {
-  const s = mon === 'USD' ? 'U$S ' : '$ ';
-  return s + Math.round(n).toLocaleString('es-AR');
-}
-
-function generarResumen(cliente) {
-  const evs = eventos_todos;
-  const hoy = new Date(HOY_STR + 'T00:00:00');
-  const en3m  = new Date(hoy); en3m.setMonth(en3m.getMonth() + 3);
-  const en12m = new Date(hoy); en12m.setFullYear(en12m.getFullYear() + 1);
-
-  // KPIs
-  const totalFlow  = evs.reduce((s,e) => s+e.total, 0);
-  const totalRenta = evs.reduce((s,e) => s+e.renta, 0);
-  const totalAmort = evs.reduce((s,e) => s+e.amort, 0);
-  const flow3m     = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en3m).reduce((s,e) => s+e.total, 0);
-  const flow12m    = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en12m).reduce((s,e) => s+e.total, 0);
-  const prox       = evs[0];
-
-  // Por año
-  const porAnio = {};
-  for (const e of evs) {
-    const y = e.fecha.slice(0,4);
-    if (!porAnio[y]) porAnio[y] = {r:0, a:0, t:0, mon:e.moneda};
-    porAnio[y].r += e.renta; porAnio[y].a += e.amort; porAnio[y].t += e.total;
-  }
-  const anios = Object.keys(porAnio).sort();
-  const maxFlow = Math.max(...anios.map(y => porAnio[y].t));
-  const anioMax = anios.reduce((a,b) => porAnio[b].t > porAnio[a].t ? b : a, anios[0]);
-
-  // Instrumentos
-  const tickers   = [...new Set(evs.map(e => e.ticker))];
-  const monedas   = [...new Set(evs.map(e => e.moneda))];
-  const hayEst    = evs.some(e => e.est);
-  const prox30    = evs.filter(e => { const d=new Date(e.fecha+'T00:00:00'); return d>hoy && d<=new Date(hoy.getTime()+30*864e5); });
-  const pctRenta  = totalFlow > 0 ? (totalRenta/totalFlow*100).toFixed(0) : 0;
-  const pctAmort  = totalFlow > 0 ? (totalAmort/totalFlow*100).toFixed(0) : 0;
-
-  // Moneda de referencia para KPIs globales
-  const monRef = monedas.includes('USD') ? 'USD' : monedas[0] || 'ARS';
-
-  // Fechas
-  const hoyStr = hoy.toLocaleDateString('es-AR', {day:'2-digit',month:'long',year:'numeric'});
-
-  /* ── Portada ── */
-  document.getElementById('pc-client').textContent = cliente;
-  document.getElementById('pc-date').textContent   = 'Fecha: ' + hoyStr;
-  document.getElementById('pdh-s').textContent     = cliente + ' · ' + hoyStr;
-
-  /* ── Tabla anual ── */
-  let filas = '';
-  for (const y of anios) {
-    const d   = porAnio[y];
-    const pct = totalFlow > 0 ? (d.t/totalFlow*100).toFixed(1) : '0.0';
-    const w   = maxFlow > 0   ? Math.round(d.t/maxFlow*50)    : 0;
-    filas += `<tr>
-      <td><strong>${y}</strong></td>
-      <td style="color:#2563eb">${fmtM(d.r, d.mon)}</td>
-      <td style="color:#ea580c">${fmtM(d.a, d.mon)}</td>
-      <td><strong>${fmtM(d.t, d.mon)}</strong></td>
-      <td><span class="bar" style="width:${w}px;background:#1a3a6e"></span>${pct}%</td>
-    </tr>`;
-  }
-  const totRow = `<tr class="re-tot">
-    <td>TOTAL</td>
-    <td style="color:#2563eb">${fmtM(totalRenta, monRef)}</td>
-    <td style="color:#ea580c">${fmtM(totalAmort, monRef)}</td>
-    <td>${fmtM(totalFlow, monRef)}</td>
-    <td>100%</td>
-  </tr>`;
-
-  /* ── Destacados ── */
-  const dest = [];
-  if (prox30.length) {
-    const tkrs = [...new Set(prox30.map(e=>e.ticker))].join(', ');
-    const monto = prox30.reduce((s,e)=>s+e.total,0);
-    dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(monto,prox30[0].moneda)} de ${tkrs}. Verificá los datos bancarios.</li>`);
-  }
-  dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtM(prox.total, prox.moneda)}.</li>`);
-  dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(flow12m, monRef)}, que representa el ${totalFlow>0?(flow12m/totalFlow*100).toFixed(0):0}% del total a cobrar.</li>`);
-  dest.push(`<li>🏆 <strong>Año más productivo:</strong> <strong>${anioMax}</strong> concentra ${fmtM(porAnio[anioMax].t, monRef)} (${totalFlow>0?(porAnio[anioMax].t/totalFlow*100).toFixed(0):0}% del total).</li>`);
-  dest.push(`<li>💰 <strong>Composición del flujo:</strong> ${pctRenta}% son intereses (el "alquiler" de su capital) y ${pctAmort}% es devolución de su capital invertido.</li>`);
-  if (monedas.length > 1) {
-    dest.push(`<li>💱 <strong>Diversificación de monedas:</strong> Su cartera tiene pagos en ${monedas.join(' y ')}, lo que reduce el riesgo de concentración cambiaria.</li>`);
-  }
-  if (hayEst) {
-    dest.push(`<li>⚠️ <strong>Nota:</strong> Los tickers marcados con ★ tienen fechas o tasas estimadas. Se recomienda verificar contra los prospectos oficiales antes de tomar decisiones.</li>`);
-  }
-
-  /* ── Armar HTML ── */
-  const html = `
-    <div class="re-intro">
-      Este informe resume todos los pagos futuros que usted recibirá por sus inversiones en
-      <strong>${tickers.length} instrumento${tickers.length!==1?'s':''}</strong>
-      (${tickers.join(', ')}).
-      Distinguimos dos tipos de cobros: la <strong>renta o intereses</strong> —el pago periódico por prestar
-      su dinero— y la <strong>amortización o capital</strong> —la devolución del dinero que usted invirtió
-      originalmente—. El flujo total estimado asciende a <strong>${fmtM(totalFlow, monRef)}</strong>.
-    </div>
-
-    <div class="re-h">Métricas clave</div>
-    <div class="re-kpis">
-      <div class="re-kpi">
-        <div class="kl">Flujo total futuro</div>
-        <div class="kv">${fmtM(totalFlow, monRef)}</div>
-        <div class="ks">Renta + capital</div>
-      </div>
-      <div class="re-kpi">
-        <div class="kl">Próximos 90 días</div>
-        <div class="kv">${fmtM(flow3m, monRef)}</div>
-        <div class="ks">Cobros inminentes</div>
-      </div>
-      <div class="re-kpi">
-        <div class="kl">Próximos 12 meses</div>
-        <div class="kv">${fmtM(flow12m, monRef)}</div>
-        <div class="ks">Flujo anual</div>
-      </div>
-      <div class="re-kpi">
-        <div class="kl">Próximo pago</div>
-        <div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div>
-        <div class="ks">${prox.ticker} · ${fmtM(prox.total, prox.moneda)}</div>
-      </div>
-    </div>
-
-    <div class="re-h">Flujo proyectado por año</div>
-    <table class="re-tbl">
-      <thead><tr>
-        <th>Año</th>
-        <th style="text-align:right">Intereses</th>
-        <th style="text-align:right">Capital</th>
-        <th style="text-align:right">Total</th>
-        <th>% del total</th>
-      </tr></thead>
-      <tbody>${filas}${totRow}</tbody>
-    </table>
-
-    <div class="re-h">Puntos destacados de su inversión</div>
-    <ul class="re-dest">${dest.join('')}</ul>`;
-
-  document.getElementById('print-resumen').innerHTML = html;
+function concText(c) {
+  return c === 'R+A' ? 'Renta + Amort.' : c === 'R' ? 'Renta' : c === 'A' ? 'Amortización' : c;
 }
 function concBadge(c) {
   if (c==='R+A') return '<span class="badge badge-ra">Renta + Amort.</span>';
@@ -944,21 +806,29 @@ function renderChart(evs) {
     por_anio[y].r += e.renta;
     por_anio[y].a += e.amort;
   }
-  const maxT = Math.max(...Object.values(por_anio).map(d=>d.r+d.a));
-  const H = 74;
+  const maxT = Math.max(...Object.values(por_anio).map(d => d.r + d.a), 1);
+  const H = 70;
   const bars = document.getElementById('chart-bars');
-  bars.innerHTML = Object.entries(por_anio).sort().map(([y,d]) => {
-    const tot = d.r + d.a;
-    const hr = Math.round((d.r / maxT) * H);
-    const ha = Math.round((d.a / maxT) * H);
+  bars.innerHTML = Object.entries(por_anio).sort().map(([y, d]) => {
+    const tot  = d.r + d.a;
+    // Calcular altura total proporcional primero; luego partir internamente
+    // (evita que el redondeo individual anule montos pequeños de renta)
+    const totH = Math.round((tot / maxT) * H);
+    const ha   = tot > 0 ? Math.round((d.a / tot) * totH) : 0;
+    const hr   = totH - ha;
     return `<div class="bar-grp">
-      <div class="bar-stack" style="height:${hr+ha}px;">
+      <div class="bar-val">${fmtN(tot)}</div>
+      <div class="bar-stack" style="height:${totH}px;">
         <div class="bar-a" style="height:${ha}px;" title="${y} Amort: ${fmtN(d.a)}"></div>
         <div class="bar-r" style="height:${hr}px;" title="${y} Renta: ${fmtN(d.r)}"></div>
       </div>
       <div class="bar-lbl">${y}</div>
     </div>`;
-  }).join('');
+  }).join('') +
+  `<div class="bar-leyenda">
+    <div class="bar-ley-item"><div class="bar-ley-box" style="background:var(--orange)"></div>Amort.</div>
+    <div class="bar-ley-item"><div class="bar-ley-box" style="background:var(--blue)"></div>Renta</div>
+  </div>`;
 }
 
 function setFilter(btn, f) {
@@ -1004,9 +874,9 @@ function renderTabla() {
       <td>${e.fstr}</td>
       <td><span class="ticker-code">${e.ticker}${e.est?' ★':''}</span></td>
       <td class="inst-name">${e.nombre}</td>
-      <td>${tipoBadge(e.tipo_inst)}</td>
-      <td style="color:var(--text2);font-size:11.5px;">${e.moneda}</td>
-      <td>${concBadge(e.concepto)}</td>
+      <td>${tipoBadge(e.tipo_inst)}<span class="txt-print">${e.tipo_inst}</span></td>
+      <td style="color:var(--text2);font-size:11.5px;"><span class="mon-txt">${e.moneda}</span></td>
+      <td>${concBadge(e.concepto)}<span class="txt-print">${concText(e.concepto)}</span></td>
       <td class="${e.renta>0?'num':'num-dash'}">${e.renta>0?fmtN(e.renta):'—'}</td>
       <td class="${e.amort>0?'num':'num-dash'}">${e.amort>0?fmtN(e.amort):'—'}</td>
       <td class="num" style="color:var(--text);font-weight:600;">${fmtN(e.total)}</td>
@@ -1022,6 +892,136 @@ function renderTabla() {
 
   document.getElementById('flujo-body').innerHTML = rows;
   document.getElementById('nota-est').style.display = hayEst ? '' : 'none';
+}
+
+function imprimirInforme() {
+  if (!Object.keys(tenencia).length) {
+    alert('Agregá al menos un instrumento antes de generar el informe.'); return;
+  }
+  if (!eventos_todos.length) {
+    alert('Primero generá la planilla de flujo (botón "Generar planilla").'); return;
+  }
+  const cliente = (prompt('Nombre del cliente para el informe:', '') || '').trim() || 'Inversor';
+  generarResumen(cliente);
+  window.print();
+}
+
+function fmtF(s) {
+  const [y,m,d] = s.split('-');
+  const mn = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${parseInt(d)}-${mn[parseInt(m)-1]}-${y}`;
+}
+function fmtM(n, mon) {
+  const s = mon === 'USD' ? 'U$S ' : '$ ';
+  return s + Math.round(n).toLocaleString('es-AR');
+}
+
+function generarResumen(cliente) {
+  const evs = eventos_todos;
+  const hoy = new Date(HOY_STR + 'T00:00:00');
+  const en3m  = new Date(hoy); en3m.setMonth(en3m.getMonth() + 3);
+  const en12m = new Date(hoy); en12m.setFullYear(en12m.getFullYear() + 1);
+
+  const totalFlow  = evs.reduce((s,e) => s+e.total, 0);
+  const totalRenta = evs.reduce((s,e) => s+e.renta, 0);
+  const totalAmort = evs.reduce((s,e) => s+e.amort, 0);
+  const flow3m     = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en3m).reduce((s,e)=>s+e.total,0);
+  const flow12m    = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en12m).reduce((s,e)=>s+e.total,0);
+  const prox       = evs[0];
+
+  const porAnio = {};
+  for (const e of evs) {
+    const y = e.fecha.slice(0,4);
+    if (!porAnio[y]) porAnio[y] = {r:0, a:0, t:0, mon:e.moneda};
+    porAnio[y].r += e.renta; porAnio[y].a += e.amort; porAnio[y].t += e.total;
+  }
+  const anios   = Object.keys(porAnio).sort();
+  const maxFlow = Math.max(...anios.map(y => porAnio[y].t), 1);
+  const anioMax = anios.reduce((a,b) => porAnio[b].t > porAnio[a].t ? b : a, anios[0]);
+  const tickers  = [...new Set(evs.map(e => e.ticker))];
+  const monedas  = [...new Set(evs.map(e => e.moneda))];
+  const hayEst   = evs.some(e => e.est);
+  const prox30   = evs.filter(e => {
+    const d = new Date(e.fecha+'T00:00:00'); return d > hoy && d <= new Date(hoy.getTime()+30*864e5);
+  });
+  const monRef   = monedas.includes('USD') ? 'USD' : (monedas[0] || 'ARS');
+  const pctRenta = totalFlow > 0 ? Math.round(totalRenta/totalFlow*100) : 0;
+  const pctAmort = totalFlow > 0 ? Math.round(totalAmort/totalFlow*100) : 0;
+  const hoyStr   = hoy.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+
+  // Portada
+  document.getElementById('pc-client').textContent = cliente;
+  document.getElementById('pc-date').textContent   = 'Fecha: ' + hoyStr;
+  document.getElementById('pdh-s').textContent     = cliente + ' · ' + hoyStr;
+
+  // Tabla anual
+  let filas = '';
+  for (const y of anios) {
+    const d   = porAnio[y];
+    const pct = totalFlow > 0 ? (d.t/totalFlow*100).toFixed(1) : '0.0';
+    const w   = Math.round(d.t/maxFlow*50);
+    filas += `<tr>
+      <td><strong>${y}</strong></td>
+      <td style="color:#2563eb">${fmtM(d.r,d.mon)}</td>
+      <td style="color:#c05a00">${fmtM(d.a,d.mon)}</td>
+      <td><strong>${fmtM(d.t,d.mon)}</strong></td>
+      <td><span class="bar2" style="width:${w}px;background:#1a3a6e"></span>${pct}%</td>
+    </tr>`;
+  }
+  filas += `<tr class="re-tot">
+    <td>TOTAL</td>
+    <td style="color:#2563eb">${fmtM(totalRenta,monRef)}</td>
+    <td style="color:#c05a00">${fmtM(totalAmort,monRef)}</td>
+    <td>${fmtM(totalFlow,monRef)}</td><td>100%</td>
+  </tr>`;
+
+  // Destacados
+  const dest = [];
+  if (prox30.length) {
+    const tkrs  = [...new Set(prox30.map(e=>e.ticker))].join(', ');
+    const monto = prox30.reduce((s,e)=>s+e.total,0);
+    dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(monto,prox30[0].moneda)} de <em>${tkrs}</em>. Verificá los datos bancarios y el acreditación.</li>`);
+  }
+  dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtM(prox.total,prox.moneda)}.</li>`);
+  dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(flow12m,monRef)}, que representa el ${totalFlow>0?Math.round(flow12m/totalFlow*100):0}% del total a cobrar.</li>`);
+  dest.push(`<li>🏆 <strong>Año más productivo:</strong> <strong>${anioMax}</strong> concentra ${fmtM(porAnio[anioMax].t,monRef)} (${totalFlow>0?Math.round(porAnio[anioMax].t/totalFlow*100):0}% del total).</li>`);
+  dest.push(`<li>💰 <strong>Composición del flujo:</strong> ${pctRenta}% son intereses —el "alquiler" de su capital— y ${pctAmort}% es devolución de su capital invertido.</li>`);
+  if (monedas.filter(m=>m!=='ARS').length > 0 && monedas.includes('ARS')) {
+    dest.push(`<li>💱 <strong>Diversificación de monedas:</strong> Su cartera combina activos en ${monedas.join(', ')}, lo que reduce la exposición a un único riesgo cambiario.</li>`);
+  }
+  if (hayEst) {
+    dest.push(`<li>⚠️ <strong>Nota importante:</strong> Los instrumentos marcados con ★ tienen fechas o tasas estimadas. Verifique los prospectos oficiales antes de tomar decisiones de inversión.</li>`);
+  }
+
+  document.getElementById('print-resumen').innerHTML = `
+    <div class="re-intro">
+      Este informe resume los pagos futuros de <strong>${tickers.length} instrumento${tickers.length!==1?'s':''}</strong>
+      (${tickers.join(', ')}). Encontrará dos tipos de cobros: la <strong>renta o intereses</strong>
+      —pago periódico por prestar su dinero— y la <strong>amortización</strong>
+      —devolución del capital que usted invirtió—. El flujo total estimado asciende a
+      <strong>${fmtM(totalFlow,monRef)}</strong>.
+    </div>
+    <div class="re-h">Métricas clave</div>
+    <div class="re-kpis">
+      <div class="re-kpi"><div class="kl">Flujo total futuro</div>
+        <div class="kv">${fmtM(totalFlow,monRef)}</div><div class="ks">Renta + capital</div></div>
+      <div class="re-kpi"><div class="kl">Próximos 90 días</div>
+        <div class="kv">${fmtM(flow3m,monRef)}</div><div class="ks">Cobros inminentes</div></div>
+      <div class="re-kpi"><div class="kl">Próximos 12 meses</div>
+        <div class="kv">${fmtM(flow12m,monRef)}</div><div class="ks">Flujo anual</div></div>
+      <div class="re-kpi"><div class="kl">Próximo pago</div>
+        <div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div>
+        <div class="ks">${prox.ticker} · ${fmtM(prox.total,prox.moneda)}</div></div>
+    </div>
+    <div class="re-h">Flujo proyectado por año</div>
+    <table class="re-tbl">
+      <thead><tr><th>Año</th><th style="text-align:right">Intereses</th>
+        <th style="text-align:right">Capital</th><th style="text-align:right">Total</th>
+        <th>Proporción</th></tr></thead>
+      <tbody>${filas}</tbody>
+    </table>
+    <div class="re-h">Puntos destacados de su inversión</div>
+    <ul class="re-dest">${dest.join('')}</ul>`;
 }
 
 function exportCSV() {
