@@ -162,126 +162,136 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
 /* ── Badge LECAP ── */
 .badge-lec { background:#1a1200; color:#e6b800; border-color:#5a4500; }
 
-/* ── Extras del gráfico ── */
-.bar-grp  { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; min-width:52px; }
+/* ── Gráfico: etiqueta sobre barra ── */
 .bar-val  { font-size:8px; color:var(--text3); text-align:center; white-space:nowrap;
-            max-width:60px; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
-.bar-leyenda { display:flex; gap:6px; justify-content:center; margin-top:8px; }
-.bar-ley-item{ font-size:9px; color:var(--text3); display:flex; align-items:center; gap:3px; }
-.bar-ley-box { width:10px; height:10px; border-radius:2px; }
+            max-width:64px; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+.bar-leyenda   { display:flex; gap:8px; justify-content:center; margin-top:10px; }
+.bar-ley-item  { font-size:9px; color:var(--text3); display:flex; align-items:center; gap:3px; }
+.bar-ley-box   { width:10px; height:10px; border-radius:2px; }
+.bar-log-note  { font-size:8px; color:var(--text3); font-style:italic; margin-top:4px; text-align:center; }
 
-/* ── Screen: ocultar elementos de impresión ── */
+/* ── Instrumento personalizado ── */
+.custom-inst-panel { background:var(--bg2); border:.5px solid var(--border); border-radius:8px;
+  padding:14px; margin-top:10px; display:none; }
+.custom-inst-panel.open { display:block; }
+.ci-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; margin-bottom:8px; }
+.ci-grid label { font-size:11px; color:var(--text2); display:block; margin-bottom:3px; }
+.ci-payments { width:100%; min-height:70px; padding:6px; font-size:11px; font-family:monospace;
+  background:var(--bg); border:.5px solid var(--border); border-radius:6px; color:var(--text);
+  resize:vertical; }
+
+/* ── Elementos solo impresión: ocultar en pantalla ── */
 #print-cover, #print-resumen, #print-break, #print-detail-head, #print-footer { display:none; }
-.txt-print { display:none; }
+#print-tip { display:block; background:#1a1200; border:.5px solid #5a4500; border-radius:6px;
+  padding:8px 12px; font-size:11px; color:#e6b800; margin-bottom:12px; }
 
-/* ══ IMPRESIÓN / PDF ══════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   PDF / IMPRESIÓN
+   Truco clave: @page margin:0 top/bottom elimina el encabezado
+   y pie automático de Chrome (fecha, URL y número de página).
+   Los márgenes visuales se logran con padding en el body.
+   ════════════════════════════════════════════════════════════════ */
 @media print {
   * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
-  @page { size:A4 portrait; margin:12mm 13mm 18mm 13mm; }
 
-  /* ── Ocultar UI web ── */
+  /* margin-top:0 + margin-bottom:0 → Chrome omite fecha y URL automáticos */
+  @page { size:A4 portrait; margin:0mm 13mm; }
+
+  /* Márgenes visuales via padding; espacio inferior para el pie propio */
+  body { background:#fff !important; color:#111 !important;
+    font-family:'Segoe UI',Arial,sans-serif !important; font-size:10px;
+    padding:12mm 0 24mm !important; margin:0 !important; }
+  .page { max-width:100%; padding:0; }
+
+  /* Ocultar UI web */
   .header-right,.panel,.gen-section,#filters-row,footer,
-  #chart-section,.nota-screen { display:none !important; }
+  #chart-section,.nota-screen,#print-tip { display:none !important; }
+  header { display:none !important; }
+  .metrics { display:none !important; }
 
-  /* ── Mostrar elementos de impresión ── */
+  /* Mostrar elementos de impresión */
   #print-cover       { display:flex  !important; }
   #print-resumen     { display:block !important; }
   #print-break       { display:block !important; page-break-before:always; }
   #print-detail-head { display:flex  !important; }
-  #print-footer      { display:block !important; position:fixed; bottom:4mm; left:0; right:0;
-                       text-align:center; font-size:8px; color:#8a9ab0;
-                       border-top:.5px solid #c8d4e8; padding-top:4px;
-                       background:#fff; font-style:italic; }
-
-  /* ── Base ── */
-  body   { background:#fff !important; color:#111 !important;
-           font-family:'Segoe UI',Arial,sans-serif !important; font-size:10px; }
-  .page  { max-width:100%; padding:0; }
-  header { display:none !important; }
-  .metrics { display:none !important; }
-
-  /* ═══ PORTADA ═══ */
-  #print-cover {
-    align-items:flex-start; justify-content:space-between;
-    padding-bottom:10px; border-bottom:2.5px solid #1a3a6e; margin-bottom:18px;
+  #print-footer {
+    display:block !important; position:fixed; bottom:0; left:0; right:0; height:16mm;
+    padding:4mm 13mm 0; text-align:center; font-size:8px; font-style:italic;
+    color:#7a8aaa; border-top:.5px solid #c8d4e8; background:#fff;
   }
-  .pc-title  { font-size:18px; font-weight:800; color:#1a3a6e; letter-spacing:-.3px; }
-  .pc-sub    { font-size:9px;  color:#4a5a8a; margin-top:3px; letter-spacing:.7px; text-transform:uppercase; }
-  .pc-right  { text-align:right; }
-  .pc-lbl    { font-size:8px;  color:#8a9ab0; text-transform:uppercase; letter-spacing:.4px; }
-  .pc-client { font-size:13px; font-weight:700; color:#111; margin:2px 0; }
-  .pc-date   { font-size:9px;  color:#4a5a8a; }
 
-  /* ═══ RESUMEN EJECUTIVO ═══ */
+  /* ── Portada ── */
+  #print-cover { align-items:flex-start; justify-content:space-between;
+    padding-bottom:10px; border-bottom:2.5px solid #1a3a6e; margin-bottom:18px; }
+  .pc-title  { font-size:18px; font-weight:800; color:#1a3a6e; letter-spacing:-.3px; }
+  .pc-sub    { font-size:9px; color:#4a5a8a; margin-top:3px; letter-spacing:.7px; text-transform:uppercase; }
+  .pc-right  { text-align:right; }
+  .pc-lbl    { font-size:8px; color:#8a9ab0; text-transform:uppercase; letter-spacing:.4px; }
+  .pc-client { font-size:13px; font-weight:700; color:#111; margin:2px 0; }
+  .pc-date   { font-size:9px; color:#4a5a8a; }
+
+  /* ── Resumen ejecutivo ── */
   .re-intro { background:#f2f6ff !important; border-left:4px solid #1a3a6e;
     padding:10px 14px; margin-bottom:16px; border-radius:0 5px 5px 0;
     font-size:10.5px; line-height:1.7; color:#1a1a3a; }
   .re-intro strong { color:#1a3a6e; }
   .re-h { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em;
     color:#1a3a6e; margin:16px 0 8px; padding-bottom:4px; border-bottom:1px solid #c0cce8; }
-  /* KPIs */
   .re-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
   .re-kpi  { background:#f2f6ff !important; border:1px solid #c0cce8; border-radius:5px; padding:8px 10px; }
   .re-kpi .kl { font-size:8px; text-transform:uppercase; letter-spacing:.06em; color:#5a6a8a; margin-bottom:3px; }
   .re-kpi .kv { font-size:14px; font-weight:700; color:#1a3a6e; font-family:monospace; line-height:1.1; }
   .re-kpi .ks { font-size:8.5px; color:#8a9ab0; margin-top:2px; }
-  /* Tabla anual */
-  .re-tbl  { width:100%; border-collapse:collapse; font-size:9.5px; margin-bottom:14px; }
+  .re-tbl    { width:100%; border-collapse:collapse; font-size:9.5px; margin-bottom:14px; }
   .re-tbl th { background:#1a3a6e !important; color:#fff !important; padding:5px 8px; font-weight:600; font-size:8.5px; }
   .re-tbl th:first-child { text-align:left; }
-  .re-tbl td { padding:5px 8px; border-bottom:.5px solid #d8e2f2; text-align:right; font-family:monospace; }
+  .re-tbl td { padding:5px 8px; border-bottom:.5px solid #d8e2f5; text-align:right; font-family:monospace; }
   .re-tbl td:first-child { text-align:left; font-family:inherit; font-weight:600; }
   .re-tbl tr:nth-child(even) td { background:#f7faff !important; }
   .re-tbl .re-tot td { font-weight:700; background:#e8f0ff !important; border-top:1.5px solid #1a3a6e; }
   .bar2 { display:inline-block; height:7px; border-radius:2px; vertical-align:middle; margin-right:5px; min-width:2px; }
-  /* Destacados */
   .re-dest    { margin:0; padding:0; list-style:none; }
   .re-dest li { padding:5px 0 5px 4px; border-bottom:.5px solid #dde8f8; font-size:10px; line-height:1.55; }
   .re-dest li:last-child { border-bottom:none; }
   .re-dest strong { color:#1a3a6e; }
 
-  /* ═══ CABECERA PÁGINA DE DETALLE ═══ */
+  /* ── Cabecera de detalle ── */
   #print-detail-head { align-items:center; justify-content:space-between;
     padding-bottom:8px; border-bottom:1.5px solid #1a3a6e; margin-bottom:12px; }
   .pdh-t { font-size:12px; font-weight:700; color:#1a3a6e; }
   .pdh-s { font-size:9px; color:#4a5a8a; }
 
-  /* ═══ TABLA DE FLUJO ═══ */
+  /* ── Tabla de flujo ── */
   .flujo-outer,.flujo-inner { overflow:visible !important; display:block !important; }
   .flujo-table { border-collapse:collapse; width:100%; font-size:8.5px; }
-  /* Header: azul oscuro + texto blanco */
+  /* thead: display:table-row-group evita que Chrome repita el header
+     y genera el artefacto "FECHA TICKER…" flotante al fondo de cada página */
+  .flujo-table thead { display:table-row-group; }
   .flujo-table thead th { background:#1a3a6e !important; color:#fff !important;
-    padding:5px 6px; font-size:7.5px; border:.5px solid #1a3a6e; text-transform:uppercase; letter-spacing:.04em; }
-  /* Forzar todas las celdas a blanco puro primero */
-  .flujo-table tbody tr td {
-    background:#fff !important; color:#1a1a3a !important;
-    border:.5px solid #e0e8f5; padding:4px 6px; vertical-align:middle;
-  }
-  /* Filas alternadas: azul muy claro */
+    padding:5px 6px; font-size:7.5px; border:.5px solid #1a3a6e; text-transform:uppercase; }
+  /* Forzar blanco en todas las filas (override del dark theme) */
+  .flujo-table tbody tr td { background:#fff !important; color:#1a1a3a !important;
+    border:.5px solid #e4ecf8; padding:3.5px 6px; vertical-align:middle; }
   .flujo-table tbody tr.alt td { background:#f0f5ff !important; }
-  /* Separador de año */
-  .flujo-table .year-sep td {
-    background:#dce8ff !important; color:#1a3a6e !important;
-    font-weight:700; font-size:8.5px; padding:5px 8px;
-    border:.5px solid #b8cef0 !important; page-break-after:avoid;
-  }
-  /* Fila total */
-  .flujo-table .total-row td {
-    background:#1a3a6e !important; color:#fff !important;
-    font-weight:700; border:.5px solid #0e2654 !important; padding:5px 6px;
-  }
-  /* Montos: renta=verde, amort=naranja, total=azul oscuro */
-  .flujo-table td.num       { text-align:right; font-family:monospace; color:#1a5f3c !important; font-weight:600; }
-  .flujo-table td.num-dash  { text-align:right; font-family:monospace; color:#bbb !important; }
-  .flujo-table .total-row .num { color:#90e8c0 !important; }
-  /* Ticker y nombre */
+  .flujo-table .year-sep td { background:#dce8ff !important; color:#1a3a6e !important;
+    font-weight:700; font-size:8.5px; padding:5px 8px; border:.5px solid #b8cef0 !important;
+    page-break-after:avoid; }
+  .flujo-table .total-row td { background:#1a3a6e !important; color:#fff !important;
+    font-weight:700; border:.5px solid #0e2654 !important; padding:5px 6px; }
+  .flujo-table .total-row .num { color:#a0e8c8 !important; }
+  /* Ocultar columnas Tipo (4ª) y Concepto (6ª) — ocupan espacio sin aportar al lector */
+  .flujo-table th:nth-child(4),.flujo-table td:nth-child(4),
+  .flujo-table th:nth-child(6),.flujo-table td:nth-child(6) {
+    width:0 !important; max-width:0 !important; padding:0 !important;
+    overflow:hidden !important; font-size:0 !important; border:none !important; }
+  /* Montos */
+  .num      { text-align:right; font-family:monospace; color:#1a5f3c !important; font-weight:600; }
+  .num-dash { text-align:right; font-family:monospace; color:#bbb !important; }
   .ticker-code { color:#1a3a6e !important; font-weight:700; }
   .inst-name   { color:#333 !important; }
-  /* Moneda */
-  .mon-txt { font-size:8px; color:#444 !important; font-weight:600; }
-  /* Ocultar badges; mostrar texto plano */
+  /* Badges: ocultar en PDF */
   .badge     { display:none !important; }
-  .txt-print { display:inline !important; font-size:8px; color:#4a5a8a; font-weight:500; }
+  .del-btn   { display:none !important; }
   /* Disclaimer */
   #nota-est { display:block !important; font-size:8px; color:#8a9ab0 !important;
     margin-top:10px; border-top:.5px solid #c8d4e8; padding-top:6px; }
@@ -292,18 +302,13 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
 </head>
 <body>
 <div class="page">
-
-  <!-- ══ SOLO IMPRESIÓN ════════════════════════════════════════════════════ -->
+  <!-- SOLO IMPRESIÓN -->
   <div id="print-cover">
-    <div>
-      <div class="pc-title">ANÁLISIS DE FLUJO DE FONDOS</div>
-      <div class="pc-sub">Asesoría de Finanzas Personales · Planificación de Inversiones</div>
-    </div>
-    <div class="pc-right">
-      <div class="pc-lbl">Preparado para</div>
+    <div><div class="pc-title">ANÁLISIS DE FLUJO DE FONDOS</div>
+      <div class="pc-sub">Asesoría de Finanzas Personales · Planificación de Inversiones</div></div>
+    <div class="pc-right"><div class="pc-lbl">Preparado para</div>
       <div class="pc-client" id="pc-client">—</div>
-      <div class="pc-date"   id="pc-date">—</div>
-    </div>
+      <div class="pc-date" id="pc-date">—</div></div>
   </div>
   <div id="print-resumen"></div>
   <div id="print-break"></div>
@@ -312,7 +317,6 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
     <div class="pdh-s" id="pdh-s">—</div>
   </div>
   <div id="print-footer">Fabián Farías &nbsp;·&nbsp; Consultor Financiero</div>
-  <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
   <header>
     <div class="header-left">
@@ -330,6 +334,11 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
       </button>
     </div>
   </header>
+
+  <div id="print-tip">
+    💡 <strong>Para eliminar el URL del footer:</strong> en el diálogo de Chrome → "Más opciones" → desmarcar <em>"Encabezados y pies de página"</em>.
+    El truco CSS <code>@page{margin:0}</code> ya está activo y funciona en Chrome 120+.
+  </div>
 
   <!-- Métricas -->
   <div class="metrics" id="metrics">
@@ -368,10 +377,10 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
         <optgroup label="Soberanos ARS">
           <option value="TX26">TX26 — Boncer 2026 2%</option>
           <option value="TX28">TX28 — Boncer 2028 2.25%</option>
-          <option value="TX31">TX31 — Boncer 2031 2%</option>
           <option value="TTS26">TTS26 — TAMAR 15/09/26 ★</option>
           <option value="TTD26">TTD26 — TAMAR 15/12/26 ★</option>
           <option value="TTJ26">TTJ26 — TAMAR 15/06/26 ★</option>
+          <option value="TX31">TX31 — Boncer 2031 2%</option>
         </optgroup>
         <optgroup label="Soberanos ARS/CER — Descuento &amp; Par">
           <option value="DICP">DICP — Descuento en Pesos ARS/CER ★</option>
@@ -445,6 +454,52 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
         <thead><tr><th>Ticker</th><th>Instrumento</th><th>Tipo</th><th>Moneda</th><th>Vencimiento</th><th style="text-align:right">Nominales</th><th></th></tr></thead>
         <tbody id="tenencia-body"></tbody>
       </table>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px;padding-left:4px">
+        ✏️ Podés editar los nominales directamente para reutilizar la cartera con otro cliente.
+      </div>
+    </div>
+    <!-- Agregar instrumento personalizado -->
+    <div style="margin-top:12px">
+      <button class="btn btn-sm" onclick="togglePanel('custom-inst-panel')"
+        style="font-size:11px;background:var(--bg2);border:.5px solid var(--border)">
+        ＋ Nuevo instrumento personalizado
+      </button>
+      <div id="custom-inst-panel" class="custom-inst-panel">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">
+          Definir instrumento · el sistema lo agrega al catálogo de esta sesión
+        </div>
+        <div class="ci-grid">
+          <div><label>Ticker (código)</label>
+            <input type="text" id="ci-ticker" placeholder="Ej: NUEVO1"
+              style="width:100%;padding:5px 8px;font-size:12px;background:var(--bg);border:.5px solid var(--border);border-radius:6px;color:var(--text)"></div>
+          <div><label>Nombre</label>
+            <input type="text" id="ci-nombre" placeholder="Ej: Bono 2030"
+              style="width:100%;padding:5px 8px;font-size:12px;background:var(--bg);border:.5px solid var(--border);border-radius:6px;color:var(--text)"></div>
+          <div><label>Tipo</label>
+            <select id="ci-tipo" style="width:100%;padding:5px 8px;font-size:12px;background:var(--bg);border:.5px solid var(--border);border-radius:6px;color:var(--text)">
+              <option>Soberano</option><option>Provincial</option><option>ON</option><option>LECAP</option></select></div>
+          <div><label>Moneda</label>
+            <select id="ci-moneda" style="width:100%;padding:5px 8px;font-size:12px;background:var(--bg);border:.5px solid var(--border);border-radius:6px;color:var(--text)">
+              <option>USD</option><option>ARS</option><option>ARS/CER</option><option>ARS/TAMAR</option></select></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px">Vencimiento</label>
+          <input type="date" id="ci-venc"
+            style="padding:5px 8px;font-size:12px;background:var(--bg);border:.5px solid var(--border);border-radius:6px;color:var(--text)">
+        </div>
+        <div style="margin-bottom:8px">
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px">
+            Pagos — una fila por evento: <code>["AAAA-MM-DD","R|R+A|A", tasa_decimal, amort_decimal]</code>
+          </label>
+          <textarea id="ci-pagos" class="ci-payments"
+            placeholder='["2027-06-01","R",0.04,0],&#10;["2028-06-01","R+A",0.04,1.0]'></textarea>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary btn-sm" onclick="guardarInstrumento()">Guardar instrumento</button>
+          <button class="btn btn-sm" onclick="togglePanel('custom-inst-panel')">Cancelar</button>
+          <span id="ci-msg" style="font-size:11px;color:var(--text3)"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -644,9 +699,18 @@ const INST = {
   TZXM9: {n:'Bonte CER Mar-2029',t:'Soberano',m:'ARS/CER',v:'2029-03-31',e:true,p:[
     ['2029-03-31','A',0,1.0]]},
 
-  // ── Soberano ARS/TAMAR nueva ──────────────────────────────────────────────
+  // ── TAMAR nueva ──────────────────────────────────────────────────────────
   TTJ26: {n:'TAMAR 15/06/26',t:'Soberano',m:'ARS/TAMAR',v:'2026-06-15',e:true,p:[
     ['2026-06-15','R+A',0.005,1.0]]},
+
+  // ── LECAP — Letras Capitalizables (cero cupón, pago único al vencimiento) ─
+  S31L6: {n:'LECAP 31-Jul-2026', t:'LECAP',m:'ARS',v:'2026-07-31',e:false,p:[['2026-07-31','A',0,1.0]]},
+  S14G6: {n:'LECAP 14-Ago-2026', t:'LECAP',m:'ARS',v:'2026-08-14',e:false,p:[['2026-08-14','A',0,1.0]]},
+  S31G6: {n:'LECAP 31-Ago-2026', t:'LECAP',m:'ARS',v:'2026-08-31',e:false,p:[['2026-08-31','A',0,1.0]]},
+  S15S6: {n:'LECAP 15-Sep-2026', t:'LECAP',m:'ARS',v:'2026-09-15',e:false,p:[['2026-09-15','A',0,1.0]]},
+  S30S6: {n:'LECAP 30-Sep-2026', t:'LECAP',m:'ARS',v:'2026-09-30',e:false,p:[['2026-09-30','A',0,1.0]]},
+  S30O6: {n:'LECAP 30-Oct-2026', t:'LECAP',m:'ARS',v:'2026-10-30',e:false,p:[['2026-10-30','A',0,1.0]]},
+  S30N6: {n:'LECAP 30-Nov-2026', t:'LECAP',m:'ARS',v:'2026-11-30',e:false,p:[['2026-11-30','A',0,1.0]]},
 
   // ── ONs USD nuevas ────────────────────────────────────────────────────────
   CLSIO: {n:'Celulosa Argentina Serie I',t:'ON',m:'USD',v:'2027-09-01',e:true,p:[
@@ -673,15 +737,6 @@ const INST = {
     ['2027-12-01','R+A',0.035,0.0435],['2028-06-01','R+A',0.035,0.0435],
     ['2028-12-01','R+A',0.035,0.0435],['2029-06-01','R+A',0.035,0.0435],
     ['2029-12-01','R+A',0.035,0.0435],['2030-06-01','R+A',0.035,0.6955]]},
-
-  // ── LECAP — Letras Capitalizables (cero cupón, pago único al vencimiento) ─
-  S31L6: {n:'LECAP 31-Jul-2026',t:'LECAP',m:'ARS',v:'2026-07-31',e:false,p:[['2026-07-31','A',0,1.0]]},
-  S14G6: {n:'LECAP 14-Ago-2026',t:'LECAP',m:'ARS',v:'2026-08-14',e:false,p:[['2026-08-14','A',0,1.0]]},
-  S31G6: {n:'LECAP 31-Ago-2026',t:'LECAP',m:'ARS',v:'2026-08-31',e:false,p:[['2026-08-31','A',0,1.0]]},
-  S15S6: {n:'LECAP 15-Sep-2026',t:'LECAP',m:'ARS',v:'2026-09-15',e:false,p:[['2026-09-15','A',0,1.0]]},
-  S30S6: {n:'LECAP 30-Sep-2026',t:'LECAP',m:'ARS',v:'2026-09-30',e:false,p:[['2026-09-30','A',0,1.0]]},
-  S30O6: {n:'LECAP 30-Oct-2026',t:'LECAP',m:'ARS',v:'2026-10-30',e:false,p:[['2026-10-30','A',0,1.0]]},
-  S30N6: {n:'LECAP 30-Nov-2026',t:'LECAP',m:'ARS',v:'2026-11-30',e:false,p:[['2026-11-30','A',0,1.0]]},
 };
 
 const tenencia = {};
@@ -692,13 +747,9 @@ let sortDir = 1;
 document.getElementById('gen-date').textContent = `Pagos futuros desde ${fmtF(HOY_STR)}  ·  Actualizado: ${fmtF(HOY_STR)}`;
 
 function tipoBadge(t) {
-  const m = {Soberano:['badge-sov','Soberano'],Provincial:['badge-prov','Provincial'],
-              ON:['badge-on','ON'], LECAP:['badge-lec','LECAP']};
-  const [cls, lbl] = m[t] || ['badge-on', t];
+  const m = {Soberano:['badge-sov','Soberano'],Provincial:['badge-prov','Provincial'],ON:['badge-on','ON'],LECAP:['badge-lec','LECAP']};
+  const [cls, lbl] = m[t] || ['badge-on',t];
   return `<span class="badge ${cls}">${lbl}</span>`;
-}
-function concText(c) {
-  return c === 'R+A' ? 'Renta + Amort.' : c === 'R' ? 'Renta' : c === 'A' ? 'Amortización' : c;
 }
 function concBadge(c) {
   if (c==='R+A') return '<span class="badge badge-ra">Renta + Amort.</span>';
@@ -728,23 +779,33 @@ function eliminarTicker(tk) {
 }
 
 function renderTenencia() {
-  const wrap = document.getElementById('tenencia-wrap');
+  const wrap  = document.getElementById('tenencia-wrap');
   const tbody = document.getElementById('tenencia-body');
-  const keys = Object.keys(tenencia);
+  const keys  = Object.keys(tenencia);
   if (!keys.length) { wrap.style.display = 'none'; return; }
   wrap.style.display = '';
   tbody.innerHTML = keys.map(tk => {
-    const inst = INST[tk];
+    const inst = INST[tk] || {n:tk, t:'—', m:'—', v:'—', e:false};
     return `<tr>
       <td><span class="ticker-code">${tk}${inst.e?' ★':''}</span></td>
       <td class="inst-name">${inst.n}</td>
       <td>${tipoBadge(inst.t)}</td>
       <td style="color:var(--text2);font-size:12px;">${inst.m}</td>
-      <td style="color:var(--text2);font-size:12px;">${fmtF(inst.v)}</td>
-      <td style="text-align:right;font-family:var(--mono);font-size:12px;">${tenencia[tk].toLocaleString('es-AR')}</td>
+      <td style="color:var(--text2);font-size:12px;">${inst.v !== '—' ? fmtF(inst.v) : '—'}</td>
+      <td style="text-align:right;padding:2px 6px;">
+        <input type="number" value="${tenencia[tk]}" min="1" step="1"
+          style="width:110px;padding:3px 8px;font-size:12px;text-align:right;background:var(--bg2);border:.5px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono)" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'"
+          onchange="actualizarNominal('${tk}',this.value)"
+          title="Editá los nominales para este cliente">
+        <span style="font-size:10px;color:var(--text3);margin-left:3px">nom.</span>
+      </td>
       <td><button class="del-btn" onclick="eliminarTicker('${tk}')" title="Eliminar">×</button></td>
     </tr>`;
   }).join('');
+}
+function actualizarNominal(tk, val) {
+  const n = parseFloat(val);
+  if (n > 0 && tk in tenencia) tenencia[tk] = n;
 }
 
 function calcularFlujo(ten) {
@@ -806,15 +867,24 @@ function renderChart(evs) {
     por_anio[y].r += e.renta;
     por_anio[y].a += e.amort;
   }
-  const maxT = Math.max(...Object.values(por_anio).map(d => d.r + d.a), 1);
+  const entries = Object.entries(por_anio).sort();
+  const vals    = entries.map(([,d]) => d.r + d.a);
+  const maxT    = Math.max(...vals, 1);
+  const minNZ   = Math.min(...vals.filter(v => v > 0), maxT);
+  // Escala logarítmica cuando la diferencia entre años es > 50x
+  // (evita que barras pequeñas queden invisibles, ej. ARS/USD mixto)
+  const useLog  = maxT / minNZ > 50;
   const H = 70;
+  const scaleH  = v => {
+    if (v <= 0) return 0;
+    if (useLog)  return Math.max(Math.round(Math.log10(v) / Math.log10(maxT) * H), 4);
+    return Math.max(Math.round(v / maxT * H), 4);
+  };
   const bars = document.getElementById('chart-bars');
-  bars.innerHTML = Object.entries(por_anio).sort().map(([y, d]) => {
+  bars.innerHTML = entries.map(([y, d]) => {
     const tot  = d.r + d.a;
-    // Calcular altura total proporcional primero; luego partir internamente
-    // (evita que el redondeo individual anule montos pequeños de renta)
-    const totH = Math.round((tot / maxT) * H);
-    const ha   = tot > 0 ? Math.round((d.a / tot) * totH) : 0;
+    const totH = scaleH(tot);
+    const ha   = tot > 0 ? Math.round(d.a / tot * totH) : 0;
     const hr   = totH - ha;
     return `<div class="bar-grp">
       <div class="bar-val">${fmtN(tot)}</div>
@@ -828,7 +898,8 @@ function renderChart(evs) {
   `<div class="bar-leyenda">
     <div class="bar-ley-item"><div class="bar-ley-box" style="background:var(--orange)"></div>Amort.</div>
     <div class="bar-ley-item"><div class="bar-ley-box" style="background:var(--blue)"></div>Renta</div>
-  </div>`;
+  </div>` +
+  (useLog ? '<div class="bar-log-note">* escala logarítmica (monedas o montos heterogéneos)</div>' : '');
 }
 
 function setFilter(btn, f) {
@@ -874,9 +945,9 @@ function renderTabla() {
       <td>${e.fstr}</td>
       <td><span class="ticker-code">${e.ticker}${e.est?' ★':''}</span></td>
       <td class="inst-name">${e.nombre}</td>
-      <td>${tipoBadge(e.tipo_inst)}<span class="txt-print">${e.tipo_inst}</span></td>
-      <td style="color:var(--text2);font-size:11.5px;"><span class="mon-txt">${e.moneda}</span></td>
-      <td>${concBadge(e.concepto)}<span class="txt-print">${concText(e.concepto)}</span></td>
+      <td>${tipoBadge(e.tipo_inst)}</td>
+      <td style="color:var(--text2);font-size:11.5px;">${e.moneda}</td>
+      <td>${concBadge(e.concepto)}</td>
       <td class="${e.renta>0?'num':'num-dash'}">${e.renta>0?fmtN(e.renta):'—'}</td>
       <td class="${e.amort>0?'num':'num-dash'}">${e.amort>0?fmtN(e.amort):'—'}</td>
       <td class="num" style="color:var(--text);font-weight:600;">${fmtN(e.total)}</td>
@@ -894,136 +965,134 @@ function renderTabla() {
   document.getElementById('nota-est').style.display = hayEst ? '' : 'none';
 }
 
+function togglePanel(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+function guardarInstrumento() {
+  const ticker = document.getElementById('ci-ticker').value.trim().toUpperCase();
+  const nombre = document.getElementById('ci-nombre').value.trim();
+  const tipo   = document.getElementById('ci-tipo').value;
+  const moneda = document.getElementById('ci-moneda').value;
+  const venc   = document.getElementById('ci-venc').value;
+  const pagosTxt = document.getElementById('ci-pagos').value.trim();
+  const msg    = document.getElementById('ci-msg');
+  if (!ticker || !nombre || !venc || !pagosTxt) {
+    msg.textContent = '⚠ Completá todos los campos'; msg.style.color='#e74'; return;
+  }
+  let pagos;
+  try { pagos = JSON.parse('[' + pagosTxt + ']'); } catch(e) {
+    msg.textContent = '⚠ Error en el formato de pagos'; msg.style.color='#e74'; return;
+  }
+  // Añadir al catálogo INST
+  INST[ticker] = { n:nombre, t:tipo, m:moneda, v:venc, e:true, p:pagos };
+  // Añadir al select
+  const sel = document.getElementById('sel-ticker');
+  let customGrp = sel.querySelector('optgroup[label="Instrumentos personalizados"]');
+  if (!customGrp) {
+    customGrp = document.createElement('optgroup');
+    customGrp.label = 'Instrumentos personalizados';
+    sel.appendChild(customGrp);
+  }
+  const opt = document.createElement('option');
+  opt.value = ticker; opt.textContent = `${ticker} — ${nombre} ★`;
+  customGrp.appendChild(opt);
+  msg.textContent = `✓ ${ticker} guardado`; msg.style.color='#1D9E75';
+  // Persistir en localStorage para uso futuro
+  try {
+    const custom = JSON.parse(localStorage.getItem('ff_custom_inst') || '{}');
+    custom[ticker] = INST[ticker];
+    localStorage.setItem('ff_custom_inst', JSON.stringify(custom));
+  } catch(e) {}
+  // Limpiar form
+  ['ci-ticker','ci-nombre','ci-venc','ci-pagos'].forEach(id => document.getElementById(id).value='');
+  setTimeout(()=>{ togglePanel('custom-inst-panel'); msg.textContent=''; }, 1500);
+}
+
+// ── Instrumentos personalizados: cargar desde localStorage ──
+function loadCustomInst() {
+  try {
+    const custom = JSON.parse(localStorage.getItem('ff_custom_inst') || '{}');
+    if (!Object.keys(custom).length) return;
+    const sel = document.getElementById('sel-ticker');
+    let grp = sel.querySelector('optgroup[label="Instrumentos personalizados"]');
+    if (!grp) {
+      grp = document.createElement('optgroup');
+      grp.label = 'Instrumentos personalizados';
+      sel.appendChild(grp);
+    }
+    Object.entries(custom).forEach(([tk, d]) => {
+      INST[tk] = d;
+      if (!sel.querySelector(`option[value="${tk}"]`)) {
+        const opt = document.createElement('option');
+        opt.value = tk; opt.textContent = `${tk} — ${d.n} ★`;
+        grp.appendChild(opt);
+      }
+    });
+  } catch(e) {}
+}
 function imprimirInforme() {
-  if (!Object.keys(tenencia).length) {
-    alert('Agregá al menos un instrumento antes de generar el informe.'); return;
-  }
-  if (!eventos_todos.length) {
-    alert('Primero generá la planilla de flujo (botón "Generar planilla").'); return;
-  }
-  const cliente = (prompt('Nombre del cliente para el informe:', '') || '').trim() || 'Inversor';
+  if (!Object.keys(tenencia).length) { alert('Agregá al menos un instrumento.'); return; }
+  if (!eventos_todos.length) { alert('Generá la planilla primero.'); return; }
+  const cliente = (prompt('Nombre del cliente:', '') || '').trim() || 'Inversor';
   generarResumen(cliente);
   window.print();
 }
-
 function fmtF(s) {
   const [y,m,d] = s.split('-');
-  const mn = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return `${parseInt(d)}-${mn[parseInt(m)-1]}-${y}`;
+  return `${parseInt(d)}-${['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][parseInt(m)-1]}-${y}`;
 }
-function fmtM(n, mon) {
-  const s = mon === 'USD' ? 'U$S ' : '$ ';
-  return s + Math.round(n).toLocaleString('es-AR');
-}
-
+function fmtM(n, mon) { return (mon==='USD'?'U$S ':mon==='ARS'?'$ ARS ':mon+' ')+Math.round(n).toLocaleString('es-AR'); }
 function generarResumen(cliente) {
   const evs = eventos_todos;
-  const hoy = new Date(HOY_STR + 'T00:00:00');
-  const en3m  = new Date(hoy); en3m.setMonth(en3m.getMonth() + 3);
-  const en12m = new Date(hoy); en12m.setFullYear(en12m.getFullYear() + 1);
-
-  const totalFlow  = evs.reduce((s,e) => s+e.total, 0);
-  const totalRenta = evs.reduce((s,e) => s+e.renta, 0);
-  const totalAmort = evs.reduce((s,e) => s+e.amort, 0);
-  const flow3m     = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en3m).reduce((s,e)=>s+e.total,0);
-  const flow12m    = evs.filter(e => new Date(e.fecha+'T00:00:00') <= en12m).reduce((s,e)=>s+e.total,0);
-  const prox       = evs[0];
-
-  const porAnio = {};
-  for (const e of evs) {
-    const y = e.fecha.slice(0,4);
-    if (!porAnio[y]) porAnio[y] = {r:0, a:0, t:0, mon:e.moneda};
-    porAnio[y].r += e.renta; porAnio[y].a += e.amort; porAnio[y].t += e.total;
-  }
-  const anios   = Object.keys(porAnio).sort();
-  const maxFlow = Math.max(...anios.map(y => porAnio[y].t), 1);
-  const anioMax = anios.reduce((a,b) => porAnio[b].t > porAnio[a].t ? b : a, anios[0]);
-  const tickers  = [...new Set(evs.map(e => e.ticker))];
-  const monedas  = [...new Set(evs.map(e => e.moneda))];
-  const hayEst   = evs.some(e => e.est);
-  const prox30   = evs.filter(e => {
-    const d = new Date(e.fecha+'T00:00:00'); return d > hoy && d <= new Date(hoy.getTime()+30*864e5);
-  });
-  const monRef   = monedas.includes('USD') ? 'USD' : (monedas[0] || 'ARS');
-  const pctRenta = totalFlow > 0 ? Math.round(totalRenta/totalFlow*100) : 0;
-  const pctAmort = totalFlow > 0 ? Math.round(totalAmort/totalFlow*100) : 0;
-  const hoyStr   = hoy.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
-
-  // Portada
+  const hoy = new Date(HOY_STR+'T00:00:00');
+  const en3m  = new Date(hoy); en3m.setMonth(en3m.getMonth()+3);
+  const en12m = new Date(hoy); en12m.setFullYear(en12m.getFullYear()+1);
+  const tFlow = evs.reduce((s,e)=>s+e.total,0);
+  const tR    = evs.reduce((s,e)=>s+e.renta,0);
+  const tA    = evs.reduce((s,e)=>s+e.amort,0);
+  const f3m   = evs.filter(e=>new Date(e.fecha+'T00:00:00')<=en3m).reduce((s,e)=>s+e.total,0);
+  const f12m  = evs.filter(e=>new Date(e.fecha+'T00:00:00')<=en12m).reduce((s,e)=>s+e.total,0);
+  const prox  = evs[0];
+  const pA={};
+  for(const e of evs){const y=e.fecha.slice(0,4);if(!pA[y])pA[y]={r:0,a:0,t:0,mon:e.moneda};pA[y].r+=e.renta;pA[y].a+=e.amort;pA[y].t+=e.total;}
+  const anios = Object.keys(pA).sort();
+  const maxF  = Math.max(...anios.map(y=>pA[y].t),1);
+  const aMax  = anios.reduce((a,b)=>pA[b].t>pA[a].t?b:a,anios[0]);
+  const ticks = [...new Set(evs.map(e=>e.ticker))];
+  const mons  = [...new Set(evs.map(e=>e.moneda))];
+  const hayE  = evs.some(e=>e.est);
+  const p30   = evs.filter(e=>{const d=new Date(e.fecha+'T00:00:00');return d>hoy&&d<=new Date(hoy.getTime()+30*864e5);});
+  const monR  = mons.includes('USD')?'USD':(mons[0]||'ARS');
+  const hoyStr= hoy.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
   document.getElementById('pc-client').textContent = cliente;
-  document.getElementById('pc-date').textContent   = 'Fecha: ' + hoyStr;
-  document.getElementById('pdh-s').textContent     = cliente + ' · ' + hoyStr;
-
-  // Tabla anual
-  let filas = '';
-  for (const y of anios) {
-    const d   = porAnio[y];
-    const pct = totalFlow > 0 ? (d.t/totalFlow*100).toFixed(1) : '0.0';
-    const w   = Math.round(d.t/maxFlow*50);
-    filas += `<tr>
-      <td><strong>${y}</strong></td>
-      <td style="color:#2563eb">${fmtM(d.r,d.mon)}</td>
-      <td style="color:#c05a00">${fmtM(d.a,d.mon)}</td>
-      <td><strong>${fmtM(d.t,d.mon)}</strong></td>
-      <td><span class="bar2" style="width:${w}px;background:#1a3a6e"></span>${pct}%</td>
-    </tr>`;
-  }
-  filas += `<tr class="re-tot">
-    <td>TOTAL</td>
-    <td style="color:#2563eb">${fmtM(totalRenta,monRef)}</td>
-    <td style="color:#c05a00">${fmtM(totalAmort,monRef)}</td>
-    <td>${fmtM(totalFlow,monRef)}</td><td>100%</td>
-  </tr>`;
-
-  // Destacados
-  const dest = [];
-  if (prox30.length) {
-    const tkrs  = [...new Set(prox30.map(e=>e.ticker))].join(', ');
-    const monto = prox30.reduce((s,e)=>s+e.total,0);
-    dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(monto,prox30[0].moneda)} de <em>${tkrs}</em>. Verificá los datos bancarios y el acreditación.</li>`);
-  }
+  document.getElementById('pc-date').textContent   = 'Fecha: '+hoyStr;
+  document.getElementById('pdh-s').textContent     = cliente+' · '+hoyStr;
+  let filas='';
+  for(const y of anios){const d=pA[y];const pct=tFlow>0?(d.t/tFlow*100).toFixed(1):'0.0';const w=Math.round(d.t/maxF*50);
+    filas+=`<tr><td><strong>${y}</strong></td><td style="color:#2563eb">${fmtM(d.r,d.mon)}</td><td style="color:#c05a00">${fmtM(d.a,d.mon)}</td><td><strong>${fmtM(d.t,d.mon)}</strong></td><td><span class="bar2" style="width:${w}px;background:#1a3a6e"></span>${pct}%</td></tr>`;}
+  filas+=`<tr class="re-tot"><td>TOTAL</td><td style="color:#2563eb">${fmtM(tR,monR)}</td><td style="color:#c05a00">${fmtM(tA,monR)}</td><td>${fmtM(tFlow,monR)}</td><td>100%</td></tr>`;
+  const dest=[];
+  if(p30.length){const tkrs=[...new Set(p30.map(e=>e.ticker))].join(', ');dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(p30.reduce((s,e)=>s+e.total,0),p30[0].moneda)} de <em>${tkrs}</em>. Verificá datos bancarios.</li>`);}
   dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtM(prox.total,prox.moneda)}.</li>`);
-  dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(flow12m,monRef)}, que representa el ${totalFlow>0?Math.round(flow12m/totalFlow*100):0}% del total a cobrar.</li>`);
-  dest.push(`<li>🏆 <strong>Año más productivo:</strong> <strong>${anioMax}</strong> concentra ${fmtM(porAnio[anioMax].t,monRef)} (${totalFlow>0?Math.round(porAnio[anioMax].t/totalFlow*100):0}% del total).</li>`);
-  dest.push(`<li>💰 <strong>Composición del flujo:</strong> ${pctRenta}% son intereses —el "alquiler" de su capital— y ${pctAmort}% es devolución de su capital invertido.</li>`);
-  if (monedas.filter(m=>m!=='ARS').length > 0 && monedas.includes('ARS')) {
-    dest.push(`<li>💱 <strong>Diversificación de monedas:</strong> Su cartera combina activos en ${monedas.join(', ')}, lo que reduce la exposición a un único riesgo cambiario.</li>`);
-  }
-  if (hayEst) {
-    dest.push(`<li>⚠️ <strong>Nota importante:</strong> Los instrumentos marcados con ★ tienen fechas o tasas estimadas. Verifique los prospectos oficiales antes de tomar decisiones de inversión.</li>`);
-  }
-
-  document.getElementById('print-resumen').innerHTML = `
-    <div class="re-intro">
-      Este informe resume los pagos futuros de <strong>${tickers.length} instrumento${tickers.length!==1?'s':''}</strong>
-      (${tickers.join(', ')}). Encontrará dos tipos de cobros: la <strong>renta o intereses</strong>
-      —pago periódico por prestar su dinero— y la <strong>amortización</strong>
-      —devolución del capital que usted invirtió—. El flujo total estimado asciende a
-      <strong>${fmtM(totalFlow,monRef)}</strong>.
-    </div>
+  dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(f12m,monR)} (${tFlow>0?Math.round(f12m/tFlow*100):0}% del total).</li>`);
+  dest.push(`<li>🏆 <strong>Año más productivo:</strong> ${aMax} — ${fmtM(pA[aMax].t,monR)} (${tFlow>0?Math.round(pA[aMax].t/tFlow*100):0}% del total).</li>`);
+  dest.push(`<li>💰 <strong>Composición:</strong> ${tFlow>0?Math.round(tR/tFlow*100):0}% intereses · ${tFlow>0?Math.round(tA/tFlow*100):0}% devolución de capital.</li>`);
+  if(mons.filter(m=>m!=='ARS').length>0&&mons.includes('ARS'))dest.push(`<li>💱 <strong>Monedas:</strong> Su cartera combina pagos en ${mons.join(', ')}.</li>`);
+  if(hayE)dest.push(`<li>⚠️ <strong>Nota:</strong> Los tickers marcados ★ tienen datos estimados. Verificar prospectos antes de operar.</li>`);
+  document.getElementById('print-resumen').innerHTML=`
+    <div class="re-intro">Este informe resume los pagos futuros de <strong>${ticks.length} instrumento${ticks.length!==1?'s':''}</strong> (${ticks.join(', ')}). Encontrará dos tipos de cobros: la <strong>renta</strong> —pago periódico por prestar su dinero— y la <strong>amortización</strong> —devolución del capital invertido—. Flujo total estimado: <strong>${fmtM(tFlow,monR)}</strong>.</div>
     <div class="re-h">Métricas clave</div>
     <div class="re-kpis">
-      <div class="re-kpi"><div class="kl">Flujo total futuro</div>
-        <div class="kv">${fmtM(totalFlow,monRef)}</div><div class="ks">Renta + capital</div></div>
-      <div class="re-kpi"><div class="kl">Próximos 90 días</div>
-        <div class="kv">${fmtM(flow3m,monRef)}</div><div class="ks">Cobros inminentes</div></div>
-      <div class="re-kpi"><div class="kl">Próximos 12 meses</div>
-        <div class="kv">${fmtM(flow12m,monRef)}</div><div class="ks">Flujo anual</div></div>
-      <div class="re-kpi"><div class="kl">Próximo pago</div>
-        <div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div>
-        <div class="ks">${prox.ticker} · ${fmtM(prox.total,prox.moneda)}</div></div>
+      <div class="re-kpi"><div class="kl">Flujo total futuro</div><div class="kv">${fmtM(tFlow,monR)}</div><div class="ks">Renta + capital</div></div>
+      <div class="re-kpi"><div class="kl">Próximos 90 días</div><div class="kv">${fmtM(f3m,monR)}</div><div class="ks">Cobros inminentes</div></div>
+      <div class="re-kpi"><div class="kl">Próximos 12 meses</div><div class="kv">${fmtM(f12m,monR)}</div><div class="ks">Flujo anual</div></div>
+      <div class="re-kpi"><div class="kl">Próximo pago</div><div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div><div class="ks">${prox.ticker} · ${fmtM(prox.total,prox.moneda)}</div></div>
     </div>
     <div class="re-h">Flujo proyectado por año</div>
-    <table class="re-tbl">
-      <thead><tr><th>Año</th><th style="text-align:right">Intereses</th>
-        <th style="text-align:right">Capital</th><th style="text-align:right">Total</th>
-        <th>Proporción</th></tr></thead>
-      <tbody>${filas}</tbody>
-    </table>
-    <div class="re-h">Puntos destacados de su inversión</div>
+    <table class="re-tbl"><thead><tr><th>Año</th><th style="text-align:right">Intereses</th><th style="text-align:right">Capital</th><th style="text-align:right">Total</th><th>Proporción</th></tr></thead><tbody>${filas}</tbody></table>
+    <div class="re-h">Puntos destacados</div>
     <ul class="re-dest">${dest.join('')}</ul>`;
 }
-
 function exportCSV() {
   if (!eventos_todos.length) return alert('Generá el flujo primero');
   const hdr = ['Fecha','Ticker','Instrumento','Tipo','Moneda','Concepto','Renta','Amort','Total'];
@@ -1037,6 +1106,7 @@ function exportCSV() {
   a.download = 'flujo_fondos_bonos_ons.csv';
   a.click();
 }
+loadCustomInst();
 </script>
 </body>
 </html>
