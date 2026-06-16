@@ -182,8 +182,6 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
 
 /* ── Elementos solo impresión: ocultar en pantalla ── */
 #print-cover, #print-resumen, #print-break, #print-detail-head, #print-footer { display:none; }
-#print-tip { display:block; background:#1a1200; border:.5px solid #5a4500; border-radius:6px;
-  padding:8px 12px; font-size:11px; color:#e6b800; margin-bottom:12px; }
 
 /* ════════════════════════════════════════════════════════════════
    PDF / IMPRESIÓN
@@ -205,7 +203,7 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
 
   /* Ocultar UI web */
   .header-right,.panel,.gen-section,#filters-row,footer,
-  #chart-section,.nota-screen,#print-tip { display:none !important; }
+  #chart-section,.nota-screen { display:none !important; }
   header { display:none !important; }
   .metrics { display:none !important; }
 
@@ -340,11 +338,6 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
       </button>
     </div>
   </header>
-
-  <div id="print-tip">
-    💡 <strong>Para eliminar el URL del footer:</strong> en el diálogo de Chrome → "Más opciones" → desmarcar <em>"Encabezados y pies de página"</em>.
-    El truco CSS <code>@page{margin:0}</code> ya está activo y funciona en Chrome 120+.
-  </div>
 
   <!-- Métricas -->
   <div class="metrics" id="metrics">
@@ -946,9 +939,14 @@ function renderTabla() {
     const e = evs[i];
     const anio = e.fecha.slice(0,4);
     if (anio !== anioActual) {
-      const tAnio = evs.filter(x=>x.fecha.startsWith(anio)).reduce((s,x)=>s+x.total,0);
+      const evsAnio = evs.filter(x=>x.fecha.startsWith(anio));
+      const curTots = {};
+      evsAnio.forEach(x => { curTots[x.moneda] = (curTots[x.moneda]||0) + x.total; });
+      const curStr = Object.keys(curTots).sort()
+        .map(c => fmtM(curTots[c], c))
+        .join(' &nbsp;·&nbsp; ');
       rows += `<tr class="year-sep"><td colspan="9" style="padding:5px 11px;">
-        <span>── ${anio} ──  <span style="color:var(--text2);font-weight:400;font-size:11px;">${fmtN(tAnio)} flujo en el año</span></span>
+        <span>── ${anio} ──  <span style="color:var(--text2);font-weight:400;font-size:11px;">${curStr}</span></span>
       </td></tr>`;
       anioActual = anio;
     }
@@ -1126,7 +1124,7 @@ function generarResumen(cliente) {
   if(p30.length){const tkrs=[...new Set(p30.map(e=>e.ticker))].join(', ');dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(p30.reduce((s,e)=>s+e.total,0),p30[0].moneda)} de <em>${tkrs}</em>. Verificá datos bancarios.</li>`);}
   dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtM(prox.total,prox.moneda)}.</li>`);
   dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(f12m,monR)} (${tFlow>0?Math.round(f12m/tFlow*100):0}% del total).</li>`);
-  dest.push(`<li>🏆 <strong>Año más productivo:</strong> ${aMax} — ${fmtM(pA[aMax].t,monR)} (${tFlow>0?Math.round(pA[aMax].t/tFlow*100):0}% del total).</li>`);
+  dest.push(`<li>🏆 <strong>Año más productivo:</strong> ${aMax} — ${fmtM(yearTots[aMaxI],monR)} (${tFlow>0?Math.round(yearTots[aMaxI]/tFlow*100):0}% del total).</li>`);
   dest.push(`<li>💰 <strong>Composición:</strong> ${tFlow>0?Math.round(tR/tFlow*100):0}% intereses · ${tFlow>0?Math.round(tA/tFlow*100):0}% devolución de capital.</li>`);
   if(mons.filter(m=>m!=='ARS').length>0&&mons.includes('ARS'))dest.push(`<li>💱 <strong>Monedas:</strong> Su cartera combina pagos en ${mons.join(', ')}.</li>`);
   if(hayE)dest.push(`<li>⚠️ <strong>Nota:</strong> Los tickers marcados ★ tienen datos estimados. Verificar prospectos antes de operar.</li>`);
