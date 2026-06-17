@@ -578,6 +578,17 @@ function fmtF(s) {
 }
 function fmtN(n) { return n == null ? '—' : n.toLocaleString('es-AR', {minimumFractionDigits:2,maximumFractionDigits:2}); }
 
+// ── Agrupación de monedas: ARS, ARS/CER y ARS/TAMAR son "Pesos" (se suman entre sí);
+//    USD es un grupo aparte. Nunca se mezclan pesos con dólares en un mismo total. ──
+function curGroup(mon) {
+  if (mon && mon.indexOf('ARS') === 0) return 'ARS';
+  return mon || 'ARS';
+}
+function fmtG(n, g) {
+  const sym = { ARS: '$ ', USD: 'U$S ' };
+  return (sym[g] || g + ' ') + Math.round(n).toLocaleString('es-AR');
+}
+
 const INST = {
   AL29:  {n:'Bonar 2029',t:'Soberano',m:'USD',v:'2029-07-09',e:false,p:[['2026-07-09','R',0.00875,0],['2027-01-09','R',0.00875,0],['2027-07-09','R',0.00875,0],['2028-01-09','R',0.00875,0],['2028-07-09','R',0.00875,0],['2029-01-09','R',0.00875,0],['2029-07-09','R+A',0.00875,1.0]]},
   AL30:  {n:'Bonar 2030',t:'Soberano',m:'USD',v:'2030-07-09',e:false,p:[['2026-07-09','R+A',0.0125,0.04],['2027-01-09','R+A',0.0125,0.08],['2027-07-09','R+A',0.0125,0.08],['2028-01-09','R+A',0.0125,0.08],['2028-07-09','R+A',0.0125,0.08],['2029-01-09','R+A',0.0125,0.08],['2029-07-09','R+A',0.0125,0.08],['2030-01-09','R+A',0.0125,0.16],['2030-07-09','R+A',0.0125,0.28]]},
@@ -845,17 +856,22 @@ function generarFlujo() {
 }
 
 function actualizarMetricas(evs) {
-  const tR = evs.reduce((s,e)=>s+e.renta,0);
-  const tA = evs.reduce((s,e)=>s+e.amort,0);
-  const tT = evs.reduce((s,e)=>s+e.total,0);
+  const byGrp = {};
+  evs.forEach(e => {
+    const g = curGroup(e.moneda);
+    if (!byGrp[g]) byGrp[g] = {r:0, a:0, t:0};
+    byGrp[g].r += e.renta; byGrp[g].a += e.amort; byGrp[g].t += e.total;
+  });
+  const grpKeys = Object.keys(byGrp).sort();
   const prox = evs[0];
+  const lines = (key) => grpKeys.map(g => `<div>${fmtG(byGrp[g][key], g)}</div>`).join('');
   document.getElementById('m-inst').textContent  = new Set(evs.map(e=>e.ticker)).size;
   document.getElementById('m-pagos').textContent = evs.length;
   document.getElementById('m-prox').textContent  = prox ? prox.fstr : '—';
   document.getElementById('m-prox-tk').textContent = prox ? prox.ticker : '';
-  document.getElementById('m-renta').textContent = fmtN(tR);
-  document.getElementById('m-amort').textContent = fmtN(tA);
-  document.getElementById('m-total').textContent = fmtN(tT);
+  document.getElementById('m-renta').innerHTML = lines('r');
+  document.getElementById('m-amort').innerHTML = lines('a');
+  document.getElementById('m-total').innerHTML = lines('t');
 }
 
 function renderChart(evs) {
@@ -940,10 +956,10 @@ function renderTabla() {
     const anio = e.fecha.slice(0,4);
     if (anio !== anioActual) {
       const evsAnio = evs.filter(x=>x.fecha.startsWith(anio));
-      const curTots = {};
-      evsAnio.forEach(x => { curTots[x.moneda] = (curTots[x.moneda]||0) + x.total; });
-      const curStr = Object.keys(curTots).sort()
-        .map(c => fmtM(curTots[c], c))
+      const grpTots = {};
+      evsAnio.forEach(x => { const g=curGroup(x.moneda); grpTots[g] = (grpTots[g]||0) + x.total; });
+      const curStr = Object.keys(grpTots).sort()
+        .map(g => fmtG(grpTots[g], g))
         .join(' &nbsp;·&nbsp; ');
       rows += `<tr class="year-sep"><td colspan="9" style="padding:5px 11px;">
         <span>── ${anio} ──  <span style="color:var(--text2);font-weight:400;font-size:11px;">${curStr}</span></span>
@@ -964,19 +980,20 @@ function renderTabla() {
     </tr>`;
   }
 
-  // Totales por moneda
-  const totByCur = {};
+  // Totales por grupo de moneda (Pesos = ARS/ARS-CER/ARS-TAMAR, Dólares = USD)
+  const totByGrp = {};
   for (const e of evs) {
-    if (!totByCur[e.moneda]) totByCur[e.moneda]={r:0,a:0,t:0};
-    totByCur[e.moneda].r+=e.renta; totByCur[e.moneda].a+=e.amort; totByCur[e.moneda].t+=e.total;
+    const g = curGroup(e.moneda);
+    if (!totByGrp[g]) totByGrp[g]={r:0,a:0,t:0};
+    totByGrp[g].r+=e.renta; totByGrp[g].a+=e.amort; totByGrp[g].t+=e.total;
   }
-  const curKeys = Object.keys(totByCur).sort();
-  curKeys.forEach((cur, ci) => {
-    const d = totByCur[cur];
+  const grpKeysTbl = Object.keys(totByGrp).sort();
+  grpKeysTbl.forEach((g, ci) => {
+    const d = totByGrp[g];
     rows += `<tr class="total-row">
       <td colspan="3" style="padding-left:11px;font-size:12px;">${ci===0?`TOTAL (${evs.length} pagos)`:''}</td>
       <td></td>
-      <td style="font-size:11px;font-weight:700;color:var(--text2);">${cur}</td>
+      <td style="font-size:11px;font-weight:700;color:var(--text2);">${g}</td>
       <td></td>
       <td class="num" style="color:var(--blue-txt);">${d.r>0?fmtN(d.r):'—'}</td>
       <td class="num" style="color:var(--orange-txt);">${d.a>0?fmtN(d.a):'—'}</td>
@@ -1064,78 +1081,144 @@ function fmtF(s) {
   const [y,m,d] = s.split('-');
   return `${parseInt(d)}-${['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][parseInt(m)-1]}-${y}`;
 }
-function fmtM(n, mon) { const sym={USD:'U$S ',ARS:'$ ',"ARS/CER":'$ CER ',"ARS/TAMAR":'$ TAM '}; return (sym[mon]||mon+' ')+Math.round(n).toLocaleString('es-AR'); }
 function generarResumen(cliente) {
   const evs = eventos_todos;
   const hoy = new Date(HOY_STR+'T00:00:00');
   const en3m  = new Date(hoy); en3m.setMonth(en3m.getMonth()+3);
   const en12m = new Date(hoy); en12m.setFullYear(en12m.getFullYear()+1);
-  const tFlow = evs.reduce((s,e)=>s+e.total,0);
-  const tR    = evs.reduce((s,e)=>s+e.renta,0);
-  const tA    = evs.reduce((s,e)=>s+e.amort,0);
-  const f3m   = evs.filter(e=>new Date(e.fecha+'T00:00:00')<=en3m).reduce((s,e)=>s+e.total,0);
-  const f12m  = evs.filter(e=>new Date(e.fecha+'T00:00:00')<=en12m).reduce((s,e)=>s+e.total,0);
   const prox  = evs[0];
-  // Agrupar por año y moneda
-  const pAC={};
-  for(const e of evs){const y=e.fecha.slice(0,4);const c=e.moneda;if(!pAC[y])pAC[y]={};if(!pAC[y][c])pAC[y][c]={r:0,a:0,t:0};pAC[y][c].r+=e.renta;pAC[y][c].a+=e.amort;pAC[y][c].t+=e.total;}
-  const anios = Object.keys(pAC).sort();
-  const yearTots = anios.map(y=>Object.values(pAC[y]).reduce((s,d)=>s+d.t,0));
-  const maxF  = Math.max(...yearTots,1);
-  const aMaxI = yearTots.indexOf(Math.max(...yearTots));
-  const aMax  = anios[aMaxI];
   const ticks = [...new Set(evs.map(e=>e.ticker))];
-  const mons  = [...new Set(evs.map(e=>e.moneda))];
   const hayE  = evs.some(e=>e.est);
-  const p30   = evs.filter(e=>{const d=new Date(e.fecha+'T00:00:00');return d>hoy&&d<=new Date(hoy.getTime()+30*864e5);});
-  const monR  = mons.includes('USD')?'USD':(mons[0]||'ARS');
   const hoyStr= hoy.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+
+  // Suma agrupada por moneda (ARS engloba ARS/CER y ARS/TAMAR; USD queda aparte)
+  function sumPorGrupo(lista) {
+    const o = {};
+    lista.forEach(e => { const g=curGroup(e.moneda); o[g]=(o[g]||0)+e.total; });
+    return o;
+  }
+
+  // Totales globales por grupo (renta / amort. / total) — base de cada % propio
+  const totByGrp = {};
+  for (const e of evs) {
+    const g = curGroup(e.moneda);
+    if (!totByGrp[g]) totByGrp[g] = {r:0, a:0, t:0};
+    totByGrp[g].r += e.renta; totByGrp[g].a += e.amort; totByGrp[g].t += e.total;
+  }
+  const grpKeys = Object.keys(totByGrp).sort(); // ej. ['ARS','USD']
+
+  const f3mByGrp  = sumPorGrupo(evs.filter(e=>new Date(e.fecha+'T00:00:00')<=en3m));
+  const f12mByGrp = sumPorGrupo(evs.filter(e=>new Date(e.fecha+'T00:00:00')<=en12m));
+  const p30       = evs.filter(e=>{const d=new Date(e.fecha+'T00:00:00');return d>hoy&&d<=new Date(hoy.getTime()+30*864e5);});
+
+  // Agrupar por año + grupo de moneda (CER y TAMAR se funden en "ARS")
+  const pAC={};
+  for(const e of evs){
+    const y=e.fecha.slice(0,4), g=curGroup(e.moneda);
+    if(!pAC[y]) pAC[y]={};
+    if(!pAC[y][g]) pAC[y][g]={r:0,a:0,t:0};
+    pAC[y][g].r+=e.renta; pAC[y][g].a+=e.amort; pAC[y][g].t+=e.total;
+  }
+  const anios = Object.keys(pAC).sort();
+
+  // Máximo y "año más productivo" calculados POR GRUPO (nunca comparando pesos vs dólares)
+  const maxByGrp = {}, bestYearByGrp = {};
+  grpKeys.forEach(g => {
+    let best=null, bestVal=-1;
+    anios.forEach(y => {
+      const v = (pAC[y][g] && pAC[y][g].t) || 0;
+      if (v > bestVal) { bestVal = v; best = y; }
+      maxByGrp[g] = Math.max(maxByGrp[g]||1, v);
+    });
+    bestYearByGrp[g] = { year: best, val: bestVal };
+  });
+
   document.getElementById('pc-client').textContent = cliente;
   document.getElementById('pc-date').textContent   = 'Fecha: '+hoyStr;
   document.getElementById('pdh-s').textContent     = cliente+' · '+hoyStr;
+
+  // Filas de la tabla "Flujo proyectado por año" — % siempre relativo al total de SU PROPIO grupo
   let filas='';
-  for(let yi=0;yi<anios.length;yi++){
-    const y=anios[yi]; const curs=Object.keys(pAC[y]).sort(); const yTot=yearTots[yi];
-    const pct=tFlow>0?(yTot/tFlow*100).toFixed(1):'0.0'; const w=Math.round(yTot/maxF*50);
-    curs.forEach((cur,ci)=>{
-      const d=pAC[y][cur];
+  for (const y of anios) {
+    const grpsEnAnio = Object.keys(pAC[y]).sort();
+    grpsEnAnio.forEach((g, ci) => {
+      const d = pAC[y][g];
+      const pct = totByGrp[g].t>0 ? (d.t/totByGrp[g].t*100).toFixed(1) : '0.0';
+      const w   = Math.round(d.t/maxByGrp[g]*50);
       filas+=`<tr class="${ci===0?'re-yr-first':'re-yr-cont'}">
         <td style="${ci>0?'border-top:none':''}">${ci===0?`<strong>${y}</strong>`:''}</td>
-        <td style="font-size:8px;font-weight:700;color:#4a5a8a;padding:3px 6px">${cur}</td>
-        <td style="color:#2563eb;text-align:right;font-family:monospace">${d.r>0?fmtM(d.r,cur):'—'}</td>
-        <td style="color:#c05a00;text-align:right;font-family:monospace">${d.a>0?fmtM(d.a,cur):'—'}</td>
-        <td style="text-align:right;font-family:monospace"><strong>${fmtM(d.t,cur)}</strong></td>
-        <td>${ci===0?`<span class="bar2" style="width:${w}px;background:#1a3a6e"></span>${pct}%`:''}</td>
+        <td style="font-size:8px;font-weight:700;color:#4a5a8a;padding:3px 6px">${g}</td>
+        <td style="color:#2563eb;text-align:right;font-family:monospace">${d.r>0?fmtG(d.r,g):'—'}</td>
+        <td style="color:#c05a00;text-align:right;font-family:monospace">${d.a>0?fmtG(d.a,g):'—'}</td>
+        <td style="text-align:right;font-family:monospace"><strong>${fmtG(d.t,g)}</strong></td>
+        <td><span class="bar2" style="width:${w}px;background:#1a3a6e"></span>${pct}%</td>
       </tr>`;
     });
   }
-  // Totales por moneda
-  const totByCur={};
-  for(const e of evs){if(!totByCur[e.moneda])totByCur[e.moneda]={r:0,a:0,t:0};totByCur[e.moneda].r+=e.renta;totByCur[e.moneda].a+=e.amort;totByCur[e.moneda].t+=e.total;}
-  const tCurs=Object.keys(totByCur).sort();
-  tCurs.forEach((cur,ci)=>{const d=totByCur[cur];
-    filas+=`<tr class="re-tot"><td>${ci===0?'TOTAL':''}</td><td style="font-size:8px;font-weight:700;color:#1a3a6e">${cur}</td>
-      <td style="color:#2563eb;text-align:right;font-family:monospace">${d.r>0?fmtM(d.r,cur):'—'}</td>
-      <td style="color:#c05a00;text-align:right;font-family:monospace">${d.a>0?fmtM(d.a,cur):'—'}</td>
-      <td style="text-align:right;font-family:monospace">${fmtM(d.t,cur)}</td>
-      <td>${ci===0?'100%':''}</td></tr>`;
+  // Fila TOTAL por grupo — cada una es 100% de sí misma
+  grpKeys.forEach((g, ci) => {
+    const d = totByGrp[g];
+    filas+=`<tr class="re-tot"><td>${ci===0?'TOTAL':''}</td><td style="font-size:8px;font-weight:700;color:#1a3a6e">${g}</td>
+      <td style="color:#2563eb;text-align:right;font-family:monospace">${d.r>0?fmtG(d.r,g):'—'}</td>
+      <td style="color:#c05a00;text-align:right;font-family:monospace">${d.a>0?fmtG(d.a,g):'—'}</td>
+      <td style="text-align:right;font-family:monospace">${fmtG(d.t,g)}</td>
+      <td>100%</td></tr>`;
   });
+
+  // Texto multi-moneda para el párrafo introductorio
+  const flowStr = grpKeys.map(g => fmtG(totByGrp[g].t, g)).join(' y ');
+  // HTML de KPI con una línea por moneda presente
+  const kpiHTML = (byGrpObj) => grpKeys
+    .filter(g => byGrpObj[g] !== undefined)
+    .map(g => `<div>${fmtG(byGrpObj[g], g)}</div>`).join('') || '—';
+  const totFlowByGrp = {}; grpKeys.forEach(g => totFlowByGrp[g] = totByGrp[g].t);
+
   const dest=[];
-  if(p30.length){const tkrs=[...new Set(p30.map(e=>e.ticker))].join(', ');dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${fmtM(p30.reduce((s,e)=>s+e.total,0),p30[0].moneda)} de <em>${tkrs}</em>. Verificá datos bancarios.</li>`);}
-  dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtM(prox.total,prox.moneda)}.</li>`);
-  dest.push(`<li>📆 <strong>Flujo próximos 12 meses:</strong> ${fmtM(f12m,monR)} (${tFlow>0?Math.round(f12m/tFlow*100):0}% del total).</li>`);
-  dest.push(`<li>🏆 <strong>Año más productivo:</strong> ${aMax} — ${fmtM(yearTots[aMaxI],monR)} (${tFlow>0?Math.round(yearTots[aMaxI]/tFlow*100):0}% del total).</li>`);
-  dest.push(`<li>💰 <strong>Composición:</strong> ${tFlow>0?Math.round(tR/tFlow*100):0}% intereses · ${tFlow>0?Math.round(tA/tFlow*100):0}% devolución de capital.</li>`);
-  if(mons.filter(m=>m!=='ARS').length>0&&mons.includes('ARS'))dest.push(`<li>💱 <strong>Monedas:</strong> Su cartera combina pagos en ${mons.join(', ')}.</li>`);
-  if(hayE)dest.push(`<li>⚠️ <strong>Nota:</strong> Los tickers marcados ★ tienen datos estimados. Verificar prospectos antes de operar.</li>`);
+  if(p30.length){
+    const tkrs = [...new Set(p30.map(e=>e.ticker))].join(', ');
+    const amtByGrp = sumPorGrupo(p30);
+    const amtStr = Object.keys(amtByGrp).sort().map(g=>fmtG(amtByGrp[g],g)).join(' y ');
+    dest.push(`<li>⚡ <strong>Pago inminente (próximos 30 días):</strong> Recibirá ${amtStr} de <em>${tkrs}</em>. Verificá datos bancarios.</li>`);
+  }
+  dest.push(`<li>📅 <strong>Próximo pago:</strong> ${fmtF(prox.fecha)} — ${prox.ticker} por ${fmtG(prox.total,curGroup(prox.moneda))}.</li>`);
+
+  Object.keys(f12mByGrp).sort().forEach(g => {
+    const pct = totByGrp[g] && totByGrp[g].t>0 ? Math.round(f12mByGrp[g]/totByGrp[g].t*100) : 0;
+    const lbl = g==='ARS' ? 'en pesos' : 'en dólares';
+    dest.push(`<li>📆 <strong>Flujo próximos 12 meses ${lbl}:</strong> ${fmtG(f12mByGrp[g],g)} (${pct}% del total ${lbl}).</li>`);
+  });
+
+  grpKeys.forEach(g => {
+    const by = bestYearByGrp[g];
+    if (by.year && by.val > 0) {
+      const pct = totByGrp[g].t>0 ? Math.round(by.val/totByGrp[g].t*100) : 0;
+      const lbl = g==='ARS' ? 'pesos' : 'dólares';
+      dest.push(`<li>🏆 <strong>Año más productivo en ${lbl}:</strong> ${by.year} — ${fmtG(by.val,g)} (${pct}% del total en ${lbl}).</li>`);
+    }
+  });
+
+  grpKeys.forEach(g => {
+    const d = totByGrp[g];
+    if (d.t > 0) {
+      const lbl = g==='ARS' ? 'pesos' : 'dólares';
+      const pr = Math.round(d.r/d.t*100), pa = Math.round(d.a/d.t*100);
+      dest.push(`<li>💰 <strong>Composición en ${lbl}:</strong> ${pr}% intereses · ${pa}% devolución de capital.</li>`);
+    }
+  });
+
+  if (grpKeys.length > 1) {
+    dest.push(`<li>💱 <strong>Monedas:</strong> Su cartera combina pagos en pesos y en dólares. Ambos flujos se muestran siempre por separado, ya que sumarlos directamente no sería correcto.</li>`);
+  }
+  if(hayE) dest.push(`<li>⚠️ <strong>Nota:</strong> Los tickers marcados ★ tienen datos estimados. Verificar prospectos antes de operar.</li>`);
+
   document.getElementById('print-resumen').innerHTML=`
-    <div class="re-intro">Este informe resume los pagos futuros de <strong>${ticks.length} instrumento${ticks.length!==1?'s':''}</strong> (${ticks.join(', ')}). Encontrará dos tipos de cobros: la <strong>renta</strong> —pago periódico por prestar su dinero— y la <strong>amortización</strong> —devolución del capital invertido—. Flujo total estimado: <strong>${fmtM(tFlow,monR)}</strong>.</div>
+    <div class="re-intro">Este informe resume los pagos futuros de <strong>${ticks.length} instrumento${ticks.length!==1?'s':''}</strong> (${ticks.join(', ')}). Encontrará dos tipos de cobros: la <strong>renta</strong> —pago periódico por prestar su dinero— y la <strong>amortización</strong> —devolución del capital invertido—. Flujo total estimado: <strong>${flowStr}</strong>.</div>
     <div class="re-h">Métricas clave</div>
     <div class="re-kpis">
-      <div class="re-kpi"><div class="kl">Flujo total futuro</div><div class="kv">${fmtM(tFlow,monR)}</div><div class="ks">Renta + capital</div></div>
-      <div class="re-kpi"><div class="kl">Próximos 90 días</div><div class="kv">${fmtM(f3m,monR)}</div><div class="ks">Cobros inminentes</div></div>
-      <div class="re-kpi"><div class="kl">Próximos 12 meses</div><div class="kv">${fmtM(f12m,monR)}</div><div class="ks">Flujo anual</div></div>
-      <div class="re-kpi"><div class="kl">Próximo pago</div><div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div><div class="ks">${prox.ticker} · ${fmtM(prox.total,prox.moneda)}</div></div>
+      <div class="re-kpi"><div class="kl">Flujo total futuro</div><div class="kv">${kpiHTML(totFlowByGrp)}</div><div class="ks">Renta + capital</div></div>
+      <div class="re-kpi"><div class="kl">Próximos 90 días</div><div class="kv">${kpiHTML(f3mByGrp)}</div><div class="ks">Cobros inminentes</div></div>
+      <div class="re-kpi"><div class="kl">Próximos 12 meses</div><div class="kv">${kpiHTML(f12mByGrp)}</div><div class="ks">Flujo anual</div></div>
+      <div class="re-kpi"><div class="kl">Próximo pago</div><div class="kv" style="font-size:12px">${fmtF(prox.fecha)}</div><div class="ks">${prox.ticker} · ${fmtG(prox.total,curGroup(prox.moneda))}</div></div>
     </div>
     <div class="re-h">Flujo proyectado por año</div>
     <table class="re-tbl"><thead><tr><th>Año</th><th>Moneda</th><th style="text-align:right">Intereses</th><th style="text-align:right">Capital</th><th style="text-align:right">Total</th><th>Proporción</th></tr></thead><tbody>${filas}</tbody></table>
