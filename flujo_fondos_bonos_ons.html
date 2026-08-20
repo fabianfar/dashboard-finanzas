@@ -370,6 +370,7 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
           <option value="TVPA">TVPA — VAL.NEG.VINC.PBI USD ★</option>
           <option value="AO27">AO27 — Bono del Tesoro USD LS 2027 ★</option>
           <option value="AO28">AO28 — Bono del Tesoro USD LS 2028 ★</option>
+          <option value="AO29">AO29 — Bono del Tesoro USD LS 2029 ★</option>
           <option value="AN29">AN29 — Bono Nación USD 2029 ★</option>
           <option value="CUAP">CUAP — Cupón PBI USD ★</option>
         </optgroup>
@@ -378,7 +379,6 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
           <option value="TX28">TX28 — Boncer 2028 2.25%</option>
           <option value="TTS26">TTS26 — TAMAR 15/09/26 ★</option>
           <option value="TTD26">TTD26 — TAMAR 15/12/26 ★</option>
-          <option value="TTJ26">TTJ26 — TAMAR 15/06/26 ★</option>
           <option value="TX31">TX31 — Boncer 2031 2%</option>
         </optgroup>
         <optgroup label="Soberanos ARS/CER — Descuento &amp; Par">
@@ -405,8 +405,6 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
           <option value="TZXM9">TZXM9 — Bonte CER Mar-2029 ★</option>
         </optgroup>
         <optgroup label="LECAP (Letras Capitalizables ARS)">
-          <option value="S31L6">S31L6 — LECAP 31-Jul-2026</option>
-          <option value="S14G6">S14G6 — LECAP 14-Ago-2026</option>
           <option value="S31G6">S31G6 — LECAP 31-Ago-2026</option>
           <option value="S15S6">S15S6 — LECAP 15-Sep-2026</option>
           <option value="S30S6">S30S6 — LECAP 30-Sep-2026</option>
@@ -420,26 +418,19 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
         <optgroup label="ONs USD">
           <option value="CLSIO">CLSIO — Celulosa Argentina Serie I ★</option>
           <option value="CLI1O">CLI1O — CLI Serie 1 ★</option>
-          <option value="CRCEO">CRCEO — Celulosa 2025</option>
-          <option value="CSDOO">CSDOO — Cresud 2026</option>
           <option value="DNC3O">DNC3O — Edenor Clase 3 ★</option>
           <option value="DNC7O">DNC7O — Edenor Clase 7 ★</option>
           <option value="GALI2">GALI2 — Galicia 2026</option>
           <option value="IRCP">IRCP — IRSA 2028</option>
-          <option value="BMA5">BMA5 — Macro 2026</option>
           <option value="MR35O">MR35O — Generacion Med. Clase 35 ★</option>
           <option value="MR39O">MR39O — Generacion Med 2031 ★</option>
           <option value="MRCQO">MRCQO — Mercado Crédito ON Q ★</option>
           <option value="MRCUO">MRCUO — Mercado Crédito ON U ★</option>
-          <option value="MTCGO">MTCGO — Mastellone 2026</option>
-          <option value="MSC1O">MSC1O — MSU Energy 2025</option>
           <option value="RUCDO">RUCDO — MSU Energy Cl.XII ★</option>
           <option value="PAE5">PAE5 — Pan American 2027</option>
           <option value="PAMP">PAMP — Pampa 2027</option>
-          <option value="TGS2D">TGS2D — TGS 2025</option>
-          <option value="YPF3D">YPF3D — YPF 2025</option>
-          <option value="YPFB">YPFB — YPF 2026</option>
           <option value="YMCHO">YMCHO — YPF 2027</option>
+          <option value="GYC5O">GYC5O — Genneia Clase 5 ★</option>
           <option value="YM39O">YM39O — YPF Clase 39 2030 ★</option>
           <option value="YMCIO">YMCIO — YPF 2029</option>
           <option value="YMCJO">YMCJO — YPF 2033</option>
@@ -568,8 +559,8 @@ footer { text-align: center; margin-top: 40px; font-size: 11px; color: var(--tex
 </footer>
 
 <script>
-const HOY_STR = '2026-06-09';
-const HOY = new Date(HOY_STR);
+const HOY_STR = new Date().toISOString().slice(0,10); // Fecha actual del sistema
+const HOY = new Date(HOY_STR + 'T00:00:00');
 
 function fmtF(s) {
   const mn = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
@@ -607,21 +598,13 @@ const INST = {
   TTS26: {n:'TAMAR 15/09/26',t:'Soberano',m:'ARS/TAMAR',v:'2026-09-15',e:true,p:[['2026-09-15','R+A',0.005,1.0]]},
   TTD26: {n:'TAMAR 15/12/26',t:'Soberano',m:'ARS/TAMAR',v:'2026-12-15',e:true,p:[['2026-12-15','R+A',0.005,1.0]]},
   BA37D: {n:'Bs.As. Clase A 2037',t:'Provincial',m:'USD',v:'2037-06-01',e:false,p:[['2026-06-01','R',0.03875,0],['2026-12-01','R+A',0.03875,0.0435],['2027-06-01','R+A',0.03875,0.0435],['2027-12-01','R+A',0.03875,0.0435],['2028-06-01','R+A',0.03875,0.0435],['2028-12-01','R+A',0.03875,0.0435],['2029-06-01','R+A',0.03875,0.0435],['2029-12-01','R+A',0.03875,0.0435],['2030-06-01','R+A',0.03875,0.0435],['2030-12-01','R+A',0.03875,0.0435],['2031-06-01','R+A',0.03875,0.0435],['2031-12-01','R+A',0.03875,0.0435],['2032-06-01','R+A',0.03875,0.0435],['2032-12-01','R+A',0.03875,0.0435],['2033-06-01','R+A',0.03875,0.0435],['2033-12-01','R+A',0.03875,0.0435],['2034-06-01','R+A',0.03875,0.0435],['2034-12-01','R+A',0.03875,0.0435],['2035-06-01','R+A',0.03875,0.0435],['2035-12-01','R+A',0.03875,0.0435],['2036-06-01','R+A',0.03875,0.0435],['2036-12-01','R+A',0.03875,0.0435],['2037-06-01','R+A',0.03875,0.043]]},
-  CRCEO: {n:'Celulosa 2025',t:'ON',m:'USD',v:'2025-10-28',e:false,p:[]},
-  CSDOO: {n:'Cresud 2026',t:'ON',m:'USD',v:'2026-08-10',e:false,p:[['2026-08-10','R+A',0.04,1.0]]},
   DNC3O: {n:'Edenor Clase 3',t:'ON',m:'USD',v:'2027-09-01',e:true,p:[['2026-09-01','R+A',0.04,0.333],['2027-03-01','R+A',0.04,0.333],['2027-09-01','R+A',0.04,0.334]]},
   GALI2: {n:'Galicia 2026',t:'ON',m:'USD',v:'2026-10-16',e:false,p:[['2026-10-16','R+A',0.035,1.0]]},
   IRCP:  {n:'IRSA 2028',t:'ON',m:'USD',v:'2028-02-09',e:false,p:[['2026-08-09','R+A',0.04,0.25],['2027-02-09','R+A',0.04,0.25],['2027-08-09','R+A',0.04,0.25],['2028-02-09','R+A',0.04,0.25]]},
-  BMA5:  {n:'Macro 2026',t:'ON',m:'USD',v:'2026-07-26',e:false,p:[['2026-07-26','R+A',0.035,1.0]]},
   MR39O: {n:'Generacion Med 2031',t:'ON',m:'USD',v:'2031-11-01',e:true,p:[['2026-11-01','R',0.04625,0],['2027-05-01','R',0.04625,0],['2027-11-01','R+A',0.04625,0.10],['2028-05-01','R+A',0.04625,0.10],['2028-11-01','R+A',0.04625,0.10],['2029-05-01','R+A',0.04625,0.10],['2029-11-01','R+A',0.04625,0.10],['2030-05-01','R+A',0.04625,0.10],['2030-11-01','R+A',0.04625,0.10],['2031-05-01','R+A',0.04625,0.10],['2031-11-01','R+A',0.04625,0.20]]},
-  MTCGO: {n:'Mastellone 2026',t:'ON',m:'USD',v:'2026-07-17',e:false,p:[['2026-07-17','R+A',0.04,1.0]]},
-  MSC1O: {n:'MSU Energy 2025',t:'ON',m:'USD',v:'2025-11-19',e:false,p:[]},
   RUCDO: {n:'MSU Energy Cl.XII',t:'ON',m:'USD',v:'2027-08-19',e:true,p:[['2026-08-19','R+A',0.065,0.333],['2027-02-19','R+A',0.065,0.333],['2027-08-19','R+A',0.065,0.334]]},
   PAE5:  {n:'Pan American 2027',t:'ON',m:'USD',v:'2027-05-01',e:false,p:[['2026-11-01','R+A',0.03875,0.25],['2027-05-01','R+A',0.03875,0.25]]},
   PAMP:  {n:'Pampa 2027',t:'ON',m:'USD',v:'2027-07-17',e:false,p:[['2026-07-17','R+A',0.04375,0.25],['2027-01-17','R+A',0.04375,0.25],['2027-07-17','R+A',0.04375,0.25]]},
-  TGS2D: {n:'TGS 2025',t:'ON',m:'USD',v:'2025-05-14',e:false,p:[]},
-  YPF3D: {n:'YPF 2025',t:'ON',m:'USD',v:'2025-07-25',e:false,p:[]},
-  YPFB:  {n:'YPF 2026',t:'ON',m:'USD',v:'2026-07-25',e:false,p:[['2026-07-25','R+A',0.04,1.0]]},
   YMCHO: {n:'YPF 2027',t:'ON',m:'USD',v:'2027-06-23',e:false,p:[['2026-06-23','R',0.0875,0],['2026-12-23','R',0.0875,0],['2027-06-23','R+A',0.0875,1.0]]},
   YM39O: {n:'YPF Clase 39 2030',t:'ON',m:'USD',v:'2030-07-22',e:true,p:[['2026-07-22','R',0.04,0],['2027-01-22','R+A',0.04,0.10],['2027-07-22','R+A',0.04,0.10],['2028-01-22','R+A',0.04,0.10],['2028-07-22','R+A',0.04,0.10],['2029-01-22','R+A',0.04,0.10],['2029-07-22','R+A',0.04,0.10],['2030-01-22','R+A',0.04,0.20],['2030-07-22','R+A',0.04,0.20]]},
   YMCIO: {n:'YPF 2029',t:'ON',m:'USD',v:'2029-07-25',e:false,p:[['2026-07-25','R',0.04375,0],['2027-01-25','R+A',0.04375,0.10],['2027-07-25','R+A',0.04375,0.10],['2028-01-25','R+A',0.04375,0.10],['2028-07-25','R+A',0.04375,0.10],['2029-01-25','R+A',0.04375,0.10],['2029-07-25','R+A',0.04375,0.50]]},
@@ -633,6 +616,19 @@ const INST = {
   AO28: {n:'Bono del Tesoro USD LS 2028',t:'Soberano',m:'USD',v:'2028-01-09',e:true,p:[
     ['2026-07-09','R',0.0225,0],['2027-01-09','R',0.0225,0],['2027-07-09','R',0.0225,0],
     ['2028-01-09','R+A',0.0225,1.0]]},
+  AO29: {n:'Bono del Tesoro USD LS 2029',t:'Soberano',m:'USD',v:'2029-07-09',e:true,p:[
+    ['2027-01-09','R',0.0225,0],['2027-07-09','R',0.0225,0],
+    ['2028-01-09','R',0.0225,0],['2028-07-09','R',0.0225,0],
+    ['2029-01-09','R',0.0225,0],['2029-07-09','R+A',0.0225,1.0]]},
+
+  // ── ONs USD: Genneia ────────────────────────────────────────────────────
+  GYC5O: {n:'Genneia Clase 5',t:'ON',m:'USD',v:'2028-07-22',e:true,p:[
+    ['2026-10-22','R',0.035,0],['2027-01-22','R+A',0.035,0.1667],
+    ['2027-04-22','R+A',0.035,0.1667],['2027-07-22','R+A',0.035,0.1667],
+    ['2027-10-22','R+A',0.035,0.1667],['2028-01-22','R+A',0.035,0.1667],
+    ['2028-07-22','R+A',0.035,0.1665]]},
+
+
   AN29: {n:'Bono Nación USD 2029',t:'Soberano',m:'USD',v:'2029-07-09',e:true,p:[
     ['2026-07-09','R',0.025,0],['2027-01-09','R',0.025,0],['2027-07-09','R',0.025,0],
     ['2028-01-09','R',0.025,0],['2028-07-09','R',0.025,0],['2029-01-09','R',0.025,0],
@@ -714,8 +710,6 @@ const INST = {
     ['2026-06-15','R+A',0.005,1.0]]},
 
   // ── LECAP — Letras Capitalizables (cero cupón, pago único al vencimiento) ─
-  S31L6: {n:'LECAP 31-Jul-2026', t:'LECAP',m:'ARS',v:'2026-07-31',e:false,p:[['2026-07-31','A',0,1.0]]},
-  S14G6: {n:'LECAP 14-Ago-2026', t:'LECAP',m:'ARS',v:'2026-08-14',e:false,p:[['2026-08-14','A',0,1.0]]},
   S31G6: {n:'LECAP 31-Ago-2026', t:'LECAP',m:'ARS',v:'2026-08-31',e:false,p:[['2026-08-31','A',0,1.0]]},
   S15S6: {n:'LECAP 15-Sep-2026', t:'LECAP',m:'ARS',v:'2026-09-15',e:false,p:[['2026-09-15','A',0,1.0]]},
   S30S6: {n:'LECAP 30-Sep-2026', t:'LECAP',m:'ARS',v:'2026-09-30',e:false,p:[['2026-09-30','A',0,1.0]]},
@@ -754,7 +748,7 @@ let eventos_todos = [];
 let filtroActivo = 'all';
 let sortDir = 1;
 
-document.getElementById('gen-date').textContent = `Pagos futuros desde ${fmtF(HOY_STR)}  ·  Actualizado: ${fmtF(HOY_STR)}`;
+document.getElementById('gen-date').textContent = `Pagos futuros desde ${fmtF(HOY_STR)}  ·  Actualizado: ${new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
 
 function tipoBadge(t) {
   const m = {Soberano:['badge-sov','Soberano'],Provincial:['badge-prov','Provincial'],ON:['badge-on','ON'],LECAP:['badge-lec','LECAP']};
