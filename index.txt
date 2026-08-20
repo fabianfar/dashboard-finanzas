@@ -115,10 +115,6 @@ tr:last-child td{border-bottom:none}
 .rec-name{font-weight:500;font-size:14px}
 .rec-meta{font-size:12px;color:#aaa}
 </style>
-</head>
-
-
-
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -171,7 +167,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
             amount: raw.cr > 0 ? raw.cr : raw.db,
             date: raw.f,
             desc: raw.d,
-            cat: CATMAP[raw.d] || (raw.cr > 0 ? 'Ingresos' : 'Otro')
+            cat: CAT_MAP[raw.d] || (raw.cr > 0 ? 'Ingresos' : 'Otro')
           });
         }
       }
@@ -187,6 +183,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   // Fallback: si querés, podés inicializar con RAW y llamar bootstrapApp() igual
 });
 </script>
+</head>
 
 <body>
 <div class="tabs" id="tabs-container"></div>
@@ -262,6 +259,30 @@ db.ref('finanzas/state').once('value').then(function(snap) {
       <div id="ing-ahorro-rank"></div>
     </div>
   </div>
+
+  <!-- === TABLA EGRESOS POR MES === -->
+  <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px">
+    <div style="flex:1;height:1px;background:#2a2a2a"></div>
+    <span style="font-size:12px;color:#555;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Egresos por Categoría y Mes</span>
+    <div style="flex:1;height:1px;background:#2a2a2a"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div>
+        <h3 style="margin-bottom:2px">Egresos por descripción y mes</h3>
+        <div style="font-size:12px;color:#aaa">Totales mensuales por descripción · Columnas ordenadas por mayor gasto anual</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:12px;color:#aaa;margin:0">Año:</label>
+        <select id="gastos-anio-sel" style="width:auto;padding:6px 12px;font-size:13px"></select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+      <div id="gastos-mes-wrap"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- TARJETAS -->
@@ -652,7 +673,8 @@ db.ref('finanzas/state').once('value').then(function(snap) {
               <option value="Salud">Salud</option>
               <option value="Financiero">Financiero</option>
               <option value="Industrial">Industrial</option>
-              <option value="CEDEAR">CEDEAR AR</option>
+              <option value="RealState">Real Sate</option>
+              <option value="Comunicaciones">Comunicaciones</option>
               <option value="Otro">Otro</option>
             </select></div>
           <div><label style="font-size:11px;color:#aaa;display:block;margin-bottom:3px">Archivo</label>
@@ -690,6 +712,23 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   </div>
 </div>
 
+<!-- FLUJO DE FONDOS -->
+<div class="section" id="tab-flujo" style="padding:0;overflow:hidden">
+  <div style="position:relative;width:100%;height:calc(100vh - 58px)">
+    <!-- Estado de carga visible hasta que el iframe responda -->
+    <div id="flujo-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#1a1a1a;z-index:1;pointer-events:none">
+      <div style="width:36px;height:36px;border:3px solid #333;border-top-color:#378ADD;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+      <span style="font-size:13px;color:#555">Cargando Flujo de Fondos…</span>
+    </div>
+    <iframe
+      id="flujo-frame"
+      title="Flujo de Fondos — Bonos & ONs"
+      style="width:100%;height:100%;border:none;display:block;background:#1a1a1a"
+      onload="var l=document.getElementById('flujo-loading');if(l)l.style.display='none'">
+    </iframe>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 var MONTHS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -697,8 +736,8 @@ var ALL_CATS=['Alimentacion','Andrea','Auto','Diamela','Educacion','Familia','Fr
 var CATS_EXPENSE=['Alimentacion','Andrea','Auto','Diamela','Educacion','Familia','Martina','Mio','Moto','Nafta','Ocio','Otro','Ropa','Salud','Servicios','Tarjeta de Credito','Transporte','Vivienda'];
 var PIE_COLORS=['#1D9E75','#378ADD','#BA7517','#D4537E','#7F77DD','#639922','#D85A30','#888780','#5DCAA5','#FAC775','#F0997B','#AFA9EC','#9FE1CB','#F4C0D1','#B5D4F4','#C0DD97','#85B7EB'];
 var CAT_MAP={'Sueldo Telecom':'Ingresos','Sueldo Andrea':'Ingresos','Ingresos Varios':'Ingresos','SECHEEP':'Servicios','SAMEEP':'Servicios','Gas':'Servicios','Kiosko':'Alimentacion','Panaderia':'Alimentacion','Familia':'Familia','Martina':'Martina','Tarjeta Tuya':'Tarjeta de Credito','Mastercard MercadoPago':'Tarjeta de Credito','Visa Hipotecario':'Tarjeta de Credito','Personal':'Salud','Impuestos':'Servicios','Patente Moto':'Moto','Seguro Moto':'Moto','Moto':'Moto','Viajes':'Transporte','Varios Mio':'Mio','Varios Andrea':'Andrea','Varios':'Ocio','Salidas':'Ocio','Mantenimiento':'Vivienda','Prestamo HSBC':'Auto'};
-var CAT_TO_CARTERA={'Letra (LECAP)':'LECAP/BONCAP pesos','BONCAP':'LECAP/BONCAP pesos','Bono CER':'Bonos CER','Bono Soberano':'Bonos CER','Bono Linked':'Dolar MEP','Obligacion Negociable':'ON Hard Dollar AAA','CEDEAR':'Oro CEDEAR','FCI':'FCI/Acciones AR','Accion':'FCI/Acciones AR','Otro':'Otro'};
-var CARTERA_SUG=[{nombre:'LECAP/BONCAP pesos',pctSug:25,color:'#378ADD'},{nombre:'Bonos CER',pctSug:15,color:'#5DCAA5'},{nombre:'ON Hard Dollar AAA',pctSug:25,color:'#7F77DD'},{nombre:'Dolar MEP',pctSug:15,color:'#BA7517'},{nombre:'FCI/Acciones AR',pctSug:10,color:'#D4537E'},{nombre:'Oro CEDEAR',pctSug:10,color:'#EF9F27'}];
+var CAT_TO_CARTERA={'Letra (LECAP)':'LECAP/BONCAP pesos','BONCAP':'LECAP/BONCAP pesos','Bono CER':'Bonos CER','Bono Soberano':'Bonos CER','Bono Linked':'Dolar MEP','Obligacion Negociable':'ON Hard Dollar AAA','CEDEAR':'CEDEAR','FCI':'FCI/Acciones AR','Accion':'FCI/Acciones AR','Otro':'Otro'};
+var CARTERA_SUG=[{nombre:'LECAP/BONCAP pesos',pctSug:25,color:'#378ADD'},{nombre:'Bonos CER',pctSug:15,color:'#5DCAA5'},{nombre:'ON Hard Dollar AAA',pctSug:25,color:'#7F77DD'},{nombre:'Dolar MEP',pctSug:15,color:'#BA7517'},{nombre:'FCI/Acciones AR',pctSug:10,color:'#D4537E'},{nombre:'CEDEAR',pctSug:10,color:'#EF9F27'}];
 var RAW=[{f:'2026-01-01',d:'Transporte Balance anio anterior',cr:0,db:5000000},{f:'2026-01-02',d:'Sueldo Telecom',cr:1758915,db:0},{f:'2026-01-02',d:'SECHEEP',cr:0,db:81709.22},{f:'2026-01-02',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-01-02',d:'Kiosko',cr:0,db:21220},{f:'2026-01-03',d:'Familia',cr:300000,db:0},{f:'2026-01-05',d:'Personal',cr:0,db:110076},{f:'2026-01-06',d:'Varios Mio',cr:0,db:17800},{f:'2026-01-06',d:'Sueldo Andrea',cr:1423249.56,db:0},{f:'2026-01-06',d:'Tarjeta Tuya',cr:0,db:149559.10},{f:'2026-01-07',d:'Sueldo Telecom',cr:1150000,db:0},{f:'2026-01-08',d:'Panaderia',cr:0,db:1000},{f:'2026-01-08',d:'Visa Hipotecario',cr:0,db:2947735.39},{f:'2026-01-09',d:'Sueldo Telecom',cr:1533378,db:0},{f:'2026-01-11',d:'Mastercard MercadoPago',cr:0,db:236743.31},{f:'2026-01-11',d:'Viajes',cr:0,db:114047.79},{f:'2026-01-12',d:'Viajes',cr:0,db:205765.29},{f:'2026-01-12',d:'Seguro Moto',cr:0,db:4280},{f:'2026-01-13',d:'Viajes',cr:0,db:1323771.21},{f:'2026-01-14',d:'Viajes',cr:0,db:1360635.65},{f:'2026-01-15',d:'Ingresos Varios',cr:118402,db:0},{f:'2026-01-18',d:'Viajes',cr:0,db:24145.74},{f:'2026-01-19',d:'Impuestos',cr:0,db:11192.60},{f:'2026-01-19',d:'Viajes',cr:0,db:5677.85},{f:'2026-01-19',d:'Patente Moto',cr:0,db:933.31},{f:'2026-01-23',d:'Kiosko',cr:0,db:5890},{f:'2026-01-24',d:'Panaderia',cr:0,db:3100},{f:'2026-01-28',d:'Panaderia',cr:0,db:1000},{f:'2026-01-29',d:'Panaderia',cr:0,db:1000},{f:'2026-01-30',d:'Prestamo HSBC',cr:0,db:1441738.05},{f:'2026-02-01',d:'Sueldo Telecom',cr:1178599,db:0},{f:'2026-02-02',d:'SECHEEP',cr:0,db:65341.12},{f:'2026-02-02',d:'Panaderia',cr:0,db:1000},{f:'2026-02-03',d:'Familia',cr:300000,db:0},{f:'2026-02-03',d:'Sueldo Andrea',cr:1356610.89,db:0},{f:'2026-02-03',d:'Tarjeta Tuya',cr:0,db:70246.47},{f:'2026-02-04',d:'Personal',cr:0,db:113828.12},{f:'2026-02-04',d:'Gas',cr:0,db:15000},{f:'2026-02-05',d:'Kiosko',cr:0,db:1000},{f:'2026-02-05',d:'Sueldo Telecom',cr:1230000,db:0},{f:'2026-02-06',d:'Visa Hipotecario',cr:0,db:2590143.47},{f:'2026-02-06',d:'Varios Mio',cr:0,db:1440},{f:'2026-02-07',d:'Kiosko',cr:0,db:23850},{f:'2026-02-09',d:'Panaderia',cr:0,db:1000},{f:'2026-02-09',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-02-10',d:'Mastercard MercadoPago',cr:0,db:171655},{f:'2026-02-10',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-02-10',d:'Panaderia',cr:0,db:1000},{f:'2026-02-13',d:'Ingresos Varios',cr:92724,db:0},{f:'2026-02-13',d:'Kiosko',cr:0,db:3000},{f:'2026-02-17',d:'Panaderia',cr:0,db:1000},{f:'2026-02-17',d:'Familia',cr:200000,db:0},{f:'2026-02-18',d:'Impuestos',cr:0,db:12792.46},{f:'2026-02-19',d:'Mantenimiento',cr:0,db:7800},{f:'2026-02-19',d:'Varios',cr:0,db:8000},{f:'2026-02-20',d:'Panaderia',cr:0,db:1000},{f:'2026-02-21',d:'Kiosko',cr:0,db:11625},{f:'2026-02-21',d:'Salidas',cr:0,db:24400},{f:'2026-02-25',d:'Martina',cr:0,db:8900},{f:'2026-02-26',d:'Panaderia',cr:0,db:1000},{f:'2026-02-28',d:'Prestamo HSBC',cr:0,db:1429552.80},{f:'2026-03-02',d:'Sueldo Telecom',cr:975325,db:0},{f:'2026-03-02',d:'Panaderia',cr:0,db:1000},{f:'2026-03-03',d:'Sueldo Andrea',cr:1452907.03,db:0},{f:'2026-03-03',d:'Tarjeta Tuya',cr:0,db:83909.13},{f:'2026-03-03',d:'Kiosko',cr:0,db:13870},{f:'2026-03-05',d:'SECHEEP',cr:0,db:98553.94},{f:'2026-03-05',d:'Salidas',cr:0,db:34900},{f:'2026-03-05',d:'Sueldo Telecom',cr:1300000,db:0},{f:'2026-03-05',d:'Familia',cr:300000,db:0},{f:'2026-03-06',d:'Visa Hipotecario',cr:0,db:2231951.61},{f:'2026-03-07',d:'Panaderia',cr:0,db:1000},{f:'2026-03-09',d:'Personal',cr:0,db:116168.98},{f:'2026-03-09',d:'Panaderia',cr:0,db:1100},{f:'2026-03-10',d:'Mastercard MercadoPago',cr:0,db:334048.46},{f:'2026-03-10',d:'SAMEEP',cr:0,db:15780.58},{f:'2026-03-10',d:'Seguro Moto',cr:0,db:6420},{f:'2026-03-11',d:'Panaderia',cr:0,db:1000},{f:'2026-03-12',d:'Ingresos Varios',cr:53025,db:0},{f:'2026-03-12',d:'Varios Mio',cr:0,db:20000},{f:'2026-03-13',d:'Panaderia',cr:0,db:2000},{f:'2026-03-14',d:'Kiosko',cr:0,db:12280},{f:'2026-03-16',d:'Panaderia',cr:0,db:1100},{f:'2026-03-18',d:'Impuestos',cr:0,db:12792.46},{f:'2026-03-18',d:'Panaderia',cr:0,db:2000},{f:'2026-03-22',d:'Kiosko',cr:0,db:4000},{f:'2026-03-23',d:'Panaderia',cr:0,db:1000},{f:'2026-03-25',d:'Moto',cr:0,db:4000},{f:'2026-03-28',d:'Varios',cr:0,db:4000},{f:'2026-03-30',d:'Prestamo HSBC',cr:0,db:1440599.90},{f:'2026-03-30',d:'Panaderia',cr:0,db:1100},{f:'2026-04-01',d:'Sueldo Telecom',cr:1701859,db:0},{f:'2026-04-01',d:'Sueldo Andrea',cr:1452907.03,db:0},{f:'2026-04-01',d:'Tarjeta Tuya',cr:0,db:192148.90},{f:'2026-04-03',d:'Kiosko',cr:0,db:12900},{f:'2026-04-04',d:'Familia',cr:300000,db:0},{f:'2026-04-06',d:'SECHEEP',cr:0,db:115661.12},{f:'2026-04-06',d:'Visa Hipotecario',cr:0,db:2076827.87},{f:'2026-04-06',d:'Varios Mio',cr:0,db:5777},{f:'2026-04-07',d:'Personal',cr:0,db:120218.32},{f:'2026-04-07',d:'Sueldo Telecom',cr:1000000,db:0},{f:'2026-04-07',d:'Varios Mio',cr:0,db:12146.28},{f:'2026-04-09',d:'Varios Andrea',cr:0,db:8000},{f:'2026-04-09',d:'Panaderia',cr:0,db:5000},{f:'2026-04-09',d:'Seguro Moto',cr:0,db:6420},{f:'2026-04-10',d:'Mastercard MercadoPago',cr:0,db:250673.91}];
 
 var state={transactions:[],budget:{},goals:[],debts:[],tarjetas:[],consumos:[],recurrentes:[],instrumentos:[],movimientos:[],prestamoAuto:[],analisis:[],agenda:{cuentas:[],items:[]}};
@@ -799,7 +838,7 @@ function getPrecioPromedio(invId){
     else{var pp=cantTotal>0?costoTotal/cantTotal:0;costoTotal-=m.cantidad*pp;cantTotal-=m.cantidad;}
   }
   if(cantTotal<=0)return{cant:0,promedio:0};
-  return{cant:cantTotal,promedio:cantTotal>0?costoTotal/cantTotal:0};
+  return{cant:cantTotal,promedio:costoTotal/cantTotal};
 }
 function getValorCartera(){
   var tot=0;
@@ -912,8 +951,8 @@ function getCartActual(){
     var catCart=CAT_TO_CARTERA[inv.cat]||'Otro';
     cartActual[catCart]=(cartActual[catCart]||0)+valor;totalCart+=valor;
   }
-  // LECAP hardcoded si no hay instrumentos
-  if(state.instrumentos.length===0){var pHoy=292526/Math.pow(1+0.0255,158/30);cartActual['LECAP/BONCAP pesos']=pHoy;totalCart=pHoy;}
+  // Si no hay instrumentos cargados, la cartera está vacía
+  if(state.instrumentos.length===0)return{cartActual:{},totalCart:0};
   return{cartActual:cartActual,totalCart:totalCart};
 }
 
@@ -937,7 +976,7 @@ function bootstrapApp() {
 
 
 // TABS
-var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'agenda',label:'Agenda de Pagos'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'}];
+var TABS=[{id:'resumen',label:'Resumen'},{id:'estadisticas',label:'Estadisticas'},{id:'transacciones',label:'Transacciones'},{id:'tarjetas',label:'Tarjetas'},{id:'agenda',label:'Agenda de Pagos'},{id:'inversiones',label:'Inversiones'},{id:'presupuesto',label:'Presupuesto'},{id:'metas',label:'Metas'},{id:'deudas',label:'Deudas'},{id:'analisis',label:'Análisis Bursátil'},{id:'flujo',label:'Flujo de Fondos'}];
 function buildTabs(){
   var c=document.getElementById('tabs-container');var h='';
   for(var i=0;i<TABS.length;i++)h+='<button class="tab'+(TABS[i].id===activeTab?' active':'')+'" data-tab="'+TABS[i].id+'">'+TABS[i].label+'</button>';
@@ -956,6 +995,7 @@ function showTab(t){
   if(t==='analisis')renderAnalisis();
   if(t==='agenda')renderAgenda();
   if(t==='presupuesto')renderBudgetProgress();
+  if(t==='flujo'){var fr=document.getElementById('flujo-frame');if(fr&&!fr.dataset.loaded){fr.src='./flujo_fondos_bonos_ons.html';fr.dataset.loaded='1';}}
 }
 
 function bindEvents(){
@@ -979,30 +1019,7 @@ function bindEvents(){
   document.getElementById('mov-cantidad').addEventListener('input',updateMovPreview);
   document.getElementById('mov-precio').addEventListener('input',updateMovPreview);
   document.getElementById('mov-tipo').addEventListener('change',updateMovPreview);
-  // forzar recarga de datos del storage si hay datos perdidos
-  if(state.tarjetas&&state.tarjetas.length===0){
-    window.storage.get('finance_state').then(function(r){
-      if(r&&r.value){
-        var saved=JSON.parse(r.value);
-        if(saved.tarjetas&&saved.tarjetas.length>0){
-          state.tarjetas=saved.tarjetas;
-          state.consumos=saved.consumos||[];
-          state.recurrentes=saved.recurrentes||[];
-          state.budget=saved.budget||{};
-          state.goals=saved.goals||[];
-          state.debts=saved.debts||[];
-          state.instrumentos=saved.instrumentos||[];
-          state.movimientos=saved.movimientos||[];
-          // transacciones: mantener las del storage si tiene mas que el RAW
-          if(saved.transactions&&saved.transactions.length>state.transactions.length){
-            state.transactions=saved.transactions;
-            populateMonthFilter();
-          }
-          initBudgetForm();renderAll();renderInversiones();
-        }
-      }
-    }).catch(function(){});
-  }
+  // Firebase es la fuente única de verdad; no se usa storage alternativo
 }
 
 function updateCoPreview(){
@@ -1424,36 +1441,91 @@ function renderListaInstrumentos(){
     +'<th style="text-align:right">Dif. $</th>'
     +'<th style="text-align:right">Dif. %</th>'
     +'<th></th></tr></thead><tbody>';
-  for(var i=0;i<state.instrumentos.length;i++){
-    var inv=state.instrumentos[i];var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
-    var cotz=parseFloat(inv.cotizacion)||0;
-    var costoTotal=pos.cant*pos.promedio;
-    var valorActual=cotz>0?pos.cant*cotz:0;
-    var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
-    var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
-    var difColor=difMonto!==null?(difMonto>=0?'#1D9E75':'#D85A30'):'#555';
-    h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
-      +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
-      +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
-      +'<td><span class="badge" style="background:'+(inv.moneda==='USD'?'#0C447C':'#085041')+';color:'+(inv.moneda==='USD'?'#85B7EB':'#9FE1CB')+'">'+inv.moneda+'</span></td>'
-      +'<td style="font-size:12px;color:#aaa">'+(inv.venc?fmtDate(inv.venc):'-')+'</td>'
-      +'<td style="font-size:12px;color:#aaa">'+(inv.tasa||'-')+'</td>'
-      +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
-      +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
-      +'<td style="text-align:right;color:#9FE1CB">'+fmtN(costoTotal,smb)+'</td>'
-      // Cotizacion: input editable con focus/blur
-      +'<td style="text-align:right;padding:4px 8px">'
-      +'<input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—"'
-      +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
-      // Valor actual
-      +'<td style="text-align:right;color:'+(cotz>0?'#9FE1CB':'#555')+'">'+(cotz>0?fmtN(valorActual,smb):'-')+'</td>'
-      // Dif $
-      +'<td style="text-align:right;font-weight:500;color:'+difColor+'">'
-      +(difMonto!==null?(difMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
-      // Dif %
-      +'<td style="text-align:right;font-weight:600;color:'+difColor+'">'
-      +(difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
-      +'<td style="white-space:nowrap"><button class="btn btn-sm primary" data-selinv="'+inv.id+'">Ver mov.</button> <button class="btn btn-sm btn-danger" data-delinv="'+inv.id+'">x</button></td>'
+  // Orden por tipo (renta fija primero, luego variable) y alfabético por ticker dentro de cada grupo
+  var INV_TYPE_ORDER={'Letra (LECAP)':0,'BONCAP':1,'Bono CER':1,'Bono Soberano':1,'Bono Linked':1,'CEDEAR':2,'Accion':3,'Obligacion Negociable':4,'FCI':5,'Otro':6};
+  var INV_TYPE_LABEL={0:'Letras',1:'Bonos',2:'CEDEARs',3:'Acciones',4:'Obligaciones Negociables',5:'Fondos Comunes de Inversión',6:'Otros'};
+  var sorted=state.instrumentos.slice().sort(function(a,b){
+    var oa=INV_TYPE_ORDER[a.cat]!==undefined?INV_TYPE_ORDER[a.cat]:99;
+    var ob=INV_TYPE_ORDER[b.cat]!==undefined?INV_TYPE_ORDER[b.cat]:99;
+    if(oa!==ob)return oa-ob;
+    return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;
+  });
+  // Pre-agrupar para poder emitir subtotales al cierre de cada grupo
+  var groupKeys=[];var groupMap={};
+  for(var i=0;i<sorted.length;i++){
+    var inv=sorted[i];
+    var grp=INV_TYPE_ORDER[inv.cat]!==undefined?INV_TYPE_ORDER[inv.cat]:99;
+    if(!groupMap[grp]){groupMap[grp]=[];groupKeys.push(grp);}
+    groupMap[grp].push(inv);
+  }
+
+  for(var gi=0;gi<groupKeys.length;gi++){
+    var grp=groupKeys[gi];
+    var grpInvs=groupMap[grp];
+    var grpLabel=INV_TYPE_LABEL[grp]||grpInvs[0].cat;
+    // Cabecera de grupo (colspan corregido a 14)
+    h+='<tr><td colspan="14" style="padding:6px 12px 4px;background:#161616;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8a9bb5;border-top:'+(gi>0?'1px solid #2a2a2a':'none')+'">'
+      +grpLabel+'</td></tr>';
+
+    // Acumuladores del grupo
+    var grpCostoTotal=0,grpValorActual=0,grpDifMonto=0,grpCostoConCotz=0,grpSmbRef='$ ';
+
+    for(var ii=0;ii<grpInvs.length;ii++){
+      var inv=grpInvs[ii];
+      var pos=getPrecioPromedio(inv.id);var smb=simbol(inv.moneda);var isSel=selectedInv===inv.id;
+      var cotz=parseFloat(inv.cotizacion)||0;
+      var costoTotal=pos.cant*pos.promedio;
+      var valorActual=cotz>0?pos.cant*cotz:0;
+      var difMonto=cotz>0?(cotz-pos.promedio)*pos.cant:null;
+      var difPct=cotz>0&&pos.promedio>0?((cotz-pos.promedio)/pos.promedio*100):null;
+      var difColor=difMonto!==null?(difMonto>=0?'#1D9E75':'#D85A30'):'#555';
+
+      // Acumular subtotales
+      grpCostoTotal+=costoTotal;
+      if(cotz>0){grpValorActual+=valorActual;grpDifMonto+=(difMonto||0);grpCostoConCotz+=costoTotal;grpSmbRef=smb;}
+
+      h+='<tr style="'+(isSel?'background:#1a2a3a;':'')+'">'
+        +'<td><strong style="color:#378ADD">'+inv.ticker+'</strong></td><td>'+inv.nombre+'</td>'
+        +'<td><span class="badge" style="background:#2a2a2a;color:#aaa">'+inv.cat+'</span></td>'
+        +'<td><span class="badge" style="background:'+(inv.moneda==='USD'?'#0C447C':'#085041')+';color:'+(inv.moneda==='USD'?'#85B7EB':'#9FE1CB')+'">'+inv.moneda+'</span></td>'
+        +'<td style="font-size:12px;color:#aaa">'+(inv.venc?fmtDate(inv.venc):'-')+'</td>'
+        +'<td style="font-size:12px;color:#aaa">'+(inv.tasa||'-')+'</td>'
+        +'<td style="text-align:right">'+pos.cant.toLocaleString('es-AR')+'</td>'
+        +'<td style="text-align:right">'+fmtN(pos.promedio,smb)+'</td>'
+        +'<td style="text-align:right;color:#9FE1CB">'+fmtN(costoTotal,smb)+'</td>'
+        +'<td style="text-align:right;padding:4px 8px">'
+        +'<input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—"'
+        +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
+        +'<td style="text-align:right;color:'+(cotz>0?'#9FE1CB':'#555')+'">'+(cotz>0?fmtN(valorActual,smb):'-')+'</td>'
+        +'<td style="text-align:right;font-weight:500;color:'+difColor+'">'
+        +(difMonto!==null?(difMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
+        +'<td style="text-align:right;font-weight:600;color:'+difColor+'">'
+        +(difPct!==null?(difPct>=0?'+':'')+difPct.toFixed(2)+'%':'-')+'</td>'
+        +'<td style="white-space:nowrap"><button class="btn btn-sm primary" data-selinv="'+inv.id+'">Ver mov.</button> <button class="btn btn-sm btn-danger" data-delinv="'+inv.id+'">x</button></td>'
+        +'</tr>';
+    }
+
+    // Fila subtotal del grupo — columnas alineadas con la tabla
+    var grpDifPct=grpCostoConCotz>0?(grpDifMonto/grpCostoConCotz*100):null;
+    var grpDifColor=grpDifMonto>=0?'#1D9E75':'#D85A30';
+    var stBase='padding:5px 8px;font-size:12px;font-weight:600;border-top:0.5px solid #333;border-bottom:1px solid #2a2a2a;background:#171717;';
+    h+='<tr>'
+      // cols 1-8: etiqueta subtotal
+      +'<td colspan="8" style="'+stBase+'padding-left:14px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.5px">Subtotal · '+grpLabel+'</td>'
+      // col 9: Costo Total
+      +'<td style="'+stBase+'text-align:right;color:#9FE1CB">'+fmtN(grpCostoTotal,grpSmbRef)+'</td>'
+      // col 10: Cotizacion — vacío
+      +'<td style="'+stBase+'"></td>'
+      // col 11: Valor Actual
+      +'<td style="'+stBase+'text-align:right;color:'+(grpValorActual>0?'#9FE1CB':'#555')+'">'+(grpValorActual>0?fmtN(grpValorActual,grpSmbRef):'-')+'</td>'
+      // col 12: Dif $
+      +'<td style="'+stBase+'text-align:right;color:'+(grpCostoConCotz>0?grpDifColor:'#555')+'">'
+      +(grpCostoConCotz>0?(grpDifMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(grpDifMonto),grpSmbRef):'-')+'</td>'
+      // col 13: Dif %
+      +'<td style="'+stBase+'text-align:right;color:'+(grpDifPct!==null?grpDifColor:'#555')+'">'
+      +(grpDifPct!==null?(grpDifPct>=0?'+':'')+grpDifPct.toFixed(2)+'%':'-')+'</td>'
+      // col 14: botones — vacío
+      +'<td style="'+stBase+'"></td>'
       +'</tr>';
   }
   h+='</tbody></table></div>';el.innerHTML=h;
@@ -1582,7 +1654,17 @@ function renderSummary(){
 }
 
 // ESTADISTICAS
-function renderStats(){renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();}
+function renderStats(){
+  renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();
+  initGastosAnioSel();
+  renderGastosMes();
+  // Bind año selector (una sola vez)
+  var sel=document.getElementById('gastos-anio-sel');
+  if(sel&&!sel.dataset.bound){
+    sel.dataset.bound='1';
+    sel.addEventListener('change',renderGastosMes);
+  }
+}
 function last12(){var months=[];var d=new Date();for(var i=11;i>=0;i--){var m=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(m.getFullYear()+'-'+pad(m.getMonth()+1));}return months;}
 function renderIngresosStats(){
   var months12=last12();var months6=last6();
@@ -1715,6 +1797,8 @@ function sortTxnTableByDateDesc() {
 
   rows.forEach(function(row) { tbody.appendChild(row); });
 }
+
+// Nota: sortTxnTableByDateDesc() se llama desde renderTransactions() cuando hay datos reales
 
 function addTransaction(){
   var type=document.getElementById('txn-type').value;var amount=parseFloat(document.getElementById('txn-amount').value);
@@ -2051,7 +2135,7 @@ var ANALISIS_DEFAULT=[
   {id:3,ticker:'QQQ',nombre:'Invesco QQQ Trust',sector:'ETF',archivo:'QQQ_analisis.html',fecha:'Mayo 2026'},
   {id:4,ticker:'VIST',nombre:'Vista Energy',sector:'Energía',archivo:'VIST_analisis.html',fecha:'Mayo 2026'}
 ];
-var SECTOR_COLORS={'Tecnología':'#378ADD','Energía':'#EF9F27','ETF':'#9B6EDB','Consumo':'#1D9E75','Salud':'#5DCAA5','Financiero':'#D4537E','Industrial':'#30A8C8','CEDEAR AR':'#D85A30','Otro':'#888'};
+var SECTOR_COLORS={'Tecnología':'#378ADD','Energía':'#EF9F27','ETF':'#9B6EDB','Consumo':'#1D9E75','Salud':'#5DCAA5','Financiero':'#D4537E','Industrial':'#30A8C8','Real State':'#D85A30','Otro':'#888'};
 var selectedAnalisis=null;
 
 function addAnalisis(){
@@ -2484,7 +2568,101 @@ function agBindEvents(){
 }
 
 function renderAll(){renderSummary();renderTransactions();renderBudgetProgress();renderGoals();renderDebts();renderTarjetas();}
-//load();
+
+// ===== TABLA EGRESOS POR CATEGORÍA Y MES =====
+function initGastosAnioSel(){
+  var sel=document.getElementById('gastos-anio-sel');
+  if(!sel)return;
+  var seen={};
+  for(var i=0;i<state.transactions.length;i++){
+    var y=state.transactions[i].date.slice(0,4);
+    seen[y]=true;
+  }
+  var years=Object.keys(seen).sort().reverse();
+  var curYear=new Date().getFullYear()+'';
+  if(!years.length)years=[curYear];
+  if(years.indexOf(curYear)===-1)years.unshift(curYear);
+  // Solo rebuild si cambiaron los años disponibles
+  var existing=[];
+  for(var j=0;j<sel.options.length;j++)existing.push(sel.options[j].value);
+  if(JSON.stringify(existing)===JSON.stringify(years))return;
+  var cur=sel.value||curYear;
+  sel.innerHTML='';
+  for(var k=0;k<years.length;k++)
+    sel.innerHTML+='<option value="'+years[k]+'"'+(years[k]===cur?' selected':'')+'>'+years[k]+'</option>';
+}
+
+function renderGastosMes(){
+  var sel=document.getElementById('gastos-anio-sel');
+  var wrap=document.getElementById('gastos-mes-wrap');
+  if(!sel||!wrap)return;
+  var anio=sel.value;
+
+  // Acumular data[mes][desc] para el año seleccionado
+  var data={};var colTot={};var rowTot={};var grand=0;
+  for(var m=1;m<=12;m++){data[m]={};rowTot[m]=0;}
+
+  for(var ti=0;ti<state.transactions.length;ti++){
+    var tx=state.transactions[ti];
+    if(tx.type!=='gasto'||!tx.date.startsWith(anio))continue;
+    var mes=parseInt(tx.date.slice(5,7));
+    var desc=tx.desc&&tx.desc.trim()?tx.desc.trim():'(sin desc.)';
+    data[mes][desc]=(data[mes][desc]||0)+tx.amount;
+    rowTot[mes]=(rowTot[mes]||0)+tx.amount;
+    colTot[desc]=(colTot[desc]||0)+tx.amount;
+    grand+=tx.amount;
+  }
+
+  // Columnas ordenadas por total anual descendente
+  var descs=Object.keys(colTot).sort(function(a,b){return colTot[b]-colTot[a];});
+
+  if(!descs.length){
+    wrap.innerHTML='<div style="text-align:center;padding:32px;color:#555;font-size:13px">Sin egresos registrados para '+anio+'</div>';
+    return;
+  }
+
+  var MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var stickyTh='position:sticky;left:0;z-index:2;';
+  var stickyTd='position:sticky;left:0;z-index:1;';
+
+  var h='<table style="font-size:12px;border-collapse:collapse;min-width:'+(descs.length*120+220)+'px">';
+
+  // Cabecera
+  h+='<thead><tr style="background:#111">';
+  h+='<th style="padding:9px 14px;color:#aaa;font-weight:500;text-align:left;border-bottom:0.5px solid #333;white-space:nowrap;'+stickyTh+'background:#111">Mes</th>';
+  for(var ch=0;ch<descs.length;ch++)
+    h+='<th style="padding:9px 10px;color:#aaa;font-weight:500;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap" title="'+descs[ch]+'">'+descs[ch]+'</th>';
+  h+='<th style="padding:9px 14px;color:#EF9F27;font-weight:600;text-align:right;border-bottom:0.5px solid #333;white-space:nowrap;border-left:0.5px solid #333">TOTAL</th>';
+  h+='</tr></thead>';
+
+  // Filas de meses
+  h+='<tbody>';
+  for(var mr=1;mr<=12;mr++){
+    var hasData=rowTot[mr]>0;
+    var rowBg=mr%2===0?'background:#1e1e1e;':'background:#222;';
+    h+='<tr style="'+rowBg+(hasData?'':'opacity:0.35;')+'">';
+    h+='<td style="padding:7px 14px;border-bottom:0.5px solid #1a1a1a;font-weight:500;color:#e0e0e0;white-space:nowrap;'+stickyTd+(mr%2===0?'background:#1e1e1e':'background:#222')+'">'+MN[mr-1]+' \''+anio.slice(2)+'</td>';
+    for(var cc=0;cc<descs.length;cc++){
+      var val=data[mr][descs[cc]]||0;
+      h+='<td style="padding:7px 10px;border-bottom:0.5px solid #1a1a1a;text-align:right;color:'+(val>0?'#F0997B':'#333')+'">'+(val>0?fmtS(val):'—')+'</td>';
+    }
+    h+='<td style="padding:7px 14px;border-bottom:0.5px solid #1a1a1a;text-align:right;font-weight:600;color:'+(hasData?'#EF9F27':'#333')+';border-left:0.5px solid #2a2a2a">'+(hasData?fmtS(rowTot[mr]):'—')+'</td>';
+    h+='</tr>';
+  }
+  h+='</tbody>';
+
+  // Fila totales
+  h+='<tfoot><tr style="background:#111;border-top:1px solid #444">';
+  h+='<td style="padding:9px 14px;font-weight:700;color:#e0e0e0;'+stickyTd+'background:#111">TOTALES '+anio+'</td>';
+  for(var ct=0;ct<descs.length;ct++){
+    var cv=colTot[descs[ct]]||0;
+    h+='<td style="padding:9px 10px;text-align:right;font-weight:600;color:'+(cv>0?'#D85A30':'#333')+'">'+(cv>0?fmtS(cv):'—')+'</td>';
+  }
+  h+='<td style="padding:9px 14px;text-align:right;font-weight:700;color:#D85A30;border-left:0.5px solid #333">'+fmtS(grand)+'</td>';
+  h+='</tr></tfoot></table>';
+
+  wrap.innerHTML=h;
+}
 </script>
 </body>
 </html>
