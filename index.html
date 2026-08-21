@@ -204,6 +204,22 @@ db.ref('finanzas/state').once('value').then(function(snap) {
 
 <!-- ESTADISTICAS -->
 <div class="section" id="tab-estadisticas">
+
+  <!-- Balance del año en curso (YTD) -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+      <h3 style="margin:0" id="ytd-title">Balance del año en curso</h3>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#1D9E75"></span>Ingresos</span>
+        <span><span class="legend-dot" style="background:#D85A30"></span>Egresos</span>
+        <span><span class="legend-dot" style="background:#378ADD"></span>Balance acumulado</span>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#aaa;margin-bottom:12px" id="ytd-subtitle">Desde el 01/01 hasta hoy.</p>
+    <div class="metric-grid" id="ytd-metrics" style="margin-bottom:14px"></div>
+    <div style="position:relative;width:100%;height:260px"><canvas id="ytdChart" role="img" aria-label="Balance anual en curso"></canvas></div>
+  </div>
+
   <div class="chart-grid">
     <div class="card"><h3>Gastos por categoria</h3><div class="legend" id="pie-legend"></div><div style="position:relative;width:100%;height:220px"><canvas id="pieChart" role="img" aria-label="Torta gastos"></canvas></div></div>
     <div class="card"><h3>Ranking de gastos</h3><div id="rank-chart"></div></div>
@@ -621,8 +637,8 @@ db.ref('finanzas/state').once('value').then(function(snap) {
         <div style="font-size:12px;color:#aaa;margin-bottom:8px">Agregar cuenta / billetera</div>
         <div style="display:grid;grid-template-columns:1fr auto 80px;gap:8px;align-items:end">
           <div>
-            <input id="ag-nueva-cuenta" list="ag-cuentas-list" placeholder="Nombre" style="width:100%">
-            <datalist id="ag-cuentas-list">
+            <input id="ag-nueva-cuenta" list="ag-cuentas-datalist" placeholder="Nombre" style="width:100%">
+            <datalist id="ag-cuentas-datalist">
               <option value="Banco Hipotecario"><option value="Banco Galicia">
               <option value="NBCH"><option value="Personal Pay">
               <option value="Uala"><option value="MercadoPago">
@@ -646,8 +662,6 @@ db.ref('finanzas/state').once('value').then(function(snap) {
   </div>
 
 </div>
-
-</div><!-- cierre main wrapper -->
 
 <!-- ANÁLISIS BURSÁTIL -->
 <div class="section" id="tab-analisis">
@@ -1073,7 +1087,8 @@ function cierrePeriodo(tcId,esAuto){
   var proxVenc=nextDate(tc.fechaVenc);var hoy=todayStr();
   if(proxVenc>hoy){if(!esAuto)alert('El vencimiento aun no llego ('+fmtDate(proxVenc)+')');return;}
   if(tc.lastCierre&&tc.lastCierre===proxVenc){if(!esAuto)alert('El cierre para este vencimiento ya fue procesado.');return;}
-  var fechaCierre=nextDate(tc.fechaCierre);var cnt1=0,cntC=0;
+  var diaOriginalCierre=new Date(tc.fechaCierre+'T00:00:00').getDate();
+  var fechaCierre=cierrePrevioAVenc(proxVenc,diaOriginalCierre);var cnt1=0,cntC=0;
   for(var j=0;j<state.consumos.length;j++){var c=state.consumos[j];if(c.tcId!==tcId||c.cancelado||!c.fecha||c.fecha>fechaCierre)continue;if(c.cuotas===1){c.cancelado=true;cnt1++;}else if(c.pagadas<c.cuotas){c.pagadas++;cntC++;}}
   tc.lastCierre=proxVenc;saveState();
   if(!esAuto)alert('Cierre procesado.\nPagos unicos cancelados: '+cnt1+'\nCuotas registradas: '+cntC);
@@ -1655,7 +1670,7 @@ function renderSummary(){
 
 // ESTADISTICAS
 function renderStats(){
-  renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();
+  renderYTDChart();renderPieChart();renderRankChart();renderLineChart();renderStackedChart();renderProjChart();renderIngresosStats();
   initGastosAnioSel();
   renderGastosMes();
   // Bind año selector (una sola vez)
@@ -1666,6 +1681,39 @@ function renderStats(){
   }
 }
 function last12(){var months=[];var d=new Date();for(var i=11;i>=0;i--){var m=new Date(d.getFullYear(),d.getMonth()-i,1);months.push(m.getFullYear()+'-'+pad(m.getMonth()+1));}return months;}
+function renderYTDChart(){
+  var now=new Date();var year=now.getFullYear();var curMonthNum=now.getMonth()+1;
+  var months=[];for(var m=1;m<=curMonthNum;m++)months.push(year+'-'+pad(m));
+  var ingData=[],gasData=[],balData=[];var acum=0;
+  for(var i=0;i<months.length;i++){
+    var ing=txnSum('ingreso',months[i]);var gas=txnSum('gasto',months[i]);
+    acum+=(ing-gas);
+    ingData.push(ing);gasData.push(gas);balData.push(acum);
+  }
+  var totalIng=ingData.reduce(function(s,v){return s+v;},0);
+  var totalGas=gasData.reduce(function(s,v){return s+v;},0);
+  var balanceYTD=totalIng-totalGas;
+  var tasaAh=totalIng>0?Math.round(balanceYTD/totalIng*100):0;
+  var tEl=document.getElementById('ytd-title');if(tEl)tEl.textContent='Balance del año en curso — '+year;
+  var sEl=document.getElementById('ytd-subtitle');if(sEl)sEl.textContent='Desde el 01/01/'+year+' hasta hoy ('+monthLbl(months[months.length-1])+').';
+  var mEl=document.getElementById('ytd-metrics');
+  if(mEl)mEl.innerHTML=
+    '<div class="metric"><div class="metric-label">Ingresos '+year+'</div><div class="metric-value income">'+fmtS(totalIng)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Egresos '+year+'</div><div class="metric-value expense">'+fmtS(totalGas)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Balance '+year+'</div><div class="metric-value '+(balanceYTD>=0?'savings':'expense')+'">'+fmtS(balanceYTD)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Tasa de ahorro '+year+'</div><div class="metric-value '+(tasaAh>=20?'income':tasaAh>=0?'warn':'expense')+'">'+tasaAh+'%</div></div>';
+  destroyChart('ytd');
+  var el=document.getElementById('ytdChart');
+  if(el)charts['ytd']=new Chart(el,{type:'bar',data:{labels:months.map(monthLbl),datasets:[
+    {type:'bar',label:'Ingresos',data:ingData,backgroundColor:'rgba(29,158,117,0.75)',borderRadius:4,order:2,yAxisID:'y'},
+    {type:'bar',label:'Egresos',data:gasData,backgroundColor:'rgba(216,90,48,0.6)',borderRadius:4,order:3,yAxisID:'y'},
+    {type:'line',label:'Balance acumulado',data:balData,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.1)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:'#378ADD',order:1,yAxisID:'y1'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},interaction:{mode:'index',intersect:false},scales:{
+    x:{grid:{display:false},ticks:{color:'#aaa'}},
+    y:{position:'left',ticks:{color:'#aaa',callback:function(v){return fmtS(v);}},grid:{color:'rgba(255,255,255,0.05)'}},
+    y1:{position:'right',ticks:{color:'#aaa',callback:function(v){return fmtS(v);}},grid:{display:false}}
+  }}});
+}
 function renderIngresosStats(){
   var months12=last12();var months6=last6();
   // Calcular datos por mes
