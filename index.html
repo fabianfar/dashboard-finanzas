@@ -151,6 +151,7 @@ db.ref('finanzas/state').once('value').then(function(snap) {
     if (saved.prestamoAuto)  state.prestamoAuto  = saved.prestamoAuto;
     if (saved.analisis)      state.analisis      = saved.analisis;
     if (saved.agenda)        state.agenda        = saved.agenda;
+    if (saved.cotizacionesUltFetch) state.cotizacionesUltFetch = saved.cotizacionesUltFetch;
     if (saved.transactions && saved.transactions.length > 0) {
       state.transactions = saved.transactions;
     }
@@ -406,6 +407,10 @@ db.ref('finanzas/state').once('value').then(function(snap) {
         <div><label>Notas (opcional)</label><input type="text" id="inv-notas" placeholder="Ej: Licitacion primaria"></div>
       </div>
       <div class="flex-end"><button class="btn primary" id="btn-add-inv">Agregar instrumento</button></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <span id="cotz-status" style="font-size:12px;color:#aaa"></span>
+      <button class="btn btn-sm" id="btn-refresh-cotz" type="button">🔄 Actualizar cotizaciones de cierre</button>
     </div>
     <div id="inv-lista-instrumentos"></div>
   </div>
@@ -986,6 +991,7 @@ function bootstrapApp() {
   renderAll();
   bindEvents();
   checkCierresAuto();
+  fetchCotizacionesCierre(false);
 }
 
 
@@ -1028,6 +1034,7 @@ function bindEvents(){
   document.getElementById('co-cuotas').addEventListener('input',updateCoPreview);
   document.getElementById('tc-stats-tabs').addEventListener('click',function(e){var btn=e.target.closest('[data-stab]');if(!btn)return;tcStatsTab=btn.dataset.stab;var stabs=document.querySelectorAll('.tc-stats-tab');for(var i=0;i<stabs.length;i++)stabs[i].classList.toggle('active',stabs[i].dataset.stab===tcStatsTab);renderTCStats();});
   document.getElementById('btn-add-inv').addEventListener('click',addInstrumento);
+  document.getElementById('btn-refresh-cotz').addEventListener('click',function(){fetchCotizacionesCierre(true);});
   document.getElementById('btn-add-mov').addEventListener('click',addMovimiento);
   document.getElementById('inv-selector').addEventListener('change',function(e){selectedInv=+e.target.value;renderMovimientos();});
   document.getElementById('mov-cantidad').addEventListener('input',updateMovPreview);
@@ -1512,7 +1519,9 @@ function renderListaInstrumentos(){
         +'<td style="text-align:right;color:#9FE1CB">'+fmtN(costoTotal,smb)+'</td>'
         +'<td style="text-align:right;padding:4px 8px">'
         +'<input type="text" data-cotzid="'+inv.id+'" data-cotzraw="'+(cotz||0)+'" value="'+(cotz>0?fmtN(cotz,smb):'—')+'" placeholder="—"'
-        +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace"></td>'
+        +' style="width:110px;padding:3px 6px;font-size:12px;text-align:right;background:#2a2a2a;border:0.5px solid #444;border-radius:6px;color:#e0e0e0;font-family:monospace">'
+        +(cotz>0?'<div style="font-size:9px;margin-top:2px;color:'+(inv.cotzAuto?'#5DCAA5':'#888')+'">'+(inv.cotzAuto?'● auto '+(inv.cotzFecha?fmtDate(inv.cotzFecha).slice(0,5):''):'● manual')+'</div>':'')
+        +'</td>'
         +'<td style="text-align:right;color:'+(cotz>0?'#9FE1CB':'#555')+'">'+(cotz>0?fmtN(valorActual,smb):'-')+'</td>'
         +'<td style="text-align:right;font-weight:500;color:'+difColor+'">'
         +(difMonto!==null?(difMonto>=0?'▲ ':'▼ ')+fmtN(Math.abs(difMonto),smb):'-')+'</td>'
@@ -1559,6 +1568,7 @@ function renderListaInstrumentos(){
       for(var k=0;k<state.instrumentos.length;k++){
         if(state.instrumentos[k].id===+inp.dataset.cotzid){
           state.instrumentos[k].cotizacion=isNaN(val)?0:val;
+          state.instrumentos[k].cotzAuto=false;
           smb2=simbol(state.instrumentos[k].moneda);break;
         }
       }
@@ -1638,7 +1648,49 @@ function renderCarteraComparacion(){
   return '<div class="card"><h3 style="margin-bottom:4px">Cartera actual vs sugerida - perfil moderado 2026</h3><p style="font-size:12px;color:#aaa;margin-bottom:16px">Total cartera estimada: <strong>'+fmtS(totalCart)+'</strong></p>'+barras+'<div class="chart-grid" style="margin-top:16px"><div><div style="font-size:13px;color:#aaa;margin-bottom:8px">Mi cartera actual</div><div class="legend" style="margin-bottom:8px">'+leyAct+'</div><div style="position:relative;width:100%;height:200px"><canvas id="cartera-act-chart" role="img" aria-label="Cartera actual"></canvas></div></div><div><div style="font-size:13px;color:#aaa;margin-bottom:8px">Cartera sugerida</div><div class="legend" style="margin-bottom:8px">'+leySug+'</div><div style="position:relative;width:100%;height:200px"><canvas id="cartera-sug-chart" role="img" aria-label="Cartera sugerida"></canvas></div></div></div></div><div class="card" style="background:#1a1a00;border-color:#444"><p style="font-size:12px;color:#888;line-height:1.6">Aviso: Valores son estimaciones basadas en precios de compra. No constituye asesoramiento financiero.</p></div>';
 }
 
+// COTIZACIONES DE CIERRE (data912.com — fuente publica, sin login)
+var DATA912_PANELS=['arg_bonds','arg_notes','arg_corp','arg_cedears','arg_stocks'];
+function esDiaHabil(d){var day=d.getDay();return day>=1&&day<=5;}
+function debeActualizarCotizaciones(){
+  var now=new Date();
+  if(!esDiaHabil(now))return false;
+  if(now.getHours()<17)return false;
+  return state.cotizacionesUltFetch!==todayStr();
+}
+function setCotzStatus(msg){var st=document.getElementById('cotz-status');if(st)st.textContent=msg;}
+function fetchCotizacionesCierre(forzar){
+  if(!forzar&&!debeActualizarCotizaciones())return;
+  setCotzStatus('Actualizando cotizaciones…');
+  var proms=DATA912_PANELS.map(function(p){
+    return fetch('https://data912.com/live/'+p).then(function(r){return r.ok?r.json():[];}).catch(function(){return [];});
+  });
+  Promise.all(proms).then(function(results){
+    var mapa={};
+    for(var i=0;i<results.length;i++){
+      var arr=results[i];if(!Array.isArray(arr))continue;
+      for(var j=0;j<arr.length;j++){
+        var it=arr[j];if(it&&it.symbol&&typeof it.c==='number'&&it.c>0)mapa[String(it.symbol).toUpperCase()]=it.c;
+      }
+    }
+    var hoy=todayStr();var actualizados=0;
+    for(var k=0;k<state.instrumentos.length;k++){
+      var inv=state.instrumentos[k];var tk=(inv.ticker||'').toUpperCase();
+      if(mapa[tk]!==undefined){inv.cotizacion=mapa[tk];inv.cotzAuto=true;inv.cotzFecha=hoy;actualizados++;}
+    }
+    state.cotizacionesUltFetch=hoy;
+    saveState();
+    var tabEl=document.getElementById('tab-inversiones');
+    if(tabEl&&tabEl.classList.contains('active')){renderListaInstrumentos();renderInvResumen();}
+    var totalConTicker=state.instrumentos.length;
+    setCotzStatus(actualizados>0
+      ? 'Actualizado '+actualizados+' de '+totalConTicker+' instrumentos · cierre '+fmtDate(hoy)+' ('+pad(new Date().getHours())+':'+pad(new Date().getMinutes())+')'
+      : 'No se encontraron cotizaciones de data912 para tus tickers.');
+  }).catch(function(){
+    setCotzStatus('No se pudo actualizar (fuente no disponible en este momento).');
+  });
+}
 function renderInversiones(){
+  if(state.cotizacionesUltFetch)setCotzStatus('Última actualización de cierre: '+fmtDate(state.cotizacionesUltFetch));
   renderInvResumen();
   renderListaInstrumentos();
   if(selectedInv)renderMovimientosSection();
